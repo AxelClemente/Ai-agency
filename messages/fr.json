@@ -1,0 +1,430 @@
+{
+  "Header": {
+    "about": "À propos du service",
+    "help": "Aide",
+    "signup": "S'inscrire",
+    "signin": "Se connecter",
+    "languages": {
+      "es": "Español",
+      "en": "English",
+      "fr": "Français"
+    }
+  },
+  "FAQ": {
+    "title": "Nous Répondons\nÀ Vos Questions",
+    "question1": "À qui s'adresse cette plateforme ?",
+    "answer1": "Lorem ipsum dolor sit amet, consec adipiscing elit. In ac sagittis cursus quam quis morbi sed.",
+    "question2": "Quels sont les avantages de cette plateforme pour les entreprises locales ?",
+    "answer2": "Lorem ipsum dolor sit amet, consec adipiscing elit. In ac sagittis cursus quam quis morbi sed.",
+    "question3": "Quels avantages vais-je recevoir en m'abonnant ?",
+    "answer3": "Lorem ipsum dolor sit amet, consec adipiscing elit. In ac sagittis cursus quam quis morbi sed.",
+    "cta": {
+      "title": "Choisissez votre rôle et rejoignez-nous maintenant !",
+      "business": "Commencer en tant que Propriétaire d'Entreprise",
+      "customer": "Commencer en tant que Client"
+    }
+  },
+  "Testimonials": {
+    "name": "Casey Kaspol",
+    "role": "Directeur Général",
+    "quote": "\"Nous l'adorons ! C'est tout simplement incroyable. Je l'aime de plus en plus chaque jour car cela rend ma vie beaucoup plus facile.\""
+  },
+  "Hero": {
+    "logoAlt": "Logo Fideliza",
+    "title": {
+      "part1": "Vos Lieux Préférés,",
+      "part2": "Juste",
+      "highlight": "Scannez"
+    },
+    "subtitle": {
+      "part1": "Connectez-vous facilement avec des entreprises locales, personnalisez vos",
+      "part2": "abonnements, et économisez gros !"
+    },
+    "learnMore": "En savoir plus",
+    "cta": {
+      "title": {
+        "part1": "Choisissez Votre Rôle et Rejoignez",
+        "part2": "Dès Maintenant !"
+      },
+      "business": "Commencer en tant que Propriétaire d'Entreprise",
+      "customer": "Commencer en tant que Client"
+    }
+  },
+  "Video": {
+    "title": {
+      "part1": "Apprenez",
+      "part2": "Comment Nous Travaillons"
+    },
+    "playButton": "Lire la Vidéo",
+    "subtitle": {
+      "part1": "Obtenez Votre Abonnement Maintenant et",
+      "part2": "Profitez de Tous les Avantages"
+    },
+    "features": {
+      "support": {
+        "title": "Soutenir Local",
+        "description": "Lorem ipsum dolor sit amet, consec adipiscing elit. In ac sagittis cursus quam quis morbi sed."
+      },
+      "access": {
+        "title": "Accès Facile",
+        "description": "Lorem ipsum dolor sit amet, consec adipiscing elit. In ac sagittis cursus quam quis morbi sed."
+      },
+      "deals": {
+        "title": "Offres Personnalisées",
+        "description": "Lorem ipsum dolor sit amet, consec adipiscing elit. In ac sagittis cursus quam quis morbi sed."
+      }
+    },
+    "cta": {
+      "title": {
+        "part1": "Choisissez Votre Rôle et Rejoignez",
+        "part2": "Dès Maintenant !"
+      },
+      "business": "Commencer en tant que Propriétaire d'Entreprise",
+      "customer": "Commencer en tant que Client"
+    }
+  },
+  "Auth": {
+    "signUp": "S'inscrire",
+    "signIn": "Se connecter",
+    "passwordResetSuccess": "Réinitialisation du mot de passe réussie. Veuillez vous connecter avec votre nouveau mot de passe.",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "loginButton": "Continuer",
+    "or": "ou",
+    "googleAccount": "Continuer avec Google",
+    "facebookAccount": "Continuer avec Facebook",
+    "invalidCredentials": "Email ou mot de passe invalide",
+    "errorSignIn": "Une erreur s'est produite. Veuillez réessayer",
+    "errorGoogleSignIn": "Erreur lors de la connexion avec Google",
+    "errorGoogleSignInGeneric": "Erreur avec la connexion Google. Réessayez",
+    "errorFacebookSignIn": "Erreur lors de la connexion avec Facebook",
+    "errorFacebookSignInGeneric": "Erreur avec la connexion Facebook. Réessayez",
+    "namePlaceholder": "Nom",
+    "confirmPasswordPlaceholder": "Confirmer le mot de passe",
+    "continueButton": "Continuer",
+    "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+    "registrationFailed": "L'inscription a échoué",
+    "genericError": "Quelque chose s'est mal passé. Veuillez réessayer",
+    "signingUp": "Inscription...",
+    "forgotPasswordTitle": "Mot de passe oublié ?",
+    "forgotPasswordSubtitle": "Veuillez entrer l'email que vous utilisez pour vous connecter à Fideliza",
+    "sendButton": "Envoyer",
+    "cancelButton": "Annuler",
+    "errorGenericForgot": "Quelque chose s'est mal passé",
+    "errorOccurredForgot": "Une erreur s'est produite. Veuillez réessayer.",
+    "verifyCodeTitle": "Mot de passe oublié ?",
+    "verifyCodeSubtitle": "Le code a été envoyé à {email}",
+    "verifyButton": "Vérifier",
+    "resendCodeButton": "Renvoyer le code dans {seconds}s",
+    "enterAllDigits": "Veuillez entrer tous les chiffres",
+    "invalidCode": "Code invalide",
+    "errorVerifying": "Une erreur s'est produite",
+    "resetPasswordTitle": "Réinitialiser le mot de passe",
+    "resetPasswordSubtitle": "Veuillez entrer votre nouveau mot de passe pour l'application Fideliza",
+    "newPasswordPlaceholder": "Nouveau mot de passe",
+    "confirmNewPasswordPlaceholder": "Confirmer le nouveau mot de passe",
+    "resetButton": "Réinitialiser le mot de passe",
+    "loading": "Chargement...",
+    "locationTitle": "Votre ville",
+    "searchCityPlaceholder": "Recherchez votre ville",
+    "skipButton": "Passer",
+    "cityUpdateError": "Erreur lors de la mise à jour de la ville",
+    "cityUpdateGenericError": "Une erreur s'est produite lors de la mise à jour de votre ville",
+    "signUpSubtitle": "Première fois ? Créez votre compte pour commencer",
+    "signInSubtitle": "Bon retour ! Connectez-vous pour continuer"
+  },
+  "BusinessHeader": {
+    "home": "Accueil",
+    "users": "Utilisateurs",
+    "myShops": "Mes Magasins",
+    "proposalMailings": "Mailings",
+    "aboutService": "À propos du service",
+    "help": "Aide",
+    "logout": "Déconnexion",
+    "loading": "Chargement..."
+  },
+  "BusinessDashboard": {
+    "views": "Vues",
+    "earnings": "Gains",
+    "subscriptions": "Abonnements",
+    "newViews": "Nouvelles vues",
+    "newSubs": "Nouveaux abonnés",
+    "currentWeek": "Semaine en cours",
+    "previousWeek": "Semaine précédente",
+    "selectPeriod": "Sélectionner la période",
+    "thisWeek": "Cette semaine",
+    "currentOffers": "Offres actuelles",
+    "owner": "Propriétaire",
+    "subscribers": "Abonnés",
+    "admins": "Administrateurs",
+    "staff": "Personnel",
+    "addNewUser": "Ajouter un utilisateur",
+    "mainInfo": "Restaurants",
+    "specialOffers": "Offres spéciales",
+    "offers": "Offres",
+    "addNewMainInfo": "Nouveau restaurant",
+    "addNewPlace": "Nouvelle succursale",
+    "places": "Succursales",
+    "inProgress": "En cours",
+    "archive": "Archiver",
+    "addNewOffersMailing": "Nouveau mailing d'offres",
+    "update": "Mettre à jour",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "noMailingsYet": "Pas encore de mailings !",
+    "billing": {
+      "unlimitedTariff": "Tarif illimité",
+      "pricePerYear": "90€ par an",
+      "validUntil": "Valide jusqu'au : {date}",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat mi et libero et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "downloadContract": "Télécharger une copie du contrat",
+      "extendContract": "Prolonger le contrat",
+      "changeTariff": "Changer de tarif",
+      "seeTransactions": "Voir les transactions",
+      "date": "Date",
+      "tariff": "Tarif",
+      "price": "Prix",
+      "state": "État",
+      "success": "Réussi"
+    },
+    "about": {
+      "title": "À propos du service",
+      "faq": "FAQ",
+      "help": "Aide",
+      "termsOfUse": "Conditions d'utilisation",
+      "billing": "Facturation",
+      "qrAndLinks": "QR et liens",
+      "shareApp": "Partager l'application",
+      "faqDescription": "Trouvez des réponses aux questions les plus courantes sur notre service et ses fonctionnalités. Apprenez à utiliser votre abonnement et profitez des réductions.",
+      "helpDescription": "Contactez-nous si vous avez des questions ou des suggestions. Notre équipe de support est prête à vous aider rapidement.",
+      "termsDescription": "Lisez nos conditions d'utilisation et comprenez vos droits et obligations en tant qu'utilisateur de notre service.",
+      "billingDescription": "Gérez votre abonnement, consultez votre historique de facturation et téléchargez des factures.",
+      "qrDescription": "Recommandations pour l'utilisation des QR et des liens vers notre service afin que vos clients puissent rejoindre le service plus rapidement et soutenir votre entreprise avec des abonnements.",
+      "shareDescription": "Contactez-nous si vous avez des questions ou des suggestions. Notre équipe de support est prête à vous aider rapidement."
+    },
+    "help": {
+      "title": "Besoin d'aide ?",
+      "subtitle": "Écrivez-nous ou appelez-nous - nous vous aidons !",
+      "callUs": "Appelez-nous",
+      "writeUs": "Écrivez-nous",
+      "namePlaceholder": "Nom",
+      "emailPlaceholder": "Email",
+      "messagePlaceholder": "Bonjour ! Je veux dire - vous êtes une équipe formidable !",
+      "sendButton": "Envoyer"
+    },
+    "faq": {
+      "howItWorks": "Comment fonctionne notre service de fidélité ?",
+      "howItWorksAnswer": "Notre service de fidélité vous récompense pour vos achats dans les magasins participants. Gagnez des points à chaque achat et échangez-les contre des récompenses et des réductions exclusives.",
+      "whichStores": "Quels magasins font partie du programme ?",
+      "whichStoresAnswer": "Nous avons des partenariats avec une large gamme d'entreprises, des magasins locaux aux grandes marques. Consultez notre annuaire des magasins pour une liste complète des lieux participants.",
+      "subscriptionPlans": "Quels plans d'abonnement sont disponibles ?",
+      "subscriptionPlansAnswer": "Nous proposons plusieurs niveaux d'abonnement pour différents besoins, des plans de base aux plans premium. Chaque plan inclut différents avantages et taux de récompense.",
+      "howToSubscribe": "Comment puis-je m'abonner ?",
+      "howToSubscribeAnswer": "Vous pouvez vous abonner via le site Web ou l'application en choisissant le plan qui vous convient le mieux. Les paiements sont automatiquement facturés mensuellement.",
+      "howToCancel": "Comment puis-je annuler mon abonnement ?",
+      "howToCancelAnswer": "Vous pouvez annuler votre abonnement à tout moment via les paramètres de votre compte. Le service restera actif jusqu'à la fin de votre période de facturation actuelle.",
+      "noDiscount": "Que dois-je faire si je ne vois pas de réduction en magasin ?",
+      "noDiscountAnswer": "Si vous ne voyez pas votre réduction appliquée, veuillez vérifier l'état de votre abonnement et contacter notre équipe de support pour une assistance immédiate."
+    },
+    "share": {
+      "title": "Partager l'Application",
+      "description": "Partagez notre application avec vos clients et aidez-les à découvrir de bonnes affaires !",
+      "copyLink": "Partager le Lien",
+      "linkCopied": "Lien copié dans le presse-papiers !",
+      "copyError": "Erreur lors de la copie du lien",
+      "shareIconAlt": "Icône de partage",
+      "facebookAlt": "Icône Facebook",
+      "twitterAlt": "Icône Twitter"
+    },
+    "terms": {
+      "title": "Conditions d'utilisation",
+      "introduction": {
+        "title": "1. Introduction",
+        "content": "Bienvenue sur [Nom du Service] ! En utilisant notre plateforme, vous acceptez les termes et conditions suivants. Veuillez les lire attentivement. Si vous n'êtes pas d'accord, vous ne devriez pas utiliser notre service."
+      },
+      "serviceDescription": {
+        "title": "2. Description du Service",
+        "content": "Notre plateforme offre aux utilisateurs un accès à des réductions et des offres spéciales dans les magasins partenaires via un plan d'abonnement. Les réductions sont soumises aux conditions fixées par chaque partenaire participant."
+      },
+      "registration": {
+        "title": "3. Inscription et Abonnement",
+        "item1": "Les utilisateurs doivent créer un compte pour accéder à notre service.",
+        "item2": "Les frais d'abonnement sont facturés mensuellement, avec des paiements traités automatiquement.",
+        "item3": "Les utilisateurs sont responsables de la mise à jour de leurs informations de paiement."
+      },
+      "freeTrial": {
+        "title": "4. Essai Gratuit et Annulation",
+        "item1": "Si proposé, l'essai gratuit permet aux utilisateurs d'accéder au service pendant une période limitée sans frais.",
+        "item2": "Les abonnements peuvent être annulés à tout moment via les paramètres du compte. L'accès aux réductions restera jusqu'à la fin de la période de facturation."
+      },
+      "partnerOffers": {
+        "title": "5. Offres Partenaires et Disponibilité",
+        "item1": "Les réductions et offres varient selon le partenaire et sont sujettes à changement sans préavis.",
+        "item2": "La disponibilité des offres peut varier selon l'emplacement ou d'autres conditions définies par les partenaires."
+      },
+      "userResponsibilities": {
+        "title": "6. Responsabilités de l'Utilisateur",
+        "item1": "Les utilisateurs doivent utiliser le service légalement et conformément à ces termes.",
+        "item2": "Le partage d'informations de compte ou l'utilisation non autorisée du service est interdit.",
+        "item3": "Les utilisateurs sont responsables de s'assurer que leurs actions respectent les termes de chaque offre partenaire."
+      },
+      "refunds": {
+        "title": "7. Remboursements et Problèmes de Paiement",
+        "item1": "Les frais d'abonnement ne sont pas remboursables sauf si la loi l'exige.",
+        "item2": "Si un paiement échoue, l'accès au service peut être restreint jusqu'à ce que le problème soit résolu."
+      }
+    },
+    "qr": {
+      "links": {
+        "title": "Liens",
+        "description": "Vous pouvez utiliser ce lien pour des publications sur les réseaux sociaux ou pour informer vos clients de leur participation à notre programme de fidélité et attirer plus de personnes vers vos abonnements."
+      },
+      "qrs": {
+        "title": "QRs",
+        "description": "Vous pouvez imprimer un code QR pour l'inscription à notre service et le placer dans un endroit visible près de la caisse. Cela facilitera et accélérera l'inscription de vos clients au service et à votre programme de réductions.",
+        "downloadButton": "Télécharger le modèle de QR pour impression"
+      }
+    },
+    "noMainInfo": "Pas encore de restaurants !",
+    "noAdminUsers": "Pas d'administrateurs",
+    "noStaffUsers": "Pas de personnel",
+    "noAdminUsersFound": "Aucun administrateur trouvé",
+    "noStaffUsersFound": "Aucun personnel trouvé",
+    "noSubscribers": "Pas encore d'abonnés",
+    "noSpecialOffers": "Pas encore d'offres spéciales !",
+    "addSpecialOffer": "Ajouter une offre spéciale",
+    "addNewSpecialOffer": "Nouvelle offre spéciale",
+    "addSubscription": "Ajouter un abonnement",
+    "addNewSubscription": "Nouvel abonnement",
+    "cannotDeleteActiveSubscription": "Vous ne pouvez pas supprimer un abonnement actif.",
+    "createPlaceFirst": "Créez d'abord un lieu pour ajouter des abonnements !",
+    "createPlaceFirstOffers": "Créez d'abord un lieu pour ajouter des offres !",
+    "noSubscriptionsYet": "Pas encore d'abonnements !",
+    "purchaseBenefit": "Avantage d'achat",
+    "whereToUse": "Où utiliser",
+    "visitsPerMonth": "{visits} visites par mois",
+    "perMonth": "€/mois",
+    "selectBranchError": "Veuillez sélectionner une succursale",
+    "fillRequiredFields": "Veuillez remplir tous les champs requis"
+  },
+  "CustomerDashboard": {
+    "header": {
+      "home": "Accueil",
+      "mySubscriptions": "Mes abonnements",
+      "aboutService": "À propos du service",
+      "help": "Aide"
+    },
+    "dashboard": {
+      "subscriptions": "Abonnements",
+      "specialOffers": "Offres spéciales",
+      "seeAll": "Voir tout"
+    },
+    "restaurant": {
+      "places": "Branches ({count})"
+    },
+    "subscriptionModal": {
+      "title": "Détail de l'abonnement",
+      "whereToUse": "Où utiliser",
+      "purchaseBenefit": "Avantage d'achat",
+      "otherSubscriptions": "Autres abonnements"
+    },
+    "offerModal": {
+      "title": "Détails de l'offre",
+      "viewRestaurant": "Voir le restaurant"
+    },
+    "faq": {
+      "howItWorks": "Comment fonctionne notre service de fidélité ?",
+      "howItWorksAnswer": "Notre service de fidélité vous récompense pour vos achats dans les magasins participants. Gagnez des points à chaque achat et échangez-les contre des récompenses et des réductions exclusives.",
+      "whichStores": "Quels magasins font partie du programme ?",
+      "whichStoresAnswer": "Nous avons des partenariats avec une large gamme d'entreprises, des magasins locaux aux grandes marques. Consultez notre annuaire des magasins pour une liste complète des lieux participants.",
+      "subscriptionPlans": "Quels plans d'abonnement sont disponibles ?",
+      "subscriptionPlansAnswer": "Nous proposons plusieurs niveaux d'abonnement pour différents besoins, des plans de base aux plans premium. Chaque plan inclut différents avantages et taux de récompense.",
+      "howToSubscribe": "Comment puis-je m'abonner ?",
+      "howToSubscribeAnswer": "Vous pouvez vous abonner via le site Web ou l'application en choisissant le plan qui vous convient le mieux. Les paiements sont automatiquement facturés mensuellement.",
+      "howToCancel": "Comment puis-je annuler mon abonnement ?",
+      "howToCancelAnswer": "Vous pouvez annuler votre abonnement à tout moment via les paramètres de votre compte. Le service restera actif jusqu'à la fin de votre période de facturation actuelle.",
+      "noDiscount": "Que dois-je faire si je ne vois pas de réduction en magasin ?",
+      "noDiscountAnswer": "Si vous ne voyez pas votre réduction appliquée, veuillez vérifier l'état de votre abonnement et contacter notre équipe de support pour une assistance immédiate."
+    },
+    "help": {
+      "title": "Besoin d'aide ?",
+      "subtitle": "Écrivez-nous ou appelez-nous - nous vous aidons !",
+      "callUs": "Appelez-nous",
+      "writeUs": "Écrivez-nous",
+      "namePlaceholder": "Nom",
+      "emailPlaceholder": "Email",
+      "messagePlaceholder": "Bonjour ! Je veux dire - vous êtes une équipe formidable !",
+      "sendButton": "Envoyer"
+    },
+    "terms": {
+      "title": "Conditions Générales",
+      "introduction": {
+        "title": "1. Introduction",
+        "content": "Bienvenue dans notre service de fidélité. En utilisant notre service, vous acceptez ces termes et conditions dans leur intégralité."
+      },
+      "serviceDescription": {
+        "title": "2. Description du Service",
+        "content": "Nous offrons une plateforme de fidélité qui connecte les entreprises locales avec les clients, permettant des abonnements et des avantages exclusifs."
+      },
+      "registration": {
+        "title": "3. Inscription et Abonnement",
+        "item1": "Vous devez fournir des informations précises et complètes lors de l'inscription.",
+        "item2": "Vous êtes responsable de la sécurité de votre compte.",
+        "item3": "Les abonnements se renouvellent automatiquement jusqu'à annulation."
+      },
+      "freeTrial": {
+        "title": "4. Essai Gratuit et Annulation",
+        "item1": "Nous offrons une période d'essai gratuite pour les nouveaux utilisateurs.",
+        "item2": "Vous pouvez annuler votre abonnement à tout moment depuis votre compte."
+      },
+      "partnerOffers": {
+        "title": "5. Offres Partenaires",
+        "item1": "Les offres et réductions sont soumises à disponibilité.",
+        "item2": "Les termes spécifiques de chaque offre peuvent varier selon le partenaire."
+      },
+      "userResponsibilities": {
+        "title": "6. Responsabilités de l'Utilisateur",
+        "item1": "Les utilisateurs doivent utiliser le service légalement et conformément à ces termes.",
+        "item2": "Le partage d'informations de compte ou l'utilisation non autorisée du service est interdit.",
+        "item3": "Les utilisateurs sont responsables de s'assurer que leurs actions respectent les termes de chaque offre."
+      },
+      "refunds": {
+        "title": "7. Remboursements et Problèmes de Paiement",
+        "item1": "Les frais d'abonnement ne sont pas remboursables sauf si la loi l'exige.",
+        "item2": "Si un paiement échoue, l'accès au service peut être restreint jusqu'à ce que le problème soit résolu."
+      }
+    },
+    "share": {
+      "title": "Partager l'Application",
+      "description": "Laissez vos amis trouver les meilleures offres en ville !",
+      "copyLink": "Partager le Lien",
+      "linkCopied": "Lien copié dans le presse-papiers !",
+      "copyError": "Erreur lors de la copie du lien",
+      "shareIconAlt": "Icône de partage",
+      "facebookAlt": "Icône Facebook",
+      "twitterAlt": "Icône Twitter"
+    },
+    "MySubscriptions": {
+      "title": "Mes Abonnements",
+      "validUntil": "Valide jusqu'à",
+      "purchaseBenefits": "Avantages d'achat",
+      "generateQR": "Générer QR",
+      "shareInfo": "Partager info",
+      "upgrade": "Améliorer",
+      "unsubscribe": "Se désabonner",
+      "visitsRemaining": "{remaining} / {total} visites restantes"
+    },
+    "about": {
+      "title": "À propos du service",
+      "faq": "FAQ",
+      "help": "Aide",
+      "termsOfUse": "Conditions d'utilisation",
+      "faqDescription": "Trouvez des réponses aux questions les plus courantes sur notre service et ses fonctionnalités. Apprenez à utiliser votre abonnement et profitez des réductions.",
+      "helpDescription": "Besoin d'aide ? Contactez-nous si vous avez des questions ou des suggestions. Notre équipe de support est prête à vous aider.",
+      "termsDescription": "Lisez nos conditions d'utilisation et comprenez vos droits et obligations en tant qu'utilisateur de notre service.",
+      "shareApp": "Partager l'application",
+      "shareDescription": "Laissez vos amis trouver les meilleures offres en ville !"
+    }
+  }
+}
