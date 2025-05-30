@@ -1,27 +1,19 @@
 import type { Metadata } from "next";
-import { Open_Sans, Poppins } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { AuthProvider } from "@/app/[locale]/components/providers/auth-provider";
 import "@/app/globals.css";
 import { Toaster } from "@/components/ui/toaster"
-import {NextIntlClientProvider} from 'next-intl';
-import {notFound} from 'next/navigation';
+import { NextIntlClientProvider } from 'next-intl';
+import { notFound } from 'next/navigation';
 import { metadata as appMetadata } from '@/app/metadata-config';
 
-const openSans = Open_Sans({
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  variable: '--font-open-sans',
-});
-
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-poppins',
 });
 
 export const metadata: Metadata = {
-  title: appMetadata.landing.title ?? "Fideliza",
-  description: appMetadata.landing.description ?? "Your Local Favorites App",
+  title: appMetadata.landing.title ?? "Writer - Dream big. Build fast.",
+  description: appMetadata.landing.description ?? "The only end-to-end agent builder platform that unites IT & business",
   icons: {
     icon: '/favicon.svg',
   }
@@ -44,25 +36,15 @@ export default async function RootLayout({
   let messages;
   try {
     messages = (await import(`../../messages/${locale}.json`)).default;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (_) {
     notFound();
   }
 
   return (
     <html lang={locale}>
-      <head>
-        <title>{metadata.title as string}</title>
-        <meta name="description" content={metadata.description as string} />
-      </head>
       <body
         suppressHydrationWarning={true}
-        className={`${openSans.variable} ${poppins.variable} font-sans antialiased
-          overflow-x-hidden
-          [&_h1]:text-h1
-          [&_h2]:text-h2
-          [&_h3]:text-h3
-          text-body-regular-1`}
+        className={`${inter.className} antialiased overflow-x-hidden`}
       >
         <NextIntlClientProvider 
           locale={locale}

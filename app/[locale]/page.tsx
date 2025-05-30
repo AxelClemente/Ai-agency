@@ -1,10 +1,14 @@
-import HeroSection from '@/app/[locale]/components/landing-page/hero'
-import VideoSection from '@/app/[locale]/components/landing-page/video'
-import FAQSection from '@/app/[locale]/components/landing-page/faq'
-import { MainHeader } from '@/app/[locale]/components/layout/main-header'
-import { MobileMainHeader } from '@/app/[locale]/components/layout/mobile-main-header'
-import { Footer } from '@/app/[locale]/components/layout/footer'
 import { redirect } from 'next/navigation'
+import Header from "@/app/[locale]/components/new-lading-page/header"
+import HeroSection from "@/app/[locale]/components/new-lading-page/hero-section"
+import TrustedBySection from "@/app/[locale]/components/new-lading-page/trusted-by-section"
+import AgentsSection from "@/app/[locale]/components/new-lading-page/agents-section"
+import TestimonialsSection from "@/app/[locale]/components/new-lading-page/testimonials-section"
+import IndustriesSection from "@/app/[locale]/components/new-lading-page/industries-section"
+import EmpowermentSection from "@/app/[locale]/components/new-lading-page/empowerment-section"
+import CaseStudiesSection from "@/app/[locale]/components/new-lading-page/case-studies-section"
+import PlatformSection from "@/app/[locale]/components/new-lading-page/platform-section"
+import TechnologySection from "@/app/[locale]/components/new-lading-page/technology-section"
 
 export default async function Page({
   params
@@ -19,20 +23,20 @@ export default async function Page({
   }
 
   return (
-    <main className="bg-white">
-      <div className="md:hidden">
-        <MobileMainHeader />
-      </div>
-      <div className="hidden md:block">
-        <MainHeader />
-      </div>
-      <div className="px-4 md:container md:mx-auto md:px-8">
+    <div className="min-h-screen bg-black text-white">
+      <Header />
+      <main>
         <HeroSection />
-        <VideoSection />
-        <FAQSection />
-        <Footer />
-      </div>
-    </main>
+        <TrustedBySection />
+        <AgentsSection />
+        <TestimonialsSection />
+        <IndustriesSection />
+        <EmpowermentSection />
+        <CaseStudiesSection />
+        <PlatformSection />
+        <TechnologySection />
+      </main>
+    </div>
   )
 }
 
