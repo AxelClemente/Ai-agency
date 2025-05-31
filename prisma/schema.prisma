@@ -84,12 +84,18 @@ enum Role {
 
 model Conversation {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String?  @db.ObjectId
-  callerId    String?  // Número del cliente que llamó (puede venir del sistema__caller_id)
-  callSid     String?  // ID único de la llamada (system__call_sid)
+  userId      String   @db.ObjectId
+  agentId     String?  // Identificador del agente de ElevenLabs
   transcript  String
-  metadata    Json?    // Para almacenar info útil como duración, idioma, variables extra
-  createdAt   DateTime @default(now())
-
-  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  duration    Int      // duración en segundos
+  cost        Float    // costo en créditos
+  startedAt   DateTime @default(now())
+  endedAt     DateTime @updatedAt
+  status      String   // 'completed', 'interrupted', etc.
+  metadata    Json?    // datos adicionales como LLM latency, etc.
+  
+  user        User     @relation(fields: [userId], references: [id])
+  
+  @@index([userId])
+  @@index([agentId]) // Agregamos un índice para búsquedas eficientes por agente
 }

@@ -11,7 +11,7 @@ export default function Header() {
   const currentLocale = useLocale()
 
   return (
-    <header className="relative z-50 w-full">
+    <header className="relative z-50 w-full bg-black">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}

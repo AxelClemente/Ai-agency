@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { ConversationWidget } from './components/conversation-widget'
 
 // Definimos las interfaces necesarias para la Web Speech API
 interface SpeechRecognitionEvent {
@@ -42,81 +43,27 @@ declare global {
 }
 
 export default function ConversationPage() {
-  const [isRecording, setIsRecording] = useState(false)
-  const [transcript, setTranscript] = useState('')
-  const [response, setResponse] = useState('')
-  const recognitionRef = useRef<SpeechRecognition | null>(null)
-
-  useEffect(() => {
-    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-      alert('Tu navegador no soporta reconocimiento de voz')
-      return
-    }
-
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-    const recognition = new SpeechRecognition()
-
-    recognition.lang = 'es-ES'
-    recognition.continuous = false
-    recognition.interimResults = false
-
-    recognition.onresult = async (event: SpeechRecognitionEvent) => {
-      const text = event.results[0][0].transcript
-      setTranscript(text)
-
-      // Enviar texto al backend y obtener respuesta del agente
-      const res = await fetch('/api/agent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text })
-      })
-
-      const data = await res.json()
-      setResponse(data.reply)
-
-      // Aquí podrías hacer TTS usando ElevenLabs
-    }
-
-    recognition.onerror = (e) => {
-      console.error('Error de reconocimiento:', e)
-    }
-
-    recognitionRef.current = recognition
-  }, [])
-
-  const toggleRecording = () => {
-    if (!recognitionRef.current) return
-
-    if (isRecording) {
-      recognitionRef.current.stop()
-    } else {
-      recognitionRef.current.start()
-    }
-
-    setIsRecording(!isRecording)
-  }
+  const [showWidget, setShowWidget] = useState(false)
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-8">
       <h1 className="text-3xl font-bold mb-6">🎙️ Habla con nuestro agente</h1>
       <p className="mb-4 text-gray-600">
-        Pulsa el botón para empezar a hablar con Pizzería Nonna Mia.
+        Pulsa el botón para empezar a hablar con nuestro asistente virtual.
       </p>
-      <Button onClick={toggleRecording}>
-        {isRecording ? '🛑 Detener' : '🎤 Empezar'}
-      </Button>
 
-      {transcript && (
-        <div className="mt-6 w-full max-w-xl bg-white shadow-md rounded p-4">
-          <p className="text-sm text-gray-500">Tú:</p>
-          <p className="text-lg">{transcript}</p>
-        </div>
-      )}
-
-      {response && (
-        <div className="mt-4 w-full max-w-xl bg-white shadow-md rounded p-4">
-          <p className="text-sm text-gray-500">Agente:</p>
-          <p className="text-lg">{response}</p>
+      {!showWidget ? (
+        <Button 
+          onClick={() => setShowWidget(true)}
+          className="bg-blue-600 hover:bg-blue-700 text-white"
+        >
+          🎤 Empezar
+        </Button>
+      ) : (
+        <div className="w-full max-w-xl">
+          <ConversationWidget 
+            agentId={process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID || ''} 
+          />
         </div>
       )}
     </main>
