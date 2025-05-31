@@ -85,17 +85,20 @@ enum Role {
 model Conversation {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   userId      String   @db.ObjectId
-  agentId     String?  // Identificador del agente de ElevenLabs
-  transcript  String
+  agentId     String   // Identificador del agente de ElevenLabs
+  transcript  String   // Transcripción completa
   duration    Int      // duración en segundos
   cost        Float    // costo en créditos
   startedAt   DateTime @default(now())
   endedAt     DateTime @updatedAt
-  status      String   // 'completed', 'interrupted', etc.
-  metadata    Json?    // datos adicionales como LLM latency, etc.
+  status      String   // 'completed', 'interrupted', 'failed'
+  
+  messages    Json[]   // Array de mensajes con métricas
+  metrics     Json     // Métricas agregadas de la conversación
+  metadata    Json?    // Otros metadatos
   
   user        User     @relation(fields: [userId], references: [id])
   
   @@index([userId])
-  @@index([agentId]) // Agregamos un índice para búsquedas eficientes por agente
+  @@index([agentId])
 }

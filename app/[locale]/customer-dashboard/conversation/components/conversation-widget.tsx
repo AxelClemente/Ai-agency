@@ -4,6 +4,7 @@ import { useState, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useSession } from 'next-auth/react';
+import { Message, Role, ConversationStatus } from '@/types/conversation';
 
 interface ConversationWidgetProps {
   agentId: string;
@@ -11,26 +12,36 @@ interface ConversationWidgetProps {
 
 export function ConversationWidget({ agentId }: ConversationWidgetProps) {
   const [transcript, setTranscript] = useState<string>('');
+  const [messages, setMessages] = useState<Message[]>([]);
   const { data: session } = useSession();
   const { toast } = useToast();
   const startTimeRef = useRef<Date | null>(null);
 
   const conversation = useConversation({
     onConnect: () => {
-      startTimeRef.current = new Date(); // Guardamos el tiempo de inicio
+      startTimeRef.current = new Date();
       toast({
         title: 'Conectado',
         description: 'La conversación ha iniciado exitosamente'
       });
     },
-    onDisconnect: () => {
-      toast({
-        title: 'Desconectado',
-        description: 'La conversación ha finalizado'
-      });
-    },
-    onMessage: (msg) => {
+    onMessage: (msg: { message: string; source: Role }) => {
+      const timestamp = new Date();
       setTranscript(prev => `${prev}Agente: ${msg.message}\n`);
+      setMessages(prev => [...prev, {
+        role: msg.source,
+        message: msg.message,
+        timestamp
+      }]);
+    },
+    onUserMessage: (msg: string) => {
+      const timestamp = new Date();
+      setTranscript(prev => `${prev}Usuario: ${msg}\n`);
+      setMessages(prev => [...prev, {
+        role: 'user',
+        message: msg,
+        timestamp
+      }]);
     },
     onError: (err) => {
       toast({
@@ -47,13 +58,6 @@ export function ConversationWidget({ agentId }: ConversationWidgetProps) {
       const endTime = new Date();
       const durationInSeconds = Math.floor((endTime.getTime() - startTime.getTime()) / 1000);
 
-      console.log('Guardando transcripción:', {
-        transcript,
-        userId: session?.user?.id,
-        agentId,
-        duration: durationInSeconds
-      });
-      
       const response = await fetch('/api/transcription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -62,12 +66,17 @@ export function ConversationWidget({ agentId }: ConversationWidgetProps) {
           userId: session?.user?.id,
           agentId,
           duration: durationInSeconds,
-          cost: 0, // Este valor vendría de la API de ElevenLabs
-          status: 'completed',
+          cost: 0, // Por ahora lo dejamos en 0
+          status: 'completed' as ConversationStatus,
+          messages,
           metadata: {
             startedAt: startTime,
             endedAt: endTime,
-            isSpeaking: conversation.isSpeaking,
+            isSpeaking: false, // Por ahora lo dejamos en false
+            systemInfo: {
+              version: '1.0',
+              timestamp: new Date()
+            }
           }
         }),
       });
@@ -109,24 +118,30 @@ export function ConversationWidget({ agentId }: ConversationWidgetProps) {
   }, [conversation, saveTranscript]);
 
   return (
-    <div>
-      <div>
-        <button onClick={startConversation} disabled={conversation.status==='connected'}>
+    <div className="space-y-4">
+      <div className="flex gap-2">
+        <Button 
+          onClick={startConversation} 
+          disabled={conversation.status === 'connected'}
+        >
           Iniciar Conversación
-        </button>
-        <button onClick={stopConversation} disabled={conversation.status!=='connected'}>
+        </Button>
+        <Button 
+          onClick={stopConversation} 
+          disabled={conversation.status !== 'connected'}
+          variant="secondary"
+        >
           Finalizar Conversación
-        </button>
+        </Button>
       </div>
-      <div>
+      <div className="text-sm text-gray-500">
         <p>Estado: {conversation.status}</p>
-        <p>El agente está {conversation.isSpeaking ? 'hablando' : 'escuchando'}</p>
       </div>
       <textarea
-        rows={6}
+        className="w-full h-48 p-2 border rounded"
         readOnly
         value={transcript}
-        placeholder="Transcripción aparecerá aquí..."
+        placeholder="La transcripción aparecerá aquí..."
       />
     </div>
   );
