@@ -15,13 +15,13 @@ export default function HeroSection() {
           {/* Left Content */}
           <div className="space-y-8">
             <div className="space-y-6">
-              <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight">
-                Dream big.
+              <h1 className="text-[58px] leading-[58px] font-normal text-white">
+                Piensa, Automatiza
                 <br />
-                Build fast.
+                Escala
               </h1>
               <p className="text-xl lg:text-2xl text-gray-300 leading-relaxed">
-                The only end-to-end agent builder platform that unites IT & business
+                La agencia de AI que transforma procesos en resultados medibles.
               </p>
             </div>
 
@@ -29,21 +29,20 @@ export default function HeroSection() {
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <ArrowRight className="h-5 w-5 text-white flex-shrink-0" />
-                <span className="text-gray-300">
-                  <strong className="text-white">Collaborative tools</strong> to build, activate, and supervise AI
-                  agents
+                <span className="text-gray-300 font-graphik text-feature-list font-semibold">
+                  <strong className="text-[#d2b3ee]">Chatbots </strong>personalizados que escalan tu atención al cliente
                 </span>
               </div>
               <div className="flex items-center space-x-3">
                 <ArrowRight className="h-5 w-5 text-white flex-shrink-0" />
-                <span className="text-gray-300">
-                  <strong className="text-white">#1 AI research lab</strong> for enterprises with leading LLMs and RAG
+                <span className="text-gray-300 font-graphik text-feature-list font-semibold">
+                  <strong className="text-[#d2b3ee]">Agentes de voz</strong> entienden, responden y venden en tiempo real
                 </span>
               </div>
               <div className="flex items-center space-x-3">
                 <ArrowRight className="h-5 w-5 text-white flex-shrink-0" />
-                <span className="text-gray-300">
-                  <strong className="text-white">Hands-on programs</strong> to train your builders
+                <span className="text-gray-300 font-graphik text-feature-list font-semibold">
+                  <strong className="text-[#d2b3ee]">Software con IA</strong> automatizaciones, herramientas a medida y web Apps inteligentes
                 </span>
               </div>
             </div>
@@ -52,14 +51,13 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 size="lg"
-                className="bg-white text-black hover:bg-gray-100 px-8 py-3 rounded-full font-medium text-lg"
+                className="bg-white text-black hover:bg-gray-100 px-8 py-3 rounded-full font-semibold text-[13px] leading-[24px] font-poppins"
               >
                 Request a demo
               </Button>
               <Button
                 size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-black px-8 py-3 rounded-full font-medium text-lg"
+                className="bg-black text-white border border-white hover:bg-white hover:text-black px-8 py-3 rounded-full font-semibold text-[13px] leading-[24px] font-poppins"
               >
                 Try for free
               </Button>

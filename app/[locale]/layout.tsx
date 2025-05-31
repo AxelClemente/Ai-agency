@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from 'next/font/google';
+import { Inter, Poppins } from 'next/font/google';
 import { AuthProvider } from "@/app/[locale]/components/providers/auth-provider";
 import "@/app/globals.css";
 import { Toaster } from "@/components/ui/toaster"
@@ -7,8 +7,17 @@ import { NextIntlClientProvider } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { metadata as appMetadata } from '@/app/metadata-config';
 
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
+  display: 'swap',
+});
+
 const inter = Inter({
   subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -44,7 +53,7 @@ export default async function RootLayout({
     <html lang={locale}>
       <body
         suppressHydrationWarning={true}
-        className={`${inter.className} antialiased overflow-x-hidden`}
+        className={`${poppins.variable} ${inter.variable} font-poppins antialiased overflow-x-hidden`}
       >
         <NextIntlClientProvider 
           locale={locale}

@@ -11,6 +11,9 @@ export default {
   	extend: {
   		fontFamily: {
   			sans: ['var(--font-open-sans)'],
+  			poppins: ['var(--font-poppins)', 'sans-serif'],
+  			inter: ['var(--font-inter)', 'sans-serif'],
+  			graphik: ['Graphik', 'sans-serif'],
   		},
   		fontSize: {
   			// Headers
@@ -28,6 +31,7 @@ export default {
   			'semi-bold-4': ['14px', { lineHeight: '18px', fontWeight: '600' }],
   			// Regular
   			'body-regular-1': ['18px', { lineHeight: '24px', fontWeight: '400' }],
+  			'feature-list': ['13px', { lineHeight: '21px' }],
   		},
   		colors: {
   			background: 'hsl(var(--background))',
