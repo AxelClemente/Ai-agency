@@ -30,46 +30,41 @@ export default function SignInForm() {
   })
 
   useEffect(() => {
-    console.log('🔄 useEffect triggered:', { 
-      status, 
-      sessionUser: session?.user,
-      currentPath: window.location.pathname + window.location.search
-    })
-    console.log('useEffect - Checking session:', session)
+    // Solo ejecutar si hay una sesión autenticada
     if (status === 'authenticated' && session?.user) {
-      console.log('useEffect - User authenticated:', session.user)
-
-      // Si es ADMIN o STAFF, redirigir directamente al dashboard
-      if (session.user.role === 'ADMIN' || session.user.role === 'STAFF') {
-        console.log('Redirecting ADMIN/STAFF to dashboard')
-        router.push('/business-dashboard')
+      // Verificar si hay una URL de retorno
+      const returnUrl = searchParams.get('returnUrl')
+      
+      // Si no hay rol definido, ir a choose-role
+      if (!session.user.role) {
+        router.push('/auth/choose-role')
         return
       }
 
-      // Si es CUSTOMER, redirigir directamente al customer dashboard
-      if (session.user.role === 'CUSTOMER') {
-        console.log('Redirecting CUSTOMER to customer dashboard')
-        router.push('/customer-dashboard')
-        return
-      }
-
-      // Para otros roles, procedemos con la verificación de location
-      if (session.user.role !== undefined && session.user.location !== undefined) {
-        if (session.user.location) {
-          if (session.user.role === 'BUSINESS') {
-            console.log('Redirecting to business dashboard')
-            router.push('/business-dashboard')
-          } else {
-            console.log('Redirecting to choose role')
-            router.push('/auth/choose-role')
-          }
-        } else {
-          console.log('Redirecting to location')
-          router.push('/auth/location')
+      // Si hay una URL de retorno y el usuario tiene el rol correcto, usar esa
+      if (returnUrl) {
+        if (
+          (returnUrl.includes('customer-dashboard') && session.user.role === 'CUSTOMER') ||
+          (returnUrl.includes('business-dashboard') && session.user.role === 'BUSINESS')
+        ) {
+          router.push(returnUrl)
+          return
         }
       }
+
+      // Si no hay URL de retorno, usar la redirección por defecto según el rol
+      switch (session.user.role) {
+        case 'CUSTOMER':
+          router.push('/customer-dashboard')
+          break
+        case 'BUSINESS':
+          router.push('/business-dashboard')
+          break
+        default:
+          router.push('/auth/choose-role')
+      }
     }
-  }, [session, status, router])
+  }, [session, status, router, searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

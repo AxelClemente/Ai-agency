@@ -18,14 +18,27 @@ export default async function BusinessDashboardLayout({
 }) {
   const session = await getServerSession(authOptions)
   
+  console.log('🔒 Business Dashboard Layout - Session Check:', {
+    hasSession: !!session,
+    userId: session?.user?.id,
+    userRole: session?.user?.role,
+    fullSession: session
+  })
+
   if (!session?.user?.id) {
+    console.log('❌ No session or user ID, redirecting to auth')
     redirect('/auth?mode=signin')
   }
 
   if (session.user?.role !== 'BUSINESS') {
-    console.log('Redirecting: Invalid role', session.user?.role)
-    redirect('/choose-role')
+    console.log('❌ Invalid role:', {
+      currentRole: session.user?.role,
+      expectedRole: 'BUSINESS'
+    })
+    redirect('/auth/choose-role')
   }
+
+  console.log('✅ Access granted to Business Dashboard')
 
   return (
     <div className="flex flex-col w-full min-h-screen">

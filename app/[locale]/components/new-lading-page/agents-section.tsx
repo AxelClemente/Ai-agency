@@ -2,11 +2,12 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function AgentsSection() {
   const [activeTab, setActiveTab] = useState("Sales")
 
-  const tabs = ["Sales", "Marketing", "Operations", "Support"]
+  const tabs = ["Atención al cliente", "Ventas"]
 
   return (
     <section className="py-20 bg-black">
@@ -15,16 +16,16 @@ export default function AgentsSection() {
           {/* Icon */}
           <div className="flex justify-center mb-8">
             <div className="w-12 h-12 grid grid-cols-2 gap-1">
-              <div className="w-5 h-5 bg-white rounded-sm"></div>
-              <div className="w-5 h-5 bg-white rounded-sm"></div>
-              <div className="w-5 h-5 bg-white rounded-sm"></div>
-              <div className="w-5 h-5 bg-white rounded-sm"></div>
+              <div className="w-4 h-4 bg-white rounded-sm"></div>
+              <div className="w-4 h-4 bg-white rounded-sm"></div>
+              <div className="w-4 h-4 bg-white rounded-sm"></div>
+              <div className="w-4 h-4 bg-white rounded-sm"></div>
             </div>
           </div>
 
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">Agents that actually work</h2>
+          <h2 className="text-[40px] font-normal text-white mb-6">Automatiza tu atención al cliente</h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            They know the job, know their limits, and self-orchestrate—without the guesswork.
+            con agentes que interactúan como si fueran parte de tu equipo.
           </p>
         </div>
 
@@ -52,9 +53,11 @@ export default function AgentsSection() {
             <p className="text-gray-300 mb-8">
               Interactive demo content for {activeTab.toLowerCase()} agents would be displayed here.
             </p>
-            <Button className="bg-white text-black hover:bg-gray-100 px-8 py-3 rounded-full font-medium">
-              Explore {activeTab} Agents
-            </Button>
+            <Link href={activeTab === "Atención al cliente" ? "/customer-dashboard/conversation" : "#"}>
+              <Button className="bg-white text-black hover:bg-gray-100 px-8 py-3 rounded-full font-medium">
+                Agente de {activeTab}
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

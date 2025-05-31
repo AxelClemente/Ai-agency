@@ -29,12 +29,12 @@ export default async function Page({
         <HeroSection />
         <TrustedBySection />
         <AgentsSection />
-        <TestimonialsSection />
-        <IndustriesSection />
-        <EmpowermentSection />
-        <CaseStudiesSection />
-        <PlatformSection />
-        <TechnologySection />
+        {/* <TestimonialsSection /> */}
+        {/* <IndustriesSection /> */}
+        {/* <EmpowermentSection /> */}
+        {/* <CaseStudiesSection /> */}
+        {/* <PlatformSection /> */}
+        {/* <TechnologySection /> */}
       </main>
     </div>
   )

@@ -25,7 +25,7 @@ export default async function CustomerDashboardLayout({
   const userRole = session.user?.role
   if (!userRole || userRole !== 'CUSTOMER') {
     console.log('Redirecting: Invalid role', userRole)
-    redirect('/choose-role')
+    redirect('/auth?mode=signin')
   }
 
   return (

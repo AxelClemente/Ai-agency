@@ -54,6 +54,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  conversations Conversation[]
 }
 
 model VerificationToken {
@@ -81,3 +82,14 @@ enum Role {
   ADMIN
 }
 
+model Conversation {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String?  @db.ObjectId
+  callerId    String?  // Número del cliente que llamó (puede venir del sistema__caller_id)
+  callSid     String?  // ID único de la llamada (system__call_sid)
+  transcript  String
+  metadata    Json?    // Para almacenar info útil como duración, idioma, variables extra
+  createdAt   DateTime @default(now())
+
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
