@@ -16,6 +16,7 @@ interface ConversationWidgetProps {
 export function ConversationWidget({ agentId, isPanelOpen, setIsPanelOpen }: ConversationWidgetProps) {
   const [transcript, setTranscript] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
+  const [finalDuration, setFinalDuration] = useState<number>(0);
   const { data: session } = useSession();
   const { toast } = useToast();
   const startTimeRef = useRef<Date | null>(null);
@@ -24,6 +25,7 @@ export function ConversationWidget({ agentId, isPanelOpen, setIsPanelOpen }: Con
     agentId,
     onConnect: () => {
       startTimeRef.current = new Date();
+      console.log('Conversación iniciada en:', startTimeRef.current);
       toast({
         title: 'Conectado',
         description: 'La conversación ha iniciado exitosamente'
@@ -123,18 +125,58 @@ export function ConversationWidget({ agentId, isPanelOpen, setIsPanelOpen }: Con
   }, [conversation, agentId, toast]);
 
   const stopConversation = useCallback(async () => {
-    await conversation.endSession();
-    await saveTranscript();
-    setIsPanelOpen(true);
-  }, [conversation, saveTranscript, setIsPanelOpen]);
+    try {
+      const endTime = new Date();
+      const startTime = startTimeRef.current || endTime;
+      const durationInSeconds = Math.floor((endTime.getTime() - startTime.getTime()) / 1000);
+      
+      setFinalDuration(durationInSeconds);
+      
+      console.log('Duración final calculada:', durationInSeconds);
+      
+      await conversation.endSession();
+      await saveTranscript();
+      
+      toast({
+        title: 'Conversación finalizada',
+        description: 'La conversación se ha guardado exitosamente'
+      });
+      
+      setIsPanelOpen(true);
+      
+    } catch (error) {
+      console.error('Error al finalizar conversación:', error);
+      toast({
+        title: 'Error',
+        description: 'Hubo un problema al finalizar la conversación',
+        variant: 'destructive'
+      });
+    }
+  }, [conversation, saveTranscript, setIsPanelOpen, toast]);
 
   const handleTestPanel = () => {
     setIsPanelOpen(true);
+    toast({
+      title: 'Panel de prueba',
+      description: 'Abriendo panel en modo de prueba'
+    });
   };
 
   const getDuration = () => {
+    if (finalDuration > 0) {
+      console.log('Usando duración final guardada:', finalDuration);
+      return finalDuration;
+    }
+    
     if (!startTimeRef.current) return 0;
-    return Math.floor((new Date().getTime() - startTimeRef.current.getTime()) / 1000);
+    
+    const now = new Date().getTime();
+    const start = startTimeRef.current.getTime();
+    const diffMs = now - start;
+    const diffSeconds = Math.floor(diffMs / 1000);
+    
+    console.log('Calculando duración en tiempo real:', diffSeconds);
+    return diffSeconds;
   };
 
   return (
