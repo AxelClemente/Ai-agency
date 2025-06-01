@@ -53,7 +53,7 @@ export default function AgentsSection() {
             <p className="text-gray-300 mb-8">
               Interactive demo content for {activeTab.toLowerCase()} agents would be displayed here.
             </p>
-            <Link href={activeTab === "Atención al cliente" ? "/customer-dashboard/conversation" : "#"}>
+            <Link href={activeTab === "Atención al cliente" ? "/customer-dashboard" : "#"}>
               <Button className="bg-white text-black hover:bg-gray-100 px-8 py-3 rounded-full font-medium">
                 Agente de {activeTab}
               </Button>
