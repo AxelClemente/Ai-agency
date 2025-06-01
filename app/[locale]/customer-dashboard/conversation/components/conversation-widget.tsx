@@ -5,12 +5,15 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useSession } from 'next-auth/react';
 import { Message, Role, ConversationStatus } from '@/types/conversation';
+import { TranscriptSummaryPanel } from './transcript-summary-panel';
 
 interface ConversationWidgetProps {
   agentId: string;
+  isPanelOpen: boolean;
+  setIsPanelOpen: (open: boolean) => void;
 }
 
-export function ConversationWidget({ agentId }: ConversationWidgetProps) {
+export function ConversationWidget({ agentId, isPanelOpen, setIsPanelOpen }: ConversationWidgetProps) {
   const [transcript, setTranscript] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
   const { data: session } = useSession();
@@ -122,50 +125,79 @@ export function ConversationWidget({ agentId }: ConversationWidgetProps) {
   const stopConversation = useCallback(async () => {
     await conversation.endSession();
     await saveTranscript();
-  }, [conversation, saveTranscript]);
+    setIsPanelOpen(true);
+  }, [conversation, saveTranscript, setIsPanelOpen]);
+
+  const handleTestPanel = () => {
+    setIsPanelOpen(true);
+  };
+
+  const getDuration = () => {
+    if (!startTimeRef.current) return 0;
+    return Math.floor((new Date().getTime() - startTimeRef.current.getTime()) / 1000);
+  };
 
   return (
-    <div className="space-y-4 flex flex-col items-center">
-      <div className="flex justify-center gap-4">
-        <Button 
-          onClick={startConversation} 
-          disabled={conversation.status === 'connected'}
-          className="bg-black hover:bg-gray-800 text-white rounded-full 
-                     px-8 h-12 transition-all duration-200"
-        >
-          Iniciar Conversación
-        </Button>
-        <Button 
-          onClick={stopConversation} 
-          disabled={conversation.status !== 'connected'}
-          variant="outline"
-          className="text-gray-500 hover:text-gray-700 rounded-full 
-                     px-8 h-12 transition-all duration-200 border-gray-300"
-        >
-          Finalizar Conversación
-        </Button>
+    <>
+      <div className="space-y-4 flex flex-col items-center">
+        <div className="flex justify-center gap-4">
+          <Button 
+            onClick={startConversation} 
+            disabled={conversation.status === 'connected'}
+            className="bg-black hover:bg-gray-800 text-white rounded-full 
+                       px-8 h-12 transition-all duration-200"
+          >
+            Iniciar Conversación
+          </Button>
+          <Button 
+            onClick={stopConversation} 
+            disabled={conversation.status !== 'connected'}
+            variant="outline"
+            className="text-gray-500 hover:text-gray-700 rounded-full 
+                       px-8 h-12 transition-all duration-200 border-gray-300"
+          >
+            Finalizar Conversación
+          </Button>
+          <Button 
+            onClick={handleTestPanel}
+            variant="outline"
+            className="text-blue-500 hover:text-blue-700 rounded-full 
+                       px-8 h-12 transition-all duration-200 border-blue-300"
+          >
+            Test
+          </Button>
+        </div>
+
+        <div className="text-sm text-gray-500">
+          <p>Estado: {conversation.status}</p>
+        </div>
+
+        <div className="relative w-full">
+          <textarea
+            className="w-full min-h-[300px] p-6 border rounded-2xl bg-white shadow-sm
+                       focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                       resize-none font-medium text-gray-700"
+            readOnly
+            value={transcript}
+            placeholder="La transcripción aparecerá aquí..."
+          />
+          {conversation.status === 'connected' && (
+            <div className="absolute bottom-4 right-4 flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <span className="text-sm text-gray-500">Escuchando...</span>
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="text-sm text-gray-500">
-        <p>Estado: {conversation.status}</p>
-      </div>
-
-      <div className="relative w-full">
-        <textarea
-          className="w-full min-h-[300px] p-6 border rounded-2xl bg-white shadow-sm
-                     focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                     resize-none font-medium text-gray-700"
-          readOnly
-          value={transcript}
-          placeholder="La transcripción aparecerá aquí..."
-        />
-        {conversation.status === 'connected' && (
-          <div className="absolute bottom-4 right-4 flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-sm text-gray-500">Escuchando...</span>
-          </div>
-        )}
-      </div>
-    </div>
+      <TranscriptSummaryPanel
+        isOpen={isPanelOpen}
+        onClose={() => setIsPanelOpen(false)}
+        transcript={transcript}
+        messages={messages}
+        agentId={agentId}
+        duration={getDuration()}
+      />
+    </>
   );
 }
