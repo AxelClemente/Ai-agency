@@ -1,18 +1,45 @@
+"use client"
+
+import { useState } from "react"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/auth.config"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import Image from "next/image"
 
-export default async function CustomerDashboardPage() {
-  const session = await getServerSession(authOptions)
-  const firstName = session?.user?.name?.split(' ')[0] || 'User'
+export default function CustomerDashboardPage() {
+  const [selectedAgent, setSelectedAgent] = useState<string | null>(null)
 
   const customerMetrics = [
-    { score: "24", label: "Chats", sublabel: "This Month" },
-    { score: "98%", label: "Success", sublabel: "Rate" },
-    { score: "4.9", label: "Rating", sublabel: "Average" },
-    { score: "15m", label: "Time", sublabel: "Per Chat" },
+    { 
+      image: "/images/support.png", 
+      label: "Support", 
+      sublabel: "Atención al cliente",
+      alt: "Agente de soporte",
+      agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID_SUPPORT
+    },
+    { 
+      image: "/images/clinica.png", 
+      label: "Clínica Médica", 
+      sublabel: "Agenda de citas",
+      alt: "Agente médico",
+      agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID_CLINICA
+    },
+    { 
+      image: "/images/hosteleria2.png", 
+      label: "Hostelería", 
+      sublabel: "Pedidos y reservas",
+      alt: "Agente de hostelería",
+      agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID
+    },
+    { 
+      image: "/images/RealState.png", 
+      label: "Real-state", 
+      sublabel: "venta y alquiler",
+      alt: "Agente de e-commerce",
+      agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID_REALSTATE
+    },
   ]
 
   const customerFeatures = [
@@ -36,7 +63,7 @@ export default async function CustomerDashboardPage() {
             Agentes de voz
           </div>
           <h2 className="text-[40px] font-normal text-white">
-            ¿Preparado para el futuro {firstName}?
+            ¿Preparado para el futuro?
           </h2>
         </div>
 
@@ -72,8 +99,12 @@ export default async function CustomerDashboardPage() {
                 ))}
               </div>
 
-              <Link href="/customer-dashboard/conversation">
-                <Button className="bg-transparent border border-gray-600 text-white hover:bg-gray-800 px-6 py-2 rounded-full">
+              <Link href={selectedAgent ? `/customer-dashboard/conversation?agentId=${selectedAgent}` : '#'}>
+                <Button 
+                  className={`bg-transparent border border-gray-600 text-white hover:bg-gray-800 px-6 py-2 rounded-full
+                    ${!selectedAgent ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  disabled={!selectedAgent}
+                >
                   Iniciar nueva conversación
                 </Button>
               </Link>
@@ -82,9 +113,22 @@ export default async function CustomerDashboardPage() {
             {/* Metrics */}
             <div className="grid grid-cols-4 gap-4">
               {customerMetrics.map((metric, index) => (
-                <div key={index} className="text-center">
-                  <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-2">
-                    <span className="text-white font-bold text-lg">{metric.score}</span>
+                <div 
+                  key={index} 
+                  onClick={() => setSelectedAgent(metric.agentId || null)}
+                  className={`text-center cursor-pointer transition-all duration-200
+                    ${selectedAgent === metric.agentId ? 'scale-105' : ''}`}
+                >
+                  <div className={`w-16 h-16 rounded-full overflow-hidden bg-white/10 mx-auto mb-2
+                    ${selectedAgent === metric.agentId ? 'ring-2 ring-purple-500' : ''}`}>
+                    <Image
+                      src={metric.image}
+                      alt={metric.alt}
+                      width={64}
+                      height={64}
+                      className="object-cover w-full h-full"
+                      priority={index < 2}
+                    />
                   </div>
                   <div className="text-white font-semibold text-sm">{metric.label}</div>
                   <div className="text-gray-400 text-xs">{metric.sublabel}</div>
@@ -105,7 +149,7 @@ export default async function CustomerDashboardPage() {
                 </div>
               </div>
 
-              <h3 className="text-2xl font-bold text-white mb-4">Agente de Ventas</h3>
+              <h3 className="text-2xl font-bold text-white mb-4">Agente inmobiliario</h3>
               <p className="text-gray-400 mb-6">
                 Track your conversation history and performance metrics.
               </p>

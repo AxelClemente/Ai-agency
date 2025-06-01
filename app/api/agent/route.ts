@@ -3,7 +3,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
-  const { message } = await req.json()
+  const { message, agentId } = await req.json()
 
   const response = await fetch('https://api.elevenlabs.io/v1/conversational/agents/chat', {
     method: 'POST',
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
       'xi-api-key': process.env.ELEVENLABS_API_KEY || ''
     },
     body: JSON.stringify({
-      agent_id: process.env.ELEVENLABS_AGENT_ID,
+      agent_id: agentId,
       text: message
     })
   })

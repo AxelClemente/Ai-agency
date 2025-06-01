@@ -18,6 +18,7 @@ export function ConversationWidget({ agentId }: ConversationWidgetProps) {
   const startTimeRef = useRef<Date | null>(null);
 
   const conversation = useConversation({
+    agentId,
     onConnect: () => {
       startTimeRef.current = new Date();
       toast({
@@ -31,7 +32,8 @@ export function ConversationWidget({ agentId }: ConversationWidgetProps) {
       setMessages(prev => [...prev, {
         role: msg.source,
         message: msg.message,
-        timestamp
+        timestamp,
+        agentId
       }]);
     },
     onUserMessage: (msg: string) => {
@@ -40,7 +42,8 @@ export function ConversationWidget({ agentId }: ConversationWidgetProps) {
       setMessages(prev => [...prev, {
         role: 'user',
         message: msg,
-        timestamp
+        timestamp,
+        agentId
       }]);
     },
     onError: (err) => {
@@ -63,19 +66,20 @@ export function ConversationWidget({ agentId }: ConversationWidgetProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           transcript,
-          userId: session?.user?.id,
           agentId,
+          userId: session?.user?.id,
           duration: durationInSeconds,
-          cost: 0, // Por ahora lo dejamos en 0
+          cost: 0,
           status: 'completed' as ConversationStatus,
           messages,
           metadata: {
             startedAt: startTime,
             endedAt: endTime,
-            isSpeaking: false, // Por ahora lo dejamos en false
+            isSpeaking: false,
             systemInfo: {
               version: '1.0',
-              timestamp: new Date()
+              timestamp: new Date(),
+              agentId
             }
           }
         }),
@@ -100,20 +104,23 @@ export function ConversationWidget({ agentId }: ConversationWidgetProps) {
     }
   };
 
-  // Iniciar la conversación
   const startConversation = useCallback(async () => {
     try {
-      await navigator.mediaDevices.getUserMedia({ audio: true }); // permisos
-      await conversation.startSession({ agentId });            // ID del agente de dashboard
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      await conversation.startSession({ agentId });
+      console.log('Iniciando conversación con agentId:', agentId);
     } catch (e) {
       console.error('Error al iniciar:', e);
+      toast({
+        title: 'Error',
+        description: 'No se pudo iniciar la conversación',
+        variant: 'destructive'
+      });
     }
-  }, [conversation, agentId]);
+  }, [conversation, agentId, toast]);
 
-  // Detener la conversación
   const stopConversation = useCallback(async () => {
     await conversation.endSession();
-    // Al terminar, guardar la transcripción en la base de datos
     await saveTranscript();
   }, [conversation, saveTranscript]);
 
