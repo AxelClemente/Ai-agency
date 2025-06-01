@@ -5,6 +5,7 @@ import { authOptions } from "@/app/api/auth/auth.config"
 import { Toaster } from 'sonner'
 import { Metadata } from 'next'
 import { metadata as siteMetadata } from '../../metadata-config'
+import Header from "@/app/[locale]/components/new-lading-page/header"
 
 export const metadata: Metadata = {
   title: siteMetadata.client.title,
@@ -29,17 +30,20 @@ export default async function CustomerDashboardLayout({
   }
 
   return (
-    <div className="flex flex-col w-full min-h-screen">
-      <main className="w-full flex-1 mt-16 sm:mt-0">
-        {children}
-      </main>
-      <Toaster 
-        richColors 
-        position="bottom-right"
-        expand={false}
-        closeButton={true}
-      />
-    </div>
+    <>
+      <Header />
+      <div className="flex flex-col w-full min-h-screen">
+        <main className="w-full flex-1 mt-16 sm:mt-0">
+          {children}
+        </main>
+        <Toaster 
+          richColors 
+          position="bottom-right"
+          expand={false}
+          closeButton={true}
+        />
+      </div>
+    </>
   )
 }
 

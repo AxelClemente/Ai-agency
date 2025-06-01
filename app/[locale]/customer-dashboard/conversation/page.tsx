@@ -5,7 +5,9 @@ import { ConversationWidget } from './components/conversation-widget'
 export default function ConversationPage() {
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold mb-6">🎙️ Habla con nuestro agente</h1>
+      <h1 className="text-[40px] font-normal font-poppins mb-6">
+        🎙️ Habla con nuestro agente
+      </h1>
       <p className="mb-4 text-gray-600">
         Usa los controles de abajo para interactuar con nuestro asistente virtual.
       </p>
