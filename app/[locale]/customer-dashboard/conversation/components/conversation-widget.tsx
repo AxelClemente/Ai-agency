@@ -17,6 +17,7 @@ export function ConversationWidget({ agentId, isPanelOpen, setIsPanelOpen }: Con
   const [transcript, setTranscript] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [finalDuration, setFinalDuration] = useState<number>(0);
+  const [conversationId, setConversationId] = useState<string>('');
   const { data: session } = useSession();
   const { toast } = useToast();
   const startTimeRef = useRef<Date | null>(null);
@@ -94,6 +95,9 @@ export function ConversationWidget({ agentId, isPanelOpen, setIsPanelOpen }: Con
         const errorData = await response.json();
         throw new Error(errorData.error || 'Error saving transcript');
       }
+      
+      const savedConversation = await response.json();
+      setConversationId(savedConversation.id);
       
       toast({
         title: 'Conversación guardada',
@@ -239,6 +243,7 @@ export function ConversationWidget({ agentId, isPanelOpen, setIsPanelOpen }: Con
         messages={messages}
         agentId={agentId}
         duration={getDuration()}
+        conversationId={conversationId}
       />
     </>
   );

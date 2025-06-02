@@ -1,9 +1,21 @@
 'use client';
-import { X, Clock, MessageSquare, User, Bot, ShoppingCart, Package, CheckCircle, Brain } from 'lucide-react';
+import { X, Clock,Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Message } from '@/types/conversation';
 import Image from 'next/image';
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  analyzeRestaurantOrder,
+  analyzeSupportTicket,
+  analyzeMedicalAppointment,
+  analyzeRealEstateInquiry,
+  RestaurantAnalysisComponent,
+  SupportAnalysisComponent,
+  MedicalAnalysisComponent,
+  RealEstateAnalysisComponent,
+  BusinessInsight
+} from '../utils/analysis';
 
 interface TranscriptSummaryPanelProps {
   isOpen: boolean;
@@ -12,6 +24,7 @@ interface TranscriptSummaryPanelProps {
   messages: Message[];
   agentId: string;
   duration: number;
+  conversationId: string;
 }
 
 export function TranscriptSummaryPanel({
@@ -20,8 +33,11 @@ export function TranscriptSummaryPanel({
   transcript,
   messages,
   agentId,
-  duration
+  duration,
+  conversationId
 }: TranscriptSummaryPanelProps) {
+  const router = useRouter();
+
   // Deshabilitar scroll cuando el modal está abierto
   useEffect(() => {
     if (isOpen) {
@@ -79,8 +95,8 @@ export function TranscriptSummaryPanel({
   const agentInfo = getAgentInfo(agentId);
 
   // Análisis inteligente por tipo de agente
-  const getBusinessInsights = (agentId: string, transcript: string) => {
-    const agentInsights: Record<string, any> = {
+  const getBusinessInsights = (agentId: string, transcript: string): BusinessInsight => {
+    const agentInsights: Record<string, BusinessInsight> = {
       [process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID || '']: {
         type: 'hosteleria',
         icon: '🍕',
@@ -111,105 +127,31 @@ export function TranscriptSummaryPanel({
       type: 'general',
       icon: '💬',
       title: 'Análisis General',
-      insights: { status: 'Conversación completada', summary: 'Interacción registrada exitosamente' }
-    };
-  };
-
-  // Análisis específico para hostelería
-  const analyzeRestaurantOrder = (transcript: string) => {
-    const lowerTranscript = transcript.toLowerCase();
-    
-    // Detectar productos mencionados
-    const products = [];
-    if (lowerTranscript.includes('pizza')) {
-      if (lowerTranscript.includes('bryan')) products.push('Pizza Bryan');
-      else products.push('Pizza');
-    }
-    if (lowerTranscript.includes('postre')) products.push('Postre');
-    if (lowerTranscript.includes('tarta')) products.push('Tarta de queso');
-    
-    // Detectar modificaciones
-    const modifications = [];
-    if (lowerTranscript.includes('sin cebolla')) modifications.push('Sin cebolla');
-    if (lowerTranscript.includes('sin queso')) modifications.push('Sin queso');
-    if (lowerTranscript.includes('extra')) modifications.push('Ingredientes extra');
-    
-    // Detectar si se completó el pedido
-    const orderCompleted = lowerTranscript.includes('perfecto') || 
-                          lowerTranscript.includes('gracias') || 
-                          lowerTranscript.includes('eso es todo');
-    
-    return {
-      products: products.length > 0 ? products : ['No especificado'],
-      modifications: modifications.length > 0 ? modifications : ['Ninguna'],
-      completed: orderCompleted,
-      summary: `Cliente ${orderCompleted ? 'completó' : 'no completó'} su pedido`
-    };
-  };
-
-  // Análisis específico para soporte
-  const analyzeSupportTicket = (transcript: string) => {
-    const lowerTranscript = transcript.toLowerCase();
-    
-    const issueType = lowerTranscript.includes('problema') ? 'Problema técnico' :
-                     lowerTranscript.includes('ayuda') ? 'Solicitud de ayuda' :
-                     lowerTranscript.includes('información') ? 'Consulta informativa' : 'General';
-    
-    const resolved = lowerTranscript.includes('solucionado') || 
-                    lowerTranscript.includes('gracias') ||
-                    lowerTranscript.includes('perfecto');
-    
-    return {
-      issueType,
-      status: resolved ? 'Resuelto' : 'En proceso',
-      priority: lowerTranscript.includes('urgente') ? 'Alta' : 'Normal',
-      summary: `Ticket de ${issueType.toLowerCase()} ${resolved ? 'resuelto' : 'pendiente'}`
-    };
-  };
-
-  // Análisis específico para clínica
-  const analyzeMedicalAppointment = (transcript: string) => {
-    const lowerTranscript = transcript.toLowerCase();
-    
-    const appointmentBooked = lowerTranscript.includes('cita') && 
-                             (lowerTranscript.includes('confirmar') || lowerTranscript.includes('agendar'));
-    
-    const specialty = lowerTranscript.includes('general') ? 'Medicina General' :
-                     lowerTranscript.includes('cardio') ? 'Cardiología' :
-                     lowerTranscript.includes('dermato') ? 'Dermatología' : 'General';
-    
-    return {
-      appointmentBooked,
-      specialty,
-      urgency: lowerTranscript.includes('urgente') ? 'Urgente' : 'Normal',
-      summary: `${appointmentBooked ? 'Cita agendada' : 'Consulta informativa'} - ${specialty}`
-    };
-  };
-
-  // Análisis específico para inmobiliario
-  const analyzeRealEstateInquiry = (transcript: string) => {
-    const lowerTranscript = transcript.toLowerCase();
-    
-    const propertyType = lowerTranscript.includes('casa') ? 'Casa' :
-                        lowerTranscript.includes('apartamento') ? 'Apartamento' :
-                        lowerTranscript.includes('local') ? 'Local comercial' : 'No especificado';
-    
-    const transactionType = lowerTranscript.includes('venta') ? 'Venta' :
-                           lowerTranscript.includes('alquiler') ? 'Alquiler' : 'Consulta general';
-    
-    const interested = lowerTranscript.includes('interesa') || 
-                      lowerTranscript.includes('visita') ||
-                      lowerTranscript.includes('ver');
-    
-    return {
-      propertyType,
-      transactionType,
-      interested,
-      summary: `Consulta sobre ${propertyType.toLowerCase()} en ${transactionType.toLowerCase()}`
+      insights: { completed: true, summary: 'Interacción registrada exitosamente' }
     };
   };
 
   const businessData = getBusinessInsights(agentId, transcript);
+
+  // Renderizar componente específico de análisis
+  const renderAnalysisComponent = () => {
+    switch (businessData.type) {
+      case 'hosteleria':
+        return <RestaurantAnalysisComponent insights={businessData.insights as any} />;
+      case 'support':
+        return <SupportAnalysisComponent insights={businessData.insights as any} />;
+      case 'medical':
+        return <MedicalAnalysisComponent insights={businessData.insights as any} />;
+      case 'realstate':
+        return <RealEstateAnalysisComponent insights={businessData.insights as any} />;
+      default:
+        return <div className="text-sm text-gray-600">Análisis no disponible</div>;
+    }
+  };
+
+  const handleViewFullAnalysis = () => {
+    router.push('/customer-dashboard/dashboard-customer-panel/analytics');
+  };
 
   return (
     <>
@@ -281,33 +223,7 @@ export function TranscriptSummaryPanel({
               </div>
               
               {/* Renderizado específico por tipo de agente */}
-              {businessData.type === 'hosteleria' && (
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <ShoppingCart className="h-5 w-5 text-orange-600 mt-0.5" />
-                    <div>
-                      <span className="text-sm font-medium text-gray-900">Productos solicitados:</span>
-                      <p className="text-sm text-gray-700 mt-1">{businessData.insights.products.join(', ')}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Package className="h-5 w-5 text-blue-600 mt-0.5" />
-                    <div>
-                      <span className="text-sm font-medium text-gray-900">Modificaciones:</span>
-                      <p className="text-sm text-gray-700 mt-1">{businessData.insights.modifications.join(', ')}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <CheckCircle className={`h-5 w-5 mt-0.5 ${businessData.insights.completed ? 'text-green-600' : 'text-gray-400'}`} />
-                    <div>
-                      <span className="text-sm font-medium text-gray-900">Estado del pedido:</span>
-                      <p className={`text-sm font-medium mt-1 ${businessData.insights.completed ? 'text-green-600' : 'text-orange-600'}`}>
-                        {businessData.insights.completed ? '✅ Pedido Completado' : '⏳ Pedido Incompleto'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {renderAnalysisComponent()}
 
               {/* Resumen automático - más prominente */}
               <div className="mt-6 p-4 bg-white/80 rounded-lg border border-purple-100">
@@ -391,6 +307,7 @@ export function TranscriptSummaryPanel({
             <Button 
               variant="outline"
               className="w-full border-purple-200 text-purple-700 hover:bg-purple-50"
+              onClick={handleViewFullAnalysis}
             >
               📊 Ver Análisis Completo
             </Button>

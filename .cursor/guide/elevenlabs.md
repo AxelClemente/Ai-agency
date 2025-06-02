@@ -147,6 +147,8 @@ user User @relation(fields: [userId], references: [id])
 - [x] Análisis específico por agente
 - [x] Control de duración preciso
 - [x] UX mejorada con animaciones
+- [ ] Highlight de palabras clave en el resumen de la transcripción del panel lateral
+
 
 ### Fase 2: Integración con IA 🚀 PRÓXIMO
 - [ ] Integrar OpenAI/Claude para análisis semántico
@@ -178,7 +180,60 @@ Transcripción → Preprocesamiento → Análisis IA → Insights → Dashboard
 - Recomendaciones de mejora automáticas
 
 ---
+A implementar inmediatamente:
 
-**Última actualización**: Diciembre 2024
-**Estado**: Panel inteligente implementado, listo para integración IA
-**Próximo milestone**: Integración OpenAI para análisis semántico
+🎯:
+Flujo actual: Conversación → Panel resumen → Botón "Ver Análisis Completo"
+Nuevo flujo: Botón redirige → Dashboard individual de esa conversación
+Dashboard muestra: Análisis programático + botón "Analizar con IA"
+IA analiza: Transcripción → Conclusiones inteligentes
+Guardar: Análisis programático + conclusiones IA → Base de datos
+Recuperar: Futuras visitas muestran análisis guardado
+📋 Plan de implementación:
+1. Crear modelo de datos
+2. Modificar botón en TranscriptSummaryPanel
+Cambiar "Ver Análisis Completo" → router.push(/analysis/${conversationId})
+Pasar conversationId como prop al panel
+3. Crear página de dashboard individual
+Ruta: /analysis/[conversationId]/page.tsx
+Server Component que fetch conversation + analysis (si existe)
+4. Diseñar dashboard layout
+Sección 1: Info básica (duración, agente, fecha)
+Sección 2: Análisis programático (mismo que panel actual)
+Sección 3: Análisis IA (vacío inicialmente)
+Botón: "Analizar con IA" (solo si no existe aiInsights)
+5. Crear API para análisis IA
+Endpoint: /api/conversation/[id]/ai-analysis
+Recibe conversationId → fetch transcript → prompt OpenAI → save result
+6. Implementar botón "Analizar con IA"
+onClick → POST a API → loading state → refresh página
+Mostrar conclusiones IA una vez guardadas
+7. Sistema de persistencia
+Al cargar dashboard: verificar si existe analysis guardado
+Si existe → mostrar ambos análisis
+Si no existe → mostrar solo programático + botón IA
+8. Opciones de gestión
+Botón "Eliminar análisis" (opcional)
+Timestamp "Analizado el X fecha"
+┌─────────────────────────────────────┐
+│ 📊 Análisis de Conversación         │
+├─────────────────────────────────────┤
+│ ⏱️ Duración: 3:45                   │
+│ 🤖 Agente: Hostelería               │
+│ 📅 Fecha: 15 Dic 2024               │
+├─────────────────────────────────────┤
+│ 🔍 Análisis Programático            │
+│ • Productos: Pizza Bryan, Postre    │
+│ • Estado: Pedido Completado         │
+├─────────────────────────────────────┤
+│ 🧠 Análisis Inteligente             │
+│ [Analizar con IA] ← si no existe    │
+│ • Conclusiones IA aquí ← si existe  │
+└─────────────────────────────────────┘
+
+ Ventajas de este enfoque:
+✅ Rápido de implementar
+✅ Fácil de demostrar
+✅ Base sólida para features futuras
+✅ Costo controlado (análisis bajo demanda)
+✅ UX clara y directa

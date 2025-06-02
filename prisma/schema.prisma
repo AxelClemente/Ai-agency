@@ -99,6 +99,22 @@ model Conversation {
   
   user        User     @relation(fields: [userId], references: [id])
   
+  analysis    ConversationAnalysis?
+  
   @@index([userId])
   @@index([agentId])
+}
+
+model ConversationAnalysis {
+  id              String   @id @default(cuid())
+  conversationId  String   @unique @db.ObjectId
+  programmaticData Json    // análisis actual (productos, estado, etc)
+  aiInsights      Json?    // conclusiones IA (opcional)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relación con conversación
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  @@index([conversationId])
 }
