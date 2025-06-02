@@ -13,32 +13,21 @@ export const metadata: Metadata = {
   description: "AI-powered call recording analysis platform",
 }
 
-export default function RootLayout({
+export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <SidebarProvider>
-            <div className="flex h-screen w-full">
-              <aside className="w-64 border-r border-border bg-sidebar-background">
-                <AppSidebar />
-              </aside>
-              <main className="flex-1 overflow-auto">
-                {children}
-              </main>
-            </div>
-          </SidebarProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+    <SidebarProvider>
+      <div className="flex h-screen w-full">
+        <aside className="w-64 border-r border-border bg-sidebar-background">
+          <AppSidebar />
+        </aside>
+        <main className="flex-1 overflow-auto">
+          {children}
+        </main>
+      </div>
+    </SidebarProvider>
   )
 }

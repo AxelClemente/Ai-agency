@@ -46,4 +46,52 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const conversationId = searchParams.get('conversationId');
+    const userId = searchParams.get('userId');
+
+    if (!conversationId || !userId) {
+      return NextResponse.json(
+        { error: 'conversationId y userId son requeridos' },
+        { status: 400 }
+      );
+    }
+
+    // Verificar que la conversación pertenece al usuario
+    const conversation = await prisma.conversation.findFirst({
+      where: {
+        id: conversationId,
+        userId: userId
+      }
+    });
+
+    if (!conversation) {
+      return NextResponse.json(
+        { error: 'Conversación no encontrada o no autorizada' },
+        { status: 404 }
+      );
+    }
+
+    // Eliminar la conversación
+    await prisma.conversation.delete({
+      where: {
+        id: conversationId
+      }
+    });
+
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Conversación eliminada correctamente' 
+    });
+  } catch (error) {
+    console.error('Error al eliminar conversación:', error);
+    return NextResponse.json(
+      { error: 'Error interno del servidor' },
+      { status: 500 }
+    );
+  }
 } 

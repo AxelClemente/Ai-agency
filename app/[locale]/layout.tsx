@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Inter, Poppins } from 'next/font/google';
 import { AuthProvider } from "@/app/[locale]/components/providers/auth-provider";
 import "@/app/globals.css";
-import { Toaster } from "@/components/ui/toaster"
 import { NextIntlClientProvider } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { metadata as appMetadata } from '@/app/metadata-config';
+import { Toaster } from "sonner"
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -63,7 +63,7 @@ export default async function RootLayout({
           <AuthProvider>
             {children}
           </AuthProvider>
-          <Toaster />
+          <Toaster position="bottom-right" richColors closeButton />
         </NextIntlClientProvider>
       </body>
     </html>

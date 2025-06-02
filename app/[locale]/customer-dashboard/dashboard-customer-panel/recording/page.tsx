@@ -17,7 +17,8 @@ import { Badge } from "@/components/ui/badge"
 import { DashboardHeader } from "../components/dashboard-header"
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { useToast } from '@/components/ui/use-toast'
+import { TranscriptionModal } from './modal/transcription-modal'
+import { toast } from "sonner"
 
 interface Conversation {
   id: string;
@@ -35,8 +36,9 @@ interface Conversation {
 export default function RecordingsPage() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  const [isTranscriptionModalOpen, setIsTranscriptionModalOpen] = useState(false);
   const { data: session } = useSession();
-  const { toast } = useToast();
 
   useEffect(() => {
     async function fetchConversations() {
@@ -49,18 +51,14 @@ export default function RecordingsPage() {
         if (data.success) {
           setConversations(data.conversations);
         } else {
-          toast({
-            title: 'Error',
-            description: 'No se pudieron cargar las conversaciones',
-            variant: 'destructive'
+          toast("No se pudieron cargar las conversaciones", {
+            description: "Hubo un error al intentar cargar las conversaciones"
           });
         }
       } catch (error) {
         console.error('Error fetching conversations:', error);
-        toast({
-          title: 'Error',
-          description: 'Error al cargar las conversaciones',
-          variant: 'destructive'
+        toast("Error al cargar las conversaciones", {
+          description: "Hubo un error al intentar cargar las conversaciones"
         });
       } finally {
         setIsLoading(false);
@@ -88,6 +86,70 @@ export default function RecordingsPage() {
       [process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID_REALSTATE || '']: 'Inmobiliario'
     };
     return agentMap[agentId] || 'Agente Desconocido';
+  };
+
+  const handleViewTranscription = (conversation: Conversation) => {
+    setSelectedConversation(conversation);
+    setIsTranscriptionModalOpen(true);
+  };
+
+  const handleCloseTranscription = () => {
+    setIsTranscriptionModalOpen(false);
+    setSelectedConversation(null);
+  };
+
+  const handleDeleteConversation = async (conversationId: string) => {
+    console.log('🔥 handleDeleteConversation called with:', conversationId);
+    
+    if (!session?.user?.id) {
+      console.log('❌ No session or user ID');
+      return;
+    }
+
+    console.log('✅ Session found, showing toast confirmation');
+    
+    toast('¿Estás seguro de que quieres eliminar esta conversación?', {
+      duration: Infinity,
+      description: 'Esta acción no se puede deshacer.',
+      action: {
+        label: 'Eliminar',
+        onClick: async () => {
+          try {
+            const response = await fetch(
+              `/api/conversations?conversationId=${conversationId}&userId=${session.user.id}`,
+              { method: 'DELETE' }
+            );
+
+            const data = await response.json();
+            console.log('📡 API response:', data);
+
+            if (data.success) {
+              setConversations(prev => 
+                prev.filter(conv => conv.id !== conversationId)
+              );
+              toast("Conversación eliminada correctamente", {
+                description: "La conversación ha sido eliminada exitosamente"
+              });
+            } else {
+              toast("Error al eliminar la conversación", {
+                description: "No se pudo eliminar la conversación"
+              });
+            }
+          } catch (error) {
+            console.error('💥 Error deleting conversation:', error);
+            toast("Error al eliminar la conversación", {
+              description: "Ocurrió un error inesperado"
+            });
+          }
+        }
+      },
+      cancel: {
+        label: 'Cancelar',
+        onClick: () => {
+          console.log('❌ Delete cancelled');
+        }
+      }
+    });
   };
 
   if (isLoading) {
@@ -209,11 +271,21 @@ export default function RecordingsPage() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>View Analysis</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleViewTranscription(conversation)}>
+                              Transcription
+                            </DropdownMenuItem>
                             <DropdownMenuItem>Download Recording</DropdownMenuItem>
                             <DropdownMenuItem>Share</DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                            <DropdownMenuItem 
+                              className="text-destructive"
+                              onSelect={(e) => {
+                                console.log('🖱️ Delete button clicked for conversation:', conversation.id);
+                                handleDeleteConversation(conversation.id);
+                              }}
+                            >
+                              Delete
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>
@@ -224,6 +296,14 @@ export default function RecordingsPage() {
             </TableBody>
           </Table>
         </div>
+        {/* Modal de Transcripción */}
+        {selectedConversation && (
+          <TranscriptionModal
+            isOpen={isTranscriptionModalOpen}
+            onClose={handleCloseTranscription}
+            conversation={selectedConversation}
+          />
+        )}
       </div>
     </div>
   )
