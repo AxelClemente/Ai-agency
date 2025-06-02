@@ -32,33 +32,35 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <div className="flex items-center space-x-1 text-white hover:text-gray-300 cursor-pointer">
-              <span>Product</span>
+              <span>Productos</span>
               <ChevronDown className="h-4 w-4" />
             </div>
             <div className="flex items-center space-x-1 text-white hover:text-gray-300 cursor-pointer">
-              <span>Solutions</span>
+              <span>Servicios</span>
               <ChevronDown className="h-4 w-4" />
             </div>
             <Link href="/research" className="text-white hover:text-gray-300">
-              Research
+              Precios
             </Link>
             <Link href="/pricing" className="text-white hover:text-gray-300">
-              Pricing
+              About
             </Link>
             <Link href="/customers" className="text-white hover:text-gray-300">
-              Customers
+              Blog
             </Link>
             <div className="flex items-center space-x-1 text-white hover:text-gray-300 cursor-pointer">
-              <span>Resources</span>
+              <span>Idiomas</span>
               <ChevronDown className="h-4 w-4" />
             </div>
           </nav>
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full font-medium">
-              Request a demo
-            </Button>
+            <Link href={`/${currentLocale}/customer-dashboard`}>
+              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full font-medium">
+                Solicita una demo
+              </Button>
+            </Link>
             {session ? (
               <Button 
                 variant="ghost" 
@@ -112,9 +114,11 @@ export default function Header() {
               <ChevronDown className="h-4 w-4" />
             </div>
             <div className="pt-4 space-y-4">
-              <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-full">
-                Request a demo
-              </Button>
+              <Link href={`/${currentLocale}/customer-dashboard`}>
+                <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-full">
+                  Solicita una demo
+                </Button>
+              </Link>
               {session ? (
                 <Button 
                   variant="ghost"

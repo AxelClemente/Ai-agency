@@ -2,11 +2,14 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Play, ArrowRight } from "lucide-react"
+import { useLocale } from "next-intl"
 
 export default function HeroSection() {
   const [isPlaying, setIsPlaying] = useState(false)
+  const locale = useLocale()
 
   return (
     <section className="relative overflow-hidden bg-black">
@@ -49,18 +52,22 @@ export default function HeroSection() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                className="bg-white text-black hover:bg-gray-100 px-8 py-3 rounded-full font-semibold text-[13px] leading-[24px] font-poppins"
-              >
-                Request a demo
-              </Button>
-              <Button
-                size="lg"
-                className="bg-black text-white border border-white hover:bg-white hover:text-black px-8 py-3 rounded-full font-semibold text-[13px] leading-[24px] font-poppins"
-              >
-                Try for free
-              </Button>
+              <Link href={`/${locale}/customer-dashboard`}>
+                <Button
+                  size="lg"
+                  className="bg-white text-black hover:bg-gray-100 px-8 py-3 rounded-full font-semibold text-[13px] leading-[24px] font-poppins w-full sm:w-auto"
+                >
+                  Solicita una demo
+                </Button>
+              </Link>
+              <Link href={`/${locale}/customer-dashboard`}>
+                <Button
+                  size="lg"
+                  className="bg-black text-white border border-white hover:bg-white hover:text-black px-8 py-3 rounded-full font-semibold text-[13px] leading-[24px] font-poppins w-full sm:w-auto"
+                >
+                  Pruebalo gratis
+                </Button>
+              </Link>
             </div>
           </div>
 

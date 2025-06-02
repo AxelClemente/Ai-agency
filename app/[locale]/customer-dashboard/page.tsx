@@ -49,9 +49,9 @@ export default function CustomerDashboardPage() {
   ]
 
   const analyticsFeatures = [
-    "Real-time conversation tracking and analytics",
-    "Detailed insights into customer interactions",
-    "Performance metrics and improvement suggestions",
+    "Conectamos tu agente a sistemas como CRMs o herramientas de gestión para acceder fácilmente a datos como pedidos, suscripciones activas y más.",
+    "Nuestro bot puede realizar acciones como actualizar la dirección de un cliente, modificar una suscripción o registrar una solicitud, todo desde la conversación.",
+    "Visualiza estadísticas detalladas sobre el rendimiento del bot, identificamos puntos de mejora y optimizamos la experiencia del cliente con datos claros y útiles.",
   ]
 
   return (
@@ -149,10 +149,9 @@ export default function CustomerDashboardPage() {
                 </div>
               </div>
 
-              <h3 className="text-2xl font-bold text-white mb-4">Agente inmobiliario</h3>
+              <h3 className="text-2xl font-bold text-white mb-4">Chatbots</h3>
               <p className="text-gray-400 mb-6">
-                Track your conversation history and performance metrics.
-              </p>
+              Tus clientes resuelven dudas y realizan acciones fácilmente mediante un chat inteligente.              </p>
 
               {/* Features */}
               <div className="space-y-3 mb-8">
@@ -165,7 +164,7 @@ export default function CustomerDashboardPage() {
               </div>
 
               <Button className="bg-transparent border border-gray-600 text-white hover:bg-gray-800 px-6 py-2 rounded-full">
-                View Analytics
+                Probar demo
               </Button>
             </div>
 

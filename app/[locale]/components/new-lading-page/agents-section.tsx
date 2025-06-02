@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
 export default function AgentsSection() {
-  const [activeTab, setActiveTab] = useState("Sales")
+  const [activeTab, setActiveTab] = useState("Agentes de voz")
 
-  const tabs = ["Atención al cliente", "Ventas"]
+  const tabs = ["Agentes de voz", "Chatbots"]
 
   return (
     <section className="py-20 bg-black">
@@ -23,7 +23,7 @@ export default function AgentsSection() {
             </div>
           </div>
 
-          <h2 className="text-[40px] font-normal text-white mb-6">Automatiza tu atención al cliente</h2>
+          <h2 className="text-[40px] font-normal text-white mb-6">Atención al cliente 100% Automatizada</h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
             con agentes que interactúan como si fueran parte de tu equipo.
           </p>
@@ -49,13 +49,13 @@ export default function AgentsSection() {
         {/* Tab Content */}
         <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-3xl p-8 lg:p-12 min-h-[400px] flex items-center justify-center">
           <div className="text-center">
-            <h3 className="text-2xl font-bold text-white mb-4">{activeTab} Agent Demo</h3>
+            <h3 className="text-2xl font-bold text-white mb-4">{activeTab}</h3>
             <p className="text-gray-300 mb-8">
-              Interactive demo content for {activeTab.toLowerCase()} agents would be displayed here.
+              Interactive demo content for {activeTab.toLowerCase()} 
             </p>
-            <Link href={activeTab === "Atención al cliente" ? "/customer-dashboard" : "#"}>
+            <Link href={`/customer-dashboard`}>
               <Button className="bg-white text-black hover:bg-gray-100 px-8 py-3 rounded-full font-medium">
-                Agente de {activeTab}
+                {activeTab === "Agentes de voz" ? "Probar Agentes" : "Probar Chatbots"}
               </Button>
             </Link>
           </div>
