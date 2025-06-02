@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -13,8 +15,94 @@ import {
 import { ChevronDown, Download, FileAudio, Filter, MoreHorizontal, Play, Search, SlidersHorizontal } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { DashboardHeader } from "../components/dashboard-header"
+import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
+import { useToast } from '@/components/ui/use-toast'
+
+interface Conversation {
+  id: string;
+  agentId: string;
+  duration: number;
+  status: string;
+  startedAt: string;
+  endedAt: string;
+  createdAt: string;
+  cost: number;
+  transcript: string;
+  messages: any[];
+}
 
 export default function RecordingsPage() {
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { data: session } = useSession();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    async function fetchConversations() {
+      if (!session?.user?.id) return;
+
+      try {
+        const response = await fetch(`/api/conversations?userId=${session.user.id}`);
+        const data = await response.json();
+
+        if (data.success) {
+          setConversations(data.conversations);
+        } else {
+          toast({
+            title: 'Error',
+            description: 'No se pudieron cargar las conversaciones',
+            variant: 'destructive'
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching conversations:', error);
+        toast({
+          title: 'Error',
+          description: 'Error al cargar las conversaciones',
+          variant: 'destructive'
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchConversations();
+  }, [session?.user?.id, toast]);
+
+  const formatDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('es-ES');
+  };
+
+  const getAgentName = (agentId: string) => {
+    const agentMap: Record<string, string> = {
+      [process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID_SUPPORT || '']: 'Soporte',
+      [process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID_CLINICA || '']: 'Clínica Médica',
+      [process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID || '']: 'Hostelería',
+      [process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID_REALSTATE || '']: 'Inmobiliario'
+    };
+    return agentMap[agentId] || 'Agente Desconocido';
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col">
+        <DashboardHeader />
+        <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+          <div className="flex items-center justify-center h-64">
+            <p>Cargando conversaciones...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col">
       <DashboardHeader />
@@ -46,10 +134,10 @@ export default function RecordingsPage() {
                 <DropdownMenuLabel>Filter by</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuCheckboxItem checked>All Recordings</DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Customer Support</DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Technical Support</DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Sales Calls</DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Billing Inquiries</DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem>Soporte</DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem>Clínica Médica</DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem>Hostelería</DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem>Inmobiliario</DropdownMenuCheckboxItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <DropdownMenu>
@@ -79,64 +167,60 @@ export default function RecordingsPage() {
                 <TableHead>Date</TableHead>
                 <TableHead>Duration</TableHead>
                 <TableHead>Agent</TableHead>
-                <TableHead>Adherence</TableHead>
-                <TableHead>Sentiment</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {recordings.map((recording) => (
-                <TableRow key={recording.id}>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center space-x-2">
-                      <FileAudio className="h-4 w-4 text-primary" />
-                      <span>{recording.title}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{recording.date}</TableCell>
-                  <TableCell>{recording.duration}</TableCell>
-                  <TableCell>{recording.agent}</TableCell>
-                  <TableCell>
-                    <Badge variant={getAdherenceBadgeVariant(recording.adherence)}>{recording.adherence}%</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        recording.sentiment === "Positive"
-                          ? "default"
-                          : recording.sentiment === "Neutral"
-                            ? "secondary"
-                            : "destructive"
-                      }
-                    >
-                      {recording.sentiment}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end space-x-1">
-                      <Button variant="ghost" size="icon">
-                        <Play className="h-4 w-4" />
-                      </Button>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>View Analysis</DropdownMenuItem>
-                          <DropdownMenuItem>Download Recording</DropdownMenuItem>
-                          <DropdownMenuItem>Share</DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
+              {conversations.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8">
+                    No hay conversaciones disponibles
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                conversations.map((conversation) => (
+                  <TableRow key={conversation.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center space-x-2">
+                        <FileAudio className="h-4 w-4 text-primary" />
+                        <span>Conversación #{conversation.id.slice(-8)}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{formatDate(conversation.startedAt)}</TableCell>
+                    <TableCell>{formatDuration(conversation.duration)}</TableCell>
+                    <TableCell>{getAgentName(conversation.agentId)}</TableCell>
+                    <TableCell>
+                      <Badge variant="default">
+                        Completed
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end space-x-1">
+                        <Button variant="ghost" size="icon">
+                          <Play className="h-4 w-4" />
+                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>View Analysis</DropdownMenuItem>
+                            <DropdownMenuItem>Download Recording</DropdownMenuItem>
+                            <DropdownMenuItem>Share</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
@@ -144,84 +228,3 @@ export default function RecordingsPage() {
     </div>
   )
 }
-
-function getAdherenceBadgeVariant(adherence: number) {
-  if (adherence >= 90) return "default"
-  if (adherence >= 75) return "secondary"
-  return "destructive"
-}
-
-const recordings = [
-  {
-    id: "rec-001",
-    title: "Customer Support Call #1234",
-    date: "2023-05-15",
-    duration: "4:32",
-    agent: "John Smith",
-    adherence: 92,
-    sentiment: "Positive",
-  },
-  {
-    id: "rec-002",
-    title: "Technical Support #5678",
-    date: "2023-05-14",
-    duration: "8:15",
-    agent: "Sarah Johnson",
-    adherence: 85,
-    sentiment: "Neutral",
-  },
-  {
-    id: "rec-003",
-    title: "Billing Inquiry #9012",
-    date: "2023-05-13",
-    duration: "3:45",
-    agent: "Michael Brown",
-    adherence: 68,
-    sentiment: "Negative",
-  },
-  {
-    id: "rec-004",
-    title: "Sales Call #3456",
-    date: "2023-05-12",
-    duration: "6:20",
-    agent: "Emily Davis",
-    adherence: 94,
-    sentiment: "Positive",
-  },
-  {
-    id: "rec-005",
-    title: "Customer Complaint #7890",
-    date: "2023-05-11",
-    duration: "5:45",
-    agent: "David Wilson",
-    adherence: 72,
-    sentiment: "Negative",
-  },
-  {
-    id: "rec-006",
-    title: "Product Inquiry #2345",
-    date: "2023-05-10",
-    duration: "4:10",
-    agent: "Jennifer Lee",
-    adherence: 88,
-    sentiment: "Neutral",
-  },
-  {
-    id: "rec-007",
-    title: "Technical Support #6789",
-    date: "2023-05-09",
-    duration: "7:30",
-    agent: "Robert Taylor",
-    adherence: 90,
-    sentiment: "Positive",
-  },
-  {
-    id: "rec-008",
-    title: "Sales Follow-up #0123",
-    date: "2023-05-08",
-    duration: "3:25",
-    agent: "Amanda Clark",
-    adherence: 95,
-    sentiment: "Positive",
-  },
-]
