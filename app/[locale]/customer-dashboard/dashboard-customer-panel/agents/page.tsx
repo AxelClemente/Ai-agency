@@ -3,13 +3,22 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardHeader } from "../components/dashboard-header"
-import { Download, Search, SlidersHorizontal, UserPlus, MoreHorizontal } from "lucide-react"
+import { Download, Search, SlidersHorizontal, UserPlus, MoreHorizontal, Settings } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useToast } from '@/components/ui/use-toast'
+import { EditAgentModal } from './components/edit-agent-modal'
 
 interface AgentWithStats {
   id: string;
@@ -24,12 +33,26 @@ interface AgentWithStats {
 export default function AgentsPage() {
   const [agents, setAgents] = useState<AgentWithStats[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedAgent, setSelectedAgent] = useState<AgentWithStats | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [agentConfig, setAgentConfig] = useState<any>(null);
+  const [isLoadingConfig, setIsLoadingConfig] = useState(false);
   const { data: session } = useSession();
   const { toast } = useToast();
+
+  console.log('🏠 AgentsPage - Current state:', {
+    agentsCount: agents.length,
+    isLoading,
+    selectedAgent: selectedAgent?.id,
+    isEditModalOpen,
+    hasConfig: !!agentConfig
+  });
 
   useEffect(() => {
     async function fetchAgentStats() {
       if (!session?.user?.id) return;
+
+      console.log('📡 Fetching agent stats for user:', session.user.id);
 
       try {
         const response = await fetch(`/api/agent/stats?userId=${session.user.id}`);
@@ -39,10 +62,13 @@ export default function AgentsPage() {
         }
         
         const data = await response.json();
+        console.log('📡 Agent stats response:', data);
 
         if (data.success) {
           setAgents(data.agents);
+          console.log('✅ Agents loaded:', data.agents.length);
         } else {
+          console.error('❌ Failed to load agents:', data.error);
           toast({
             title: 'Error',
             description: data.error || 'No se pudieron cargar los agentes',
@@ -50,7 +76,7 @@ export default function AgentsPage() {
           });
         }
       } catch (error) {
-        console.error('Error fetching agent stats:', error);
+        console.error('💥 Error fetching agent stats:', error);
         toast({
           title: 'Error',
           description: 'Error al cargar las estadísticas de agentes',
@@ -63,6 +89,51 @@ export default function AgentsPage() {
 
     fetchAgentStats();
   }, [session?.user?.id, toast]);
+
+  const handleEditAgent = async (agent: AgentWithStats) => {
+    console.log('✏️ Edit agent clicked:', agent);
+    setSelectedAgent(agent);
+    setIsLoadingConfig(true);
+    
+    try {
+      console.log('📡 Fetching agent config for:', agent.id);
+      const response = await fetch(`/api/agents/${agent.id}`);
+      const data = await response.json();
+
+      console.log('📡 Agent config response:', data);
+
+      if (data.success && data.agent) {
+        setAgentConfig(data.agent);
+        setIsEditModalOpen(true);
+        console.log('✅ Config loaded, opening modal');
+      } else {
+        console.error('❌ Failed to load agent config:', data.error);
+        toast({
+          title: 'Error',
+          description: data.error || 'No se pudo cargar la configuración del agente',
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
+      console.error('💥 Error fetching agent config:', error);
+      toast({
+        title: 'Error',
+        description: 'Error al cargar la configuración del agente',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsLoadingConfig(false);
+    }
+  };
+
+  const handleCloseEditModal = () => {
+    console.log('🚪 Closing edit modal');
+    setIsEditModalOpen(false);
+    setTimeout(() => {
+      setSelectedAgent(null);
+      setAgentConfig(null);
+    }, 100);
+  };
 
   const totalAgents = agents.length;
   const totalCalls = agents.reduce((sum, agent) => sum + agent.calls, 0);
@@ -194,9 +265,25 @@ export default function AgentsPage() {
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem 
+                                onClick={() => handleEditAgent(agent)}
+                                className="cursor-pointer"
+                                disabled={isLoadingConfig}
+                              >
+                                <Settings className="mr-2 h-4 w-4" />
+                                {isLoadingConfig ? 'Cargando...' : 'Edit'}
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </TableCell>
                       </TableRow>
                     ))
@@ -206,6 +293,17 @@ export default function AgentsPage() {
             )}
           </CardContent>
         </Card>
+
+        {/* Modal de Edición de Agente */}
+        {selectedAgent && agentConfig && (
+          <EditAgentModal
+            isOpen={isEditModalOpen}
+            onClose={handleCloseEditModal}
+            agentId={selectedAgent.id}
+            agentName={selectedAgent.name}
+            agentConfig={agentConfig}
+          />
+        )}
       </div>
     </div>
   )
