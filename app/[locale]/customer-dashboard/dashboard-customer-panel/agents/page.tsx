@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardHeader } from "../components/dashboard-header"
-import { Download, Search, SlidersHorizontal, UserPlus, MoreHorizontal, Settings } from "lucide-react"
+import { Download, Search, SlidersHorizontal, UserPlus, MoreHorizontal, Settings, BookOpen } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
@@ -19,6 +19,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useToast } from '@/components/ui/use-toast'
 import { EditAgentModal } from './components/edit-agent-modal'
+import { KnowledgeBaseModal } from './components/knowledge-base-modal'
 
 interface AgentWithStats {
   id: string;
@@ -35,8 +36,11 @@ export default function AgentsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAgent, setSelectedAgent] = useState<AgentWithStats | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isKnowledgeBaseModalOpen, setIsKnowledgeBaseModalOpen] = useState(false);
   const [agentConfig, setAgentConfig] = useState<any>(null);
   const [isLoadingConfig, setIsLoadingConfig] = useState(false);
+  const [knowledgeBaseDocuments, setKnowledgeBaseDocuments] = useState<any[]>([]);
+  const [isLoadingDocuments, setIsLoadingDocuments] = useState(false);
   const { data: session } = useSession();
   const { toast } = useToast();
 
@@ -45,6 +49,7 @@ export default function AgentsPage() {
     isLoading,
     selectedAgent: selectedAgent?.id,
     isEditModalOpen,
+    isKnowledgeBaseModalOpen,
     hasConfig: !!agentConfig
   });
 
@@ -126,13 +131,60 @@ export default function AgentsPage() {
     }
   };
 
+  const handleManageKnowledgeBase = async (agent: AgentWithStats) => {
+    console.log('📚 Manage Knowledge Base clicked:', agent);
+    setSelectedAgent(agent);
+    setIsLoadingDocuments(true);
+    
+    try {
+      console.log('📡 Fetching knowledge base documents...');
+      const response = await fetch('/api/knowledge-base/list');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('📡 Knowledge base documents response:', data);
+
+      if (data.success) {
+        const documentsArray = Array.isArray(data.documents) ? data.documents : [];
+        setKnowledgeBaseDocuments(documentsArray);
+        setIsKnowledgeBaseModalOpen(true);
+        console.log('✅ Documents loaded, opening modal');
+      } else {
+        console.error('❌ Failed to load documents:', data.error);
+        toast({
+          title: 'Error',
+          description: data.error || 'No se pudieron cargar los documentos',
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
+      console.error('💥 Error fetching documents:', error);
+      toast({
+        title: 'Error',
+        description: 'Error al cargar los documentos',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsLoadingDocuments(false);
+    }
+  };
+
   const handleCloseEditModal = () => {
     console.log('🚪 Closing edit modal');
     setIsEditModalOpen(false);
-    setTimeout(() => {
-      setSelectedAgent(null);
-      setAgentConfig(null);
-    }, 100);
+    setSelectedAgent(null);
+    setAgentConfig(null);
+  };
+
+  const handleCloseKnowledgeBaseModal = () => {
+    console.log('🚪 Closing knowledge base modal from parent');
+    setIsKnowledgeBaseModalOpen(false);
+    setSelectedAgent(null);
+    setKnowledgeBaseDocuments([]);
+    console.log('✅ Knowledge base modal closed from parent');
   };
 
   const totalAgents = agents.length;
@@ -282,6 +334,14 @@ export default function AgentsPage() {
                                 <Settings className="mr-2 h-4 w-4" />
                                 {isLoadingConfig ? 'Cargando...' : 'Edit'}
                               </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                onClick={() => handleManageKnowledgeBase(agent)}
+                                className="cursor-pointer"
+                                disabled={isLoadingDocuments}
+                              >
+                                <BookOpen className="mr-2 h-4 w-4" />
+                                {isLoadingDocuments ? 'Cargando...' : 'Manage Knowledge Base'}
+                              </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
@@ -302,6 +362,18 @@ export default function AgentsPage() {
             agentId={selectedAgent.id}
             agentName={selectedAgent.name}
             agentConfig={agentConfig}
+          />
+        )}
+
+        {/* Modal de Knowledge Base */}
+        {selectedAgent && (
+          <KnowledgeBaseModal
+            isOpen={isKnowledgeBaseModalOpen}
+            onClose={handleCloseKnowledgeBaseModal}
+            agentId={selectedAgent.id}
+            agentName={selectedAgent.name}
+            documents={knowledgeBaseDocuments}
+            onDocumentsUpdate={setKnowledgeBaseDocuments}
           />
         )}
       </div>
