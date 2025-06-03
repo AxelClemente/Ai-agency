@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation'
 import { authOptions } from "@/app/api/auth/auth.config"
 import { Metadata } from 'next'
 import { metadata as siteMetadata } from '../../metadata-config'
-import Header from "@/app/[locale]/components/new-lading-page/header"
 
 export const metadata: Metadata = {
   title: siteMetadata.client.title,
@@ -30,7 +29,7 @@ export default async function CustomerDashboardLayout({
 
   return (
     <>
-      <Header />
+      
       <div className="flex flex-col w-full min-h-screen">
         <main className="w-full flex-1 mt-16 sm:mt-0">
           {children}

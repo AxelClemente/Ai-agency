@@ -3,12 +3,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BarChart, LineChart, PieChart } from "./components/charts"
 import { RecentRecordings } from "./components/recent-recording"
 import { PerformanceMetrics } from "./components/performance-metrics"
-import { DashboardHeader } from "./components/dashboard-header"
 
 export default function Dashboard() {
   return (
     <div className="flex flex-col">
-      <DashboardHeader />
       <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
