@@ -20,6 +20,7 @@ import { useSession } from 'next-auth/react'
 import { useToast } from '@/components/ui/use-toast'
 import { EditAgentModal } from './components/edit-agent-modal'
 import { KnowledgeBaseModal } from './components/knowledge-base-modal'
+import { CreateAgentModal } from './components/create-agent-modal'
 
 interface AgentWithStats {
   id: string;
@@ -37,6 +38,7 @@ export default function AgentsPage() {
   const [selectedAgent, setSelectedAgent] = useState<AgentWithStats | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isKnowledgeBaseModalOpen, setIsKnowledgeBaseModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [agentConfig, setAgentConfig] = useState<any>(null);
   const [isLoadingConfig, setIsLoadingConfig] = useState(false);
   const [knowledgeBaseDocuments, setKnowledgeBaseDocuments] = useState<any[]>([]);
@@ -50,48 +52,49 @@ export default function AgentsPage() {
     selectedAgent: selectedAgent?.id,
     isEditModalOpen,
     isKnowledgeBaseModalOpen,
+    isCreateModalOpen,
     hasConfig: !!agentConfig
   });
 
-  useEffect(() => {
-    async function fetchAgentStats() {
-      if (!session?.user?.id) return;
+  const fetchAgentStats = async () => {
+    if (!session?.user?.id) return;
 
-      console.log('📡 Fetching agent stats for user:', session.user.id);
+    console.log('📡 Fetching agent stats for user:', session.user.id);
 
-      try {
-        const response = await fetch(`/api/agent/stats?userId=${session.user.id}`);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('📡 Agent stats response:', data);
+    try {
+      const response = await fetch(`/api/agent/stats?userId=${session.user.id}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('📡 Agent stats response:', data);
 
-        if (data.success) {
-          setAgents(data.agents);
-          console.log('✅ Agents loaded:', data.agents.length);
-        } else {
-          console.error('❌ Failed to load agents:', data.error);
-          toast({
-            title: 'Error',
-            description: data.error || 'No se pudieron cargar los agentes',
-            variant: 'destructive'
-          });
-        }
-      } catch (error) {
-        console.error('💥 Error fetching agent stats:', error);
+      if (data.success) {
+        setAgents(data.agents);
+        console.log('✅ Agents loaded:', data.agents.length);
+      } else {
+        console.error('❌ Failed to load agents:', data.error);
         toast({
           title: 'Error',
-          description: 'Error al cargar las estadísticas de agentes',
+          description: data.error || 'No se pudieron cargar los agentes',
           variant: 'destructive'
         });
-      } finally {
-        setIsLoading(false);
       }
+    } catch (error) {
+      console.error('💥 Error fetching agent stats:', error);
+      toast({
+        title: 'Error',
+        description: 'Error al cargar las estadísticas de agentes',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsLoading(false);
     }
+  };
 
+  useEffect(() => {
     fetchAgentStats();
   }, [session?.user?.id, toast]);
 
@@ -187,6 +190,12 @@ export default function AgentsPage() {
     console.log('✅ Knowledge base modal closed from parent');
   };
 
+  const handleCreateSuccess = () => {
+    console.log('✅ Agent created successfully, refreshing list');
+    // Refresh the agents list
+    fetchAgentStats();
+  };
+
   const totalAgents = agents.length;
   const totalCalls = agents.reduce((sum, agent) => sum + agent.calls, 0);
   const activeAgents = agents.filter(agent => agent.status === 'active').length;
@@ -201,7 +210,7 @@ export default function AgentsPage() {
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold tracking-tight">Agents</h2>
           <div className="flex items-center space-x-2">
-            <Button>
+            <Button onClick={() => setIsCreateModalOpen(true)}>
               <UserPlus className="mr-2 h-4 w-4" />
               Add Agent
             </Button>
@@ -376,6 +385,13 @@ export default function AgentsPage() {
             onDocumentsUpdate={setKnowledgeBaseDocuments}
           />
         )}
+
+        {/* Modal de Crear Agente */}
+        <CreateAgentModal
+          isOpen={isCreateModalOpen}
+          onOpenChange={setIsCreateModalOpen}
+          onSuccess={handleCreateSuccess}
+        />
       </div>
     </div>
   )
