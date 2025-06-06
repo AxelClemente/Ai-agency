@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { getAllAgents } from '@/lib/agents';
 
 const prisma = new PrismaClient();
 
@@ -16,25 +15,58 @@ export async function GET(request: Request) {
       );
     }
 
-    // Obtener todos los agentes configurados
-    const agents = getAllAgents();
+    const elevenLabsApiKey = process.env.ELEVENLABS_API_KEY;
+    if (!elevenLabsApiKey) {
+      return NextResponse.json(
+        { error: 'ElevenLabs API key not configured' },
+        { status: 500 }
+      );
+    }
 
-    // Obtener estadísticas de conversaciones por agente
+    // Obtener agentes desde ElevenLabs API
+    const response = await fetch('https://api.elevenlabs.io/v1/convai/agents', {
+      method: 'GET',
+      headers: {
+        'xi-api-key': elevenLabsApiKey,
+      },
+    });
+
+    if (!response.ok) {
+      console.error('ElevenLabs API error:', response.status, response.statusText);
+      return NextResponse.json(
+        { error: 'Failed to fetch agents from ElevenLabs' },
+        { status: response.status }
+      );
+    }
+
+    const data = await response.json();
+    console.log('📡 ElevenLabs agents response:', data);
+
+    const elevenlabsAgents = data.agents || [];
+
+    // Transformar agentes de ElevenLabs al formato esperado por el frontend
     const agentStats = await Promise.all(
-      agents.map(async (agent) => {
+      elevenlabsAgents.map(async (agent: any) => {
         const conversationCount = await prisma.conversation.count({
           where: {
             userId: userId,
-            agentId: agent.id
+            agentId: agent.agent_id
           }
         });
 
         return {
-          ...agent,
+          id: agent.agent_id,
+          name: agent.name,
+          description: agent.name, // ElevenLabs no devuelve description en el list, usamos name
+          image: '/placeholder.svg?height=32&width=32', // Placeholder image
+          category: 'AI Agent', // Categoría por defecto
+          status: 'active' as const, // Los agentes de ElevenLabs se consideran activos
           calls: conversationCount
         };
       })
     );
+
+    console.log('✅ Transformed agents:', agentStats.length);
 
     return NextResponse.json({ 
       success: true, 
