@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardHeader } from "../components/dashboard-header"
-import { Download, Search, SlidersHorizontal, UserPlus, MoreHorizontal, Settings, BookOpen } from "lucide-react"
+import { Download, Search, SlidersHorizontal, UserPlus, MoreHorizontal, Settings, BookOpen, Play } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
@@ -18,6 +18,7 @@ import {
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useToast } from '@/components/ui/use-toast'
+import { useRouter } from 'next/navigation'
 import { EditAgentModal } from './components/edit-agent-modal'
 import { KnowledgeBaseModal } from './components/knowledge-base-modal'
 import { CreateAgentModal } from './components/create-agent-modal'
@@ -45,6 +46,7 @@ export default function AgentsPage() {
   const [isLoadingDocuments, setIsLoadingDocuments] = useState(false);
   const { data: session } = useSession();
   const { toast } = useToast();
+  const router = useRouter();
 
   console.log('🏠 AgentsPage - Current state:', {
     agentsCount: agents.length,
@@ -194,6 +196,11 @@ export default function AgentsPage() {
     console.log('✅ Agent created successfully, refreshing list');
     // Refresh the agents list
     fetchAgentStats();
+  };
+
+  const handleTestAgent = (agent: AgentWithStats) => {
+    console.log('🧪 Test agent clicked:', agent);
+    router.push(`/customer-dashboard/conversation?agentId=${agent.id}`);
   };
 
   const totalAgents = agents.length;
@@ -350,6 +357,13 @@ export default function AgentsPage() {
                               >
                                 <BookOpen className="mr-2 h-4 w-4" />
                                 {isLoadingDocuments ? 'Cargando...' : 'Manage Knowledge Base'}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                onClick={() => handleTestAgent(agent)}
+                                className="cursor-pointer"
+                              >
+                                <Play className="mr-2 h-4 w-4" />
+                                Test
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
