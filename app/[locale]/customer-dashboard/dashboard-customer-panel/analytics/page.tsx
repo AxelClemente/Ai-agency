@@ -1,7 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
 import { BarChart, LineChart, PieChart } from "../components/charts"
 import { DashboardHeader } from "../components/dashboard-header"
+import { Car } from "lucide-react"
+import Link from "next/link"
 
 export default function AnalyticsPage() {
   return (
@@ -10,6 +13,12 @@ export default function AnalyticsPage() {
       <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold tracking-tight">Analytics</h2>
+          <Link href="/customer-dashboard/dashboard-customer-panel/analytics/automotive">
+            <Button variant="outline" className="flex items-center space-x-2">
+              <Car className="h-4 w-4" />
+              <span>AutoBox Manacor Demo</span>
+            </Button>
+          </Link>
         </div>
         <Tabs defaultValue="adherence" className="space-y-4">
           <TabsList>
