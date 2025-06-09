@@ -104,63 +104,76 @@ export default function ConversationAnalysisPage({
     if (!conversationId) return
     
     try {
-      // TODO: Replace with real API call
-      // const response = await fetch(`/api/conversations/${conversationId}`)
-      // const data = await response.json()
+      // First, try to load from diverse conversations
+      const { getConversationById } = await import('@/lib/mock-conversations')
+      const foundConversation = getConversationById(conversationId)
       
-      // Different mock data based on conversation ID
       let mockData: ConversationData
       
-      // Type assertion since we know conversationId is not null here
-      const id = conversationId as string
-      
-      switch (conversationId) {
-        case 'conv-itv-123':
-          mockData = {
-            id,
-            phoneNumber: '+34 600 123 456',
-            duration: 245,
-            timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-            transcript: 'Hola, buenos días. Quería saber si tienen disponibilidad para la ITV de mi coche esta semana. Es urgente porque se me vence el miércoles y necesito hacer un viaje el jueves. ¿Qué horarios tienen disponibles? También me gustaría saber el precio.',
-            status: 'completed',
-            twilioCallSid: 'CA1234567890abcdef'
-          }
-          break
-          
-        case 'conv-neumaticos-456':
-          mockData = {
-            id,
-            phoneNumber: '+34 600 789 012',
-            duration: 153,
-            timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
-            transcript: 'Buenas tardes. Llamo para preguntar por el cambio de neumáticos. Tengo un Mercedes Clase A y creo que necesito cambiar las ruedas delanteras. ¿Podrían darme un presupuesto? También me gustaría saber qué marcas tienen disponibles y cuánto tiempo tardan en hacerlo.',
-            status: 'completed',
-            twilioCallSid: 'CA9876543210fedcba'
-          }
-          break
-          
-        case 'conv-frenos-789':
-          mockData = {
-            id,
-            phoneNumber: '+34 600 345 678',
-            duration: 372,
-            timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 minutes ago
-            transcript: 'Hola, tengo una emergencia. Mi coche está haciendo un ruido muy fuerte cuando freno y tengo que viajar mañana temprano. ¿Pueden atenderme hoy mismo? Es un Seat León del 2018. El ruido es como un chirrido muy fuerte cuando piso el freno. Estoy preocupado porque puede ser peligroso.',
-            status: 'completed',
-            twilioCallSid: 'CA5555666677778888'
-          }
-          break
-          
-        default:
-          mockData = {
-            id,
-            phoneNumber: '+34 600 000 000',
-            duration: 120,
-            timestamp: new Date().toISOString(),
-            transcript: 'Hola, buenos días. Quería información general sobre sus servicios...',
-            status: 'completed',
-            twilioCallSid: 'CA0000000000000000'
-          }
+      if (foundConversation) {
+        // Use diverse conversation data
+        mockData = {
+          id: foundConversation.id,
+          phoneNumber: foundConversation.phoneNumber,
+          duration: foundConversation.duration,
+          timestamp: foundConversation.timestamp,
+          transcript: foundConversation.transcript,
+          status: 'completed',
+          twilioCallSid: `CA${foundConversation.id.slice(-10)}`
+        }
+      } else {
+        // Fallback to original mock data for existing conversation IDs
+        // Type assertion since we know conversationId is not null here
+        const id = conversationId as string
+        
+        switch (conversationId) {
+          case 'conv-itv-123':
+            mockData = {
+              id,
+              phoneNumber: '+34 600 123 456',
+              duration: 245,
+              timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+              transcript: 'Hola, buenos días. Quería saber si tienen disponibilidad para la ITV de mi coche esta semana. Es urgente porque se me vence el miércoles y necesito hacer un viaje el jueves. ¿Qué horarios tienen disponibles? También me gustaría saber el precio.',
+              status: 'completed',
+              twilioCallSid: 'CA1234567890abcdef'
+            }
+            break
+            
+          case 'conv-neumaticos-456':
+            mockData = {
+              id,
+              phoneNumber: '+34 600 789 012',
+              duration: 153,
+              timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
+              transcript: 'Buenas tardes. Llamo para preguntar por el cambio de neumáticos. Tengo un Mercedes Clase A y creo que necesito cambiar las ruedas delanteras. ¿Podrían darme un presupuesto? También me gustaría saber qué marcas tienen disponibles y cuánto tiempo tardan en hacerlo.',
+              status: 'completed',
+              twilioCallSid: 'CA9876543210fedcba'
+            }
+            break
+            
+          case 'conv-frenos-789':
+            mockData = {
+              id,
+              phoneNumber: '+34 600 345 678',
+              duration: 372,
+              timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 minutes ago
+              transcript: 'Hola, tengo una emergencia. Mi coche está haciendo un ruido muy fuerte cuando freno y tengo que viajar mañana temprano. ¿Pueden atenderme hoy mismo? Es un Seat León del 2018. El ruido es como un chirrido muy fuerte cuando piso el freno. Estoy preocupado porque puede ser peligroso.',
+              status: 'completed',
+              twilioCallSid: 'CA5555666677778888'
+            }
+            break
+            
+          default:
+            mockData = {
+              id,
+              phoneNumber: '+34 600 000 000',
+              duration: 120,
+              timestamp: new Date().toISOString(),
+              transcript: 'Hola, buenos días. Quería información general sobre sus servicios...',
+              status: 'completed',
+              twilioCallSid: 'CA0000000000000000'
+            }
+        }
       }
       
       setConversationData(mockData)
