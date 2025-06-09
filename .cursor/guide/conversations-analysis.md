@@ -1,469 +1,366 @@
-# 🚗 Plan de Implementación: Análisis de Conversaciones AutoBox Manacor
+# 🚗 Plan Híbrido: Análisis de Conversaciones AutoBox Manacor
 
 ## 📋 Resumen Ejecutivo
 
-Implementación gradual y controlada de infraestructura completa para análisis automático de conversaciones del agente de voz de AutoBox Manacor, transformando datos de ElevenLabs en insights accionables para el dashboard.
+**Plan Híbrido** que combina **valor inmediato** (análisis individual) con **infraestructura escalable** (pipeline automático), incluyendo integración **Twilio Voice** para pruebas telefónicas reales y **WebSockets** para updates en tiempo real.
 
 ---
 
-## 🎯 Objetivos del Proyecto
+## 🎯 Objetivos Unificados del Proyecto
 
-### Objetivos Primarios
-- **Automatizar análisis** de conversaciones de voz en tiempo real
-- **Generar métricas precisas** para dashboard automotive
-- **Identificar patrones** de comportamiento del cliente
-- **Optimizar tasa de conversión** del agente de voz
+### Objetivos Inmediatos (Semanas 1-2)
+- **MVP funcional** con análisis de conversaciones individuales
+- **Pruebas telefónicas reales** con Twilio Voice 
+- **Dashboard individual** por conversación
+- **Análisis IA bajo demanda** (costo controlado)
+- **Validación con AutoBox Manacor**
 
-### Objetivos Secundarios
-- **Escalabilidad** para otros clientes/industrias
-- **Análisis predictivo** de abandono de clientes
-- **Optimización continua** del script del agente
-- **ROI measurement** del agente de voz
+### Objetivos Escalables (Semanas 3-12)
+- **Pipeline automático** de análisis masivo
+- **Dashboard agregado** con métricas globales
+- **WebSockets** para updates en tiempo real
+- **Webhook automation** desde ElevenLabs
+- **Sistema de monitoreo** y alertas
+
+### Objetivos Estratégicos
+- **Escalabilidad** para múltiples clientes/industrias
+- **ROI measurement** preciso del agente de voz
+- **Análisis predictivo** de patrones de abandono
+- **Template reusable** para otros sectores
 
 ---
 
-## 🏗️ Arquitectura General del Sistema
+## 🏗️ Arquitectura Híbrida del Sistema
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   ElevenLabs    │───▶│   Webhook API    │───▶│   Analysis      │
-│   Conversation  │    │   Capture        │    │   Pipeline      │
+│   Twilio Voice  │───▶│   ElevenLabs     │───▶│   Dashboard     │
+│   (Phone Test)  │    │   Agent          │    │   Individual    │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
-                                │                        │
-                                ▼                        ▼
-                       ┌──────────────────┐    ┌─────────────────┐
-                       │   Conversation   │    │      LLM        │
-                       │   Storage        │    │   Processing    │
-                       └──────────────────┘    └─────────────────┘
-                                │                        │
-                                ▼                        ▼
-                       ┌──────────────────┐    ┌─────────────────┐
-                       │   Analytics      │───▶│   Dashboard     │
-                       │   Aggregation    │    │   APIs          │
-                       └──────────────────┘    └─────────────────┘
+        │                       │                        │
+        ▼                       ▼                        ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Call Storage  │    │   Manual IA      │───▶│   WebSocket     │
+│   & Analytics   │    │   Analysis       │    │   Real-time     │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+        │                       │                        │
+        ▼                       ▼                        ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Webhook       │───▶│   Auto Pipeline  │───▶│   Aggregated    │
+│   Automation    │    │   (Future)       │    │   Dashboard     │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
 ---
 
-## 📅 Plan de Implementación Detallado
+## 📅 Plan de Implementación Híbrido
 
-### **FASE 1: Fundación y Captura de Datos** (Semana 1-2)
+### **FASE 0: MVP Telefónico** (Semana 1) 🚀
 
-#### **1.1 Setup Base de Datos** (Día 1-2)
+#### **0.1 Integración Twilio Voice** (Día 1-2)
+```typescript
+// Setup básico Twilio para redirección telefónica
+POST /api/twilio/voice-webhook
+- Recibe llamada → ElevenLabs Agent
+- Captura transcript automáticamente
+- Redirecciona a móvil para pruebas
+```
+
+**📋 Tareas Específicas:**
+1. Setup cuenta Twilio + número de prueba
+2. Configurar webhook que conecte Twilio → ElevenLabs
+3. Implementar redirección a móvil personal
+4. Setup TwiML básico para manejo de llamadas
+5. Captura automática de transcripciones
+6. Tests de calidad de audio
+
+**✅ Criterios de Aceptación:**
+- [ ] Llamadas telefónicas funcionando
+- [ ] Audio claro bidireccional  
+- [ ] Transcripciones capturadas automáticamente
+- [ ] Redirección a móvil operativa
+- [ ] Latencia < 2 segundos
+- [ ] 99% uptime en pruebas
+
+#### **0.2 Dashboard Individual + IA** (Día 3-4)
+```typescript
+// Implementación del plan elevenlabs.md mejorado
+/analysis/[conversationId] 
+- Info básica: duración, agente, fecha
+- Análisis programático inmediato  
+- Botón "Analizar con IA" bajo demanda
+- WebSocket para updates en tiempo real
+```
+
+**📋 Tareas Específicas:**
+1. Crear página dashboard individual
+2. Migrar análisis programático existente
+3. Implementar API análisis IA (/api/conversation/[id]/ai-analysis)
+4. Setup WebSocket básico para real-time updates
+5. Sistema de persistencia de análisis IA
+6. UX optimizada con loading states
+
+**✅ Criterios de Aceptación:**
+- [ ] Dashboard individual funcionando
+- [ ] Análisis programático inmediato
+- [ ] Análisis IA bajo demanda operativo
+- [ ] WebSocket updates en tiempo real
+- [ ] Persistencia de análisis guardados
+- [ ] UX fluida y responsive
+
+### **FASE 1: Fundación Escalable** (Semana 2-3)
+
+#### **1.1 Base de Datos Unificada** (Día 5-7)
 ```sql
--- Esquemas de tablas necesarias
+-- Esquema híbrido que soporte ambos enfoques
 conversations (
-  id, agent_id, timestamp, duration, 
-  raw_transcript, status, metadata
+  id, userId, agentId, twilioCallSid,
+  transcript, duration, cost, status,
+  phoneNumber, callDirection
 )
 
 conversation_analysis (
-  id, conversation_id, service_type, 
-  intent, outcome, sentiment, urgency,
-  confidence_score, created_at
+  id, conversationId, analysisType,
+  programmaticResults, aiInsights,
+  confidence, cost, createdAt
 )
 
-analytics_cache (
-  id, metric_type, date_range, 
-  aggregated_data, last_updated
+real_time_events (
+  id, conversationId, eventType,
+  data, timestamp, delivered
 )
 ```
 
-**✅ Criterios de Aceptación:**
-- [ ] Tablas creadas con índices optimizados
-- [ ] Migrations funcionando
-- [ ] Tests de conexión DB exitosos
-- [ ] Backup automático configurado
-
-#### **1.2 API de Captura de Webhooks** (Día 3-4)
-```typescript
-// Endpoint básico para recibir datos de ElevenLabs
-POST /api/webhooks/elevenlabs
-- Validación de payload
-- Autenticación segura
-- Rate limiting
-- Logging estructurado
-```
-
 **📋 Tareas Específicas:**
-1. Crear endpoint webhook básico
-2. Implementar validación de payload ElevenLabs
-3. Setup de autenticación con API keys
-4. Configurar rate limiting (100 req/min)
-5. Implementar logging estructurado
-6. Tests unitarios del endpoint
+1. Migrar schema existente a esquema híbrido
+2. Agregar campos específicos para Twilio integration
+3. Crear tablas para análisis dual (programático + IA)
+4. Setup índices optimizados
+5. Implementar migrations seguras
+6. Tests de integridad de datos
 
-**✅ Criterios de Aceptación:**
-- [ ] Webhook recibe datos correctamente
-- [ ] Validación de payload robusta
-- [ ] Logs detallados de requests
-- [ ] Manejo de errores implementado
-- [ ] Tests de carga pasando (50 req/s)
-
-#### **1.3 Almacenamiento de Conversaciones** (Día 5-6)
+#### **1.2 WebSocket Infrastructure** (Día 8-9)
 ```typescript
-// Servicio de persistencia
-class ConversationStorageService {
-  async saveConversation(data: RawConversation)
-  async getConversation(id: string)
-  async updateAnalysisStatus(id: string, status: string)
+// Sistema WebSocket para updates en tiempo real
+class ConversationWebSocket {
+  onCallStart(conversationId: string)
+  onTranscriptUpdate(conversationId: string, text: string)
+  onAnalysisComplete(conversationId: string, results: Analysis)
+  onCallEnd(conversationId: string, summary: CallSummary)
 }
 ```
 
 **📋 Tareas Específicas:**
-1. Implementar servicio de storage
-2. Validación de datos de entrada
-3. Manejo de duplicados
-4. Retry logic para fallos
-5. Métricas de performance
-6. Tests de integración
+1. Setup WebSocket server (Socket.io/native)
+2. Implementar eventos de conversación en tiempo real
+3. Client-side hooks para auto-updates
+4. Sistema de rooms por conversación
+5. Reconnection automática
+6. Tests de concurrencia
 
-**✅ Criterios de Aceptación:**
-- [ ] Conversaciones guardadas correctamente
-- [ ] No duplicados en DB
-- [ ] Performance < 100ms promedio
-- [ ] Recovery automático de fallos
-- [ ] Monitoreo de métricas
-
-### **FASE 2: Pipeline de Análisis LLM** (Semana 3-4)
-
-#### **2.1 Prompt Engineering para AutoBox** (Día 7-9)
+#### **1.3 Twilio-ElevenLabs Bridge** (Día 10-11)
 ```typescript
-// Prompt especializado para análisis automotive
-const AUTOBOX_ANALYSIS_PROMPT = `
-Contexto: AutoBox Manacor es un taller mecánico especializado en:
-- ITV (Inspección Técnica de Vehículos)
-- Cambio de neumáticos
-- Reparación de frenos
-- Cambio de aceite
-- Reparación de dirección
-
-Analiza esta conversación telefónica y extrae:
-[PROMPT DETALLADO ESPECÍFICO]
-`
-```
-
-**📋 Tareas Específicas:**
-1. Desarrollo de prompt base
-2. Testing con conversaciones reales
-3. Optimización de accuracy
-4. Validación con experto dominio
-5. Documentación de casos edge
-6. A/B testing de variantes
-
-**✅ Criterios de Aceptación:**
-- [ ] Accuracy > 85% en clasificación servicio
-- [ ] Accuracy > 80% en detección intent
-- [ ] Accuracy > 75% en sentiment analysis
-- [ ] Tiempo respuesta < 3 segundos
-- [ ] Validado por experto AutoBox
-
-#### **2.2 Integración LLM API** (Día 10-11)
-```typescript
-// Servicio de análisis con LLM
-class ConversationAnalyzer {
-  async analyzeConversation(transcript: string): Promise<Analysis>
-  async batchAnalyze(transcripts: string[]): Promise<Analysis[]>
-  private handleAPIErrors()
-  private validateResponse()
+// Puente robusto entre Twilio y ElevenLabs
+class TwilioElevenLabsBridge {
+  async handleIncomingCall(twilioPayload)
+  async streamAudioToElevenLabs(audioStream)
+  async captureElevenLabsResponse(response)
+  async forwardToMobile(callSid, mobileNumber)
 }
 ```
 
 **📋 Tareas Específicas:**
-1. Integración OpenAI/Claude API
-2. Manejo de rate limits
-3. Retry logic exponential backoff
-4. Validación de respuestas LLM
-5. Fallback mechanisms
-6. Cost monitoring
+1. Implementar streaming de audio bidireccional
+2. Manejo robusto de latencia y calidad
+3. Sistema de fallback si ElevenLabs falla
+4. Logging detallado de llamadas
+5. Cost tracking automático
+6. Tests de carga con llamadas simultáneas
 
-**✅ Criterios de Aceptación:**
-- [ ] API integration funcionando
-- [ ] Rate limiting manejado
-- [ ] Responses validadas automáticamente
-- [ ] Fallbacks funcionando
-- [ ] Costos monitoreados < $0.10/conversación
+### **FASE 2: Pipeline de Análisis Dual** (Semana 4-5)
 
-#### **2.3 Sistema de Colas Asíncronas** (Día 12-13)
+#### **2.1 Análisis Programático Mejorado** (Día 12-13)
 ```typescript
-// Queue system para análisis
-class AnalysisQueue {
-  async addToQueue(conversationId: string)
-  async processQueue()
-  async retryFailed()
-  private handlePriority()
+// Mejoras al sistema existente de elevenlabs.md
+class EnhancedProgrammaticAnalyzer {
+  analyzeAutomotiveConversation(transcript: string)
+  extractServiceRequests(text: string)
+  detectCustomerIntent(text: string)
+  calculateUrgencyLevel(context: any)
 }
 ```
 
-**📋 Tareas Específicas:**
-1. Implementar queue system (Bull/Redis)
-2. Priority handling (urgencias primero)
-3. Dead letter queue para fallos
-4. Monitoring de queue health
-5. Scaling horizontal
-6. Recovery procedures
-
-**✅ Criterios de Aceptación:**
-- [ ] Queue procesando 100+ jobs/min
-- [ ] Priority queue funcionando
-- [ ] Dead letter queue configurada
-- [ ] Monitoring dashboard activo
-- [ ] Recovery automático de fallos
-
-### **FASE 3: Agregación y Métricas** (Semana 5-6)
-
-#### **3.1 Servicio de Agregación de Datos** (Día 14-16)
+#### **2.2 Análisis IA Batch + Individual** (Día 14-15)
 ```typescript
-// Agregaciones para dashboard
-class MetricsAggregator {
-  async calculateDailyMetrics(date: Date)
-  async calculateServiceMetrics(service: string)
-  async calculateIntentMetrics()
-  async calculateConversionRates()
+// Sistema dual: individual bajo demanda + batch automático
+class HybridAIAnalyzer {
+  // Individual (elevenlabs.md approach)
+  async analyzeOnDemand(conversationId: string)
+  
+  // Batch para pipeline futuro
+  async analyzeBatch(conversationIds: string[])
+  
+  // Prompts específicos AutoBox
+  generateAutomotivePrompt(transcript: string, context: any)
 }
 ```
 
-**📋 Tareas Específicas:**
-1. Implementar agregaciones SQL optimizadas
-2. Cache de métricas frecuentes
-3. Invalidación inteligente de cache
-4. Métricas en tiempo real
-5. Historical data handling
-6. Performance optimization
+### **FASE 3: Dashboard Agregado + WebSockets** (Semana 6-7)
 
-**✅ Criterios de Aceptación:**
-- [ ] Métricas calculadas < 500ms
-- [ ] Cache hit ratio > 80%
-- [ ] Datos históricos disponibles
-- [ ] Real-time updates funcionando
-- [ ] Queries optimizadas (< 100ms)
-
-#### **3.2 APIs para Dashboard Dinámico** (Día 17-18)
+#### **3.1 Migración Dashboard Hardcoded → Real Data** (Día 16-18)
 ```typescript
-// APIs específicas para dashboard automotive
-GET /api/analytics/automotive/metrics
-GET /api/analytics/automotive/services
-GET /api/analytics/automotive/intents
-GET /api/analytics/automotive/trends
-```
-
-**📋 Tareas Específicas:**
-1. Crear endpoints de métricas
-2. Implementar filtros fecha/servicio
-3. Pagination para datos grandes
-4. Response caching
-5. API documentation
-6. Rate limiting por cliente
-
-**✅ Criterios de Aceptación:**
-- [ ] APIs respondiendo < 200ms
-- [ ] Filtros funcionando correctamente
-- [ ] Pagination implementada
-- [ ] Documentation completa
-- [ ] Rate limiting configurado
-
-### **FASE 4: Dashboard Dinámico** (Semana 7-8)
-
-#### **4.1 Migración Dashboard Hardcoded → Dinámico** (Día 19-21)
-```typescript
-// Hooks para datos dinámicos
+// Conectar dashboard automotive existente con datos reales
 const useAutomotiveMetrics = (dateRange: DateRange) => {
-  // Real data fetching
+  const { data, subscribe } = useWebSocket('/ws/metrics')
+  // Real-time updates automáticos
 }
 
-const useServiceAnalytics = (filters: ServiceFilters) => {
-  // Dynamic service data
+const useConversationAnalytics = () => {
+  // Combina análisis programático + IA guardados
 }
 ```
 
-**📋 Tareas Específicas:**
-1. Crear custom hooks para data fetching
-2. Reemplazar datos hardcoded gradualmente
-3. Error handling y loading states
-4. Real-time updates con WebSockets
-5. Offline capability
-6. Performance monitoring
-
-**✅ Criterios de Aceptación:**
-- [ ] Dashboard usando datos reales 100%
-- [ ] Loading states implementados
-- [ ] Error handling robusto
-- [ ] Real-time updates funcionando
-- [ ] Performance = dashboard estático
-
-#### **4.2 Funcionalidades Avanzadas** (Día 22-24)
+#### **3.2 Real-time Dashboard Updates** (Día 19-21)
 ```typescript
-// Features adicionales
-- Filtros dinámicos por fecha/servicio
-- Exports de reportes
-- Alertas automáticas
-- Comparativas período anterior
-- Drill-down analytics
+// WebSocket integration en dashboard
+- Nuevas conversaciones → auto-refresh métricas
+- Análisis completados → update individual dashboards  
+- Llamadas activas → indicadores en tiempo real
+- Alertas automáticas → notificaciones push
 ```
 
-**📋 Tareas Específicas:**
-1. Implementar filtros avanzados
-2. Sistema de exports (PDF/Excel)
-3. Alertas configurables
-4. Comparativas temporales
-5. Drill-down capabilities
-6. Mobile responsiveness
+### **FASE 4: Automation Pipeline** (Semana 8-10)
 
-**✅ Criterios de Aceptación:**
-- [ ] Filtros funcionando fluidamente
-- [ ] Exports generándose < 10s
-- [ ] Alertas activándose correctamente
-- [ ] Comparativas precisas
-- [ ] Mobile 100% funcional
-
-### **FASE 5: Optimización y Monitoreo** (Semana 9-10)
-
-#### **5.1 Sistema de Monitoreo** (Día 25-27)
+#### **4.1 Webhook Automation** (Día 22-24)
 ```typescript
-// Monitoring completo
-- Health checks automatizados
-- Performance metrics
-- Error tracking
-- Cost monitoring
-- Usage analytics
+// Automatización completa del pipeline
+POST /api/webhooks/elevenlabs → Queue → Analysis → Aggregation
+- Captura automática de todas las conversaciones
+- Análisis programático inmediato
+- Queue de análisis IA opcional (costo controlado)
+- Métricas agregadas en tiempo real
 ```
 
-**📋 Tareas Específicas:**
-1. Setup Prometheus/Grafana
-2. Health checks endpoints
-3. Error tracking (Sentry)
-4. Performance monitoring
-5. Cost alerts
-6. Usage dashboards
-
-**✅ Criterios de Aceptación:**
-- [ ] Monitoring 24/7 activo
-- [ ] Alertas configuradas
-- [ ] Dashboards informativos
-- [ ] Error tracking funcionando
-- [ ] Cost monitoring preciso
-
-#### **5.2 Testing y Validación** (Día 28-30)
+#### **4.2 Sistema de Alertas + Monitoreo** (Día 25-27)
 ```typescript
-// Testing comprehensivo
-- Unit tests (90%+ coverage)
-- Integration tests
-- End-to-end tests
-- Performance tests
-- Load testing
+// Monitoreo proactivo del sistema
+- Health checks Twilio ↔ ElevenLabs
+- Alerts de calidad de llamadas
+- Cost monitoring automático  
+- Performance metrics dashboard
 ```
-
-**📋 Tareas Específicas:**
-1. Completar test coverage
-2. Integration tests críticos
-3. E2E testing scenarios
-4. Performance benchmarking
-5. Load testing 1000+ req/s
-6. Security testing
-
-**✅ Criterios de Aceptación:**
-- [ ] Test coverage > 90%
-- [ ] Integration tests pasando
-- [ ] E2E scenarios cubiertos
-- [ ] Performance benchmarks met
-- [ ] Security audit clean
 
 ---
 
-## 🔧 Stack Tecnológico
+## 🔧 Stack Tecnológico Híbrido
+
+### **Telefonía & Voice**
+- **Twilio Voice**: Llamadas telefónicas + redirección
+- **ElevenLabs**: Agente de voz conversacional
+- **WebRTC**: Streaming de audio (si necesario)
+
+### **Real-time Communication**
+- **Socket.io** o **WebSockets nativos**: Updates en tiempo real
+- **Redis Pub/Sub**: Scalable messaging
 
 ### **Backend**
-- **API**: Next.js API Routes
-- **Database**: PostgreSQL + Prisma ORM
-- **Queue**: Redis + Bull Queue
-- **LLM**: OpenAI GPT-4 / Anthropic Claude
-- **Cache**: Redis
-- **Monitoring**: Prometheus + Grafana
+- **Next.js API Routes**: APIs híbridas
+- **PostgreSQL + Prisma**: Datos estructurados
+- **Redis + Bull Queue**: Análisis asíncrono
+- **OpenAI GPT-4**: Análisis IA bajo demanda
 
 ### **Frontend**
-- **Framework**: Next.js 14 + TypeScript
-- **UI**: Shadcn/ui + Tailwind CSS
-- **Charts**: Recharts
-- **State**: Zustand
-- **Real-time**: WebSockets
-
-### **DevOps**
-- **Deployment**: Vercel / Docker
-- **CI/CD**: GitHub Actions
-- **Monitoring**: Sentry + DataDog
-- **Backup**: Automated DB backups
+- **Next.js 14 + TypeScript**: App completa
+- **Shadcn/ui + Tailwind**: UI consistente
+- **Recharts**: Dashboard automotive existente
+- **Socket.io-client**: Real-time updates
 
 ---
 
-## 📊 Métricas de Éxito
+## 🚀 Beneficios del Plan Híbrido
 
-### **Técnicas**
-- **Uptime**: > 99.9%
-- **Response time**: < 200ms API, < 100ms dashboard
-- **Accuracy**: > 85% clasificación automática
-- **Cost**: < $0.10 por conversación analizada
+### **Valor Inmediato (Semana 1)**
+- ✅ Pruebas telefónicas reales con AutoBox
+- ✅ Dashboard individual funcionando
+- ✅ Análisis IA bajo demanda operativo
+- ✅ WebSocket updates en tiempo real
 
-### **Negocio**
-- **Adoption**: 100% conversaciones analizadas
-- **Insights**: 5+ insights accionables/semana
-- **ROI**: Mejora 15%+ tasa conversión
-- **Escalabilidad**: Ready para 10+ clientes
+### **Escalabilidad (Semanas 2-10)**  
+- ✅ Pipeline automático para volumen
+- ✅ Dashboard agregado con métricas globales
+- ✅ Sistema de monitoreo profesional
+- ✅ Template reusable para otros clientes
 
----
-
-## ⚠️ Riesgos y Mitigaciones
-
-### **Riesgos Técnicos**
-1. **LLM API failures**
-   - *Mitigación*: Multiple providers + fallbacks
-2. **High API costs**
-   - *Mitigación*: Smart caching + batch processing
-3. **Data quality issues**
-   - *Mitigación*: Validation layers + human review
-
-### **Riesgos de Negocio**
-1. **Low accuracy inicialmente**
-   - *Mitigación*: Iterative improvement + expert feedback
-2. **Cliente rejection**
-   - *Mitigación*: Gradual rollout + training
-3. **Regulatory compliance**
-   - *Mitigación*: GDPR compliance + data retention policies
+### **ROI Comprobable**
+- **Semana 1**: Demos funcionando con AutoBox
+- **Semana 4**: Métricas reales de conversión
+- **Semana 8**: Sistema escalable para 10+ clientes
+- **Semana 10**: ROI medible y optimización continua
 
 ---
 
-## 🚀 Próximos Pasos Inmediatos
+## 📞 Configuración Twilio para MVP
 
-### **Semana Actual**
-1. **Revisar y aprobar** este plan detallado
-2. **Setup inicial** del proyecto (repo, DB, etc.)
-3. **Comenzar Fase 1.1**: Database schema design
-4. **Stakeholder alignment** en objetivos y métricas
+### **Setup Inmediato**
+```javascript
+// TwiML básico para conectar con ElevenLabs
+app.post('/api/twilio/voice', (req, res) => {
+  const twiml = new VoiceResponse()
+  
+  // Conectar con ElevenLabs Agent
+  twiml.connect().stream({
+    url: 'wss://your-app.com/ws/elevenlabs-bridge'
+  })
+  
+  // Fallback: redirección a móvil
+  twiml.dial(process.env.MOBILE_NUMBER)
+  
+  res.type('text/xml')
+  res.send(twiml.toString())
+})
+```
 
-### **Validaciones Requeridas**
-- [ ] **Acceso ElevenLabs API** confirmed
-- [ ] **Database hosting** decidido
-- [ ] **LLM provider** seleccionado (OpenAI vs Claude)
-- [ ] **Budget approval** para APIs (~$500/mes inicial)
-
----
-
-## 📞 Contactos y Responsabilidades
-
-### **Technical Lead**: [Nombre]
-- Arquitectura y implementación
-- Code reviews
-- Performance optimization
-
-### **Product Owner**: [Nombre]  
-- Requirements validation
-- Stakeholder communication
-- Business metrics definition
-
-### **AutoBox Expert**: [Nombre]
-- Domain knowledge validation
-- Prompt engineering feedback
-- Results interpretation
+### **Testing Strategy**
+1. **Número Twilio** → **ElevenLabs AutoBox Agent**
+2. **Transcripción automática** → **Dashboard individual**
+3. **Análisis IA bajo demanda** → **Insights inmediatos**
+4. **WebSocket updates** → **Real-time feedback**
 
 ---
 
-*Documento vivo - Actualizar semanalmente con progreso y ajustes*
+## 🎯 Próximos Pasos Inmediatos
+
+### **Esta Semana**
+1. ✅ **Revisar plan híbrido** (este documento)
+2. 🚀 **Setup Twilio account** + número de prueba
+3. 🔧 **Implementar bridge Twilio ↔ ElevenLabs**
+4. 📱 **Configurar redirección a móvil**
+5. 🧪 **Primera llamada de prueba**
+
+### **Validaciones Críticas**
+- [ ] **Twilio account** setup y número asignado
+- [ ] **ElevenLabs agent** configurado para AutoBox
+- [ ] **Audio quality** aceptable (< 300ms latency)
+- [ ] **WebSocket infrastructure** básica funcionando
+- [ ] **Mobile forwarding** operativo para pruebas
+
+---
+
+## 💡 ¿Por qué WebSockets?
+
+### **Casos de Uso Críticos**
+- **Llamadas en progreso**: Transcripción en tiempo real
+- **Dashboard updates**: Métricas actualizándose automáticamente  
+- **Análisis completados**: Notificaciones instantáneas
+- **Alertas de sistema**: Problemas de calidad/conexión
+- **Multi-user**: Varios usuarios viendo mismas conversaciones
+
+### **Valor Inmediato**
+- **UX superior**: No refresh manual
+- **Monitoring real-time**: Llamadas activas visibles
+- **Alertas instantáneas**: Problemas detectados inmediatamente
+- **Escalabilidad**: Preparado para múltiples clientes concurrentes
+
+---
+
+*Documento vivo - Plan híbrido que maximiza valor inmediato + escalabilidad futura*

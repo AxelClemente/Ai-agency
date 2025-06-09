@@ -6,6 +6,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { metadata as appMetadata } from '@/app/metadata-config';
 import { Toaster } from "sonner"
+import { WebSocketProvider } from '@/components/websocket-provider'
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -32,16 +33,14 @@ export function generateStaticParams() {
   return [{ locale: 'en' }, { locale: 'es' }, { locale: 'fr' }];
 }
 
-export default async function RootLayout({
+export default async function LocaleLayout({
   children,
   params
 }: {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  children: React.ReactNode
+  params: Promise<{ locale: string }>
 }) {
-  const resolvedParams = await params;
-  const { locale } = resolvedParams;
-  
+  const { locale } = await params
   let messages;
   try {
     messages = (await import(`../../messages/${locale}.json`)).default;
@@ -51,21 +50,18 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body
-        suppressHydrationWarning={true}
-        className={`${poppins.variable} ${inter.variable} font-poppins antialiased overflow-x-hidden`}
-      >
-        <NextIntlClientProvider 
-          locale={locale}
-          messages={messages}
-          timeZone="America/New_York"
-        >
-          <AuthProvider>
-            {children}
-          </AuthProvider>
-          <Toaster position="bottom-right" richColors closeButton />
+      <body className={inter.className} suppressHydrationWarning={true}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <WebSocketProvider>
+            <AuthProvider>
+              <div className="flex flex-col min-h-screen">
+                <Toaster position="bottom-right" richColors closeButton />
+                {children}
+              </div>
+            </AuthProvider>
+          </WebSocketProvider>
         </NextIntlClientProvider>
       </body>
     </html>
-  );
+  )
 }
