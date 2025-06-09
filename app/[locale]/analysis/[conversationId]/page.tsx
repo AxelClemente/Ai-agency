@@ -33,10 +33,30 @@ interface ProgrammaticAnalysis {
 
 interface AIAnalysis {
   summary: string
+  serviceType: string
+  customerIntent: string
+  urgencyLevel: 'low' | 'medium' | 'high'
   sentiment: 'positive' | 'neutral' | 'negative'
+  appointmentScheduled: boolean
+  estimatedRevenue: number
+  keyInsights: string[]
   recommendations: string[]
   nextSteps: string[]
+  customerProfile: {
+    name?: string | null
+    phone?: string | null
+    vehicle?: string | null
+    isReturningCustomer: boolean
+  }
+  businessMetrics: {
+    conversionProbability: number
+    customerLifetimeValue: number
+    competitiveAdvantage: string
+  }
   confidenceScore: number
+  cost?: number
+  processingTime?: number
+  model?: string
 }
 
 export default function ConversationAnalysisPage({
@@ -447,32 +467,71 @@ export default function ConversationAnalysisPage({
       {/* AI Analysis Section */}
       <Card>
         <CardHeader>
-          <CardTitle>🧠 Análisis con IA (Bajo Demanda)</CardTitle>
+          <CardTitle className="flex items-center justify-between">
+            <span>🧠 Análisis con IA GPT-4o (Bajo Demanda)</span>
+            {aiAnalysis && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Badge variant="outline">
+                  {aiAnalysis.model || 'GPT-4o'}
+                </Badge>
+                {aiAnalysis.cost && (
+                  <Badge variant="outline">
+                    ${aiAnalysis.cost.toFixed(4)}
+                  </Badge>
+                )}
+                {aiAnalysis.processingTime && (
+                  <Badge variant="outline">
+                    {aiAnalysis.processingTime}ms
+                  </Badge>
+                )}
+              </div>
+            )}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {!aiAnalysis ? (
             <div className="space-y-4">
               <p className="text-muted-foreground">
-                Ejecuta un análisis detallado con IA para obtener insights más profundos sobre esta conversación.
+                Ejecuta un análisis detallado con IA para obtener insights profundos sobre esta conversación usando GPT-4o especializado para AutoBox Manacor.
               </p>
               <Button 
                 onClick={runAIAnalysis} 
                 disabled={isAnalyzing}
                 className="w-full md:w-auto"
               >
-                {isAnalyzing ? '🔄 Analizando...' : '🚀 Analizar con IA'}
+                {isAnalyzing ? '🔄 Analizando con GPT-4o...' : '🚀 Analizar con IA GPT-4o'}
               </Button>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-6">
+              {/* Summary */}
               <div>
-                <p className="font-semibold mb-2">Resumen</p>
+                <p className="font-semibold mb-2">📋 Resumen</p>
                 <p className="bg-blue-50 p-4 rounded-lg">{aiAnalysis.summary}</p>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              {/* Main Metrics */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <p className="font-semibold mb-2">Sentimiento</p>
+                  <p className="font-semibold mb-2">🔧 Servicio</p>
+                  <Badge variant="default">{aiAnalysis.serviceType}</Badge>
+                </div>
+                <div>
+                  <p className="font-semibold mb-2">🎯 Intención</p>
+                  <Badge variant="outline">{aiAnalysis.customerIntent?.replace('_', ' ')}</Badge>
+                </div>
+                <div>
+                  <p className="font-semibold mb-2">⚡ Urgencia</p>
+                  <Badge variant={
+                    aiAnalysis.urgencyLevel === 'high' ? 'destructive' :
+                    aiAnalysis.urgencyLevel === 'medium' ? 'default' : 'secondary'
+                  }>
+                    {aiAnalysis.urgencyLevel === 'high' ? '🔴 Alta' :
+                     aiAnalysis.urgencyLevel === 'medium' ? '🟡 Media' : '🟢 Baja'}
+                  </Badge>
+                </div>
+                <div>
+                  <p className="font-semibold mb-2">😊 Sentimiento</p>
                   <Badge variant={
                     aiAnalysis.sentiment === 'positive' ? 'default' :
                     aiAnalysis.sentiment === 'negative' ? 'destructive' : 'secondary'
@@ -481,30 +540,128 @@ export default function ConversationAnalysisPage({
                      aiAnalysis.sentiment === 'negative' ? '😞 Negativo' : '😐 Neutral'}
                   </Badge>
                 </div>
+              </div>
+
+              <Separator />
+
+              {/* Business Metrics */}
+              <div>
+                <p className="font-semibold mb-3">💰 Métricas de Negocio</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <p className="text-sm font-medium text-green-700">Ingresos Estimados</p>
+                    <p className="text-2xl font-bold text-green-900">€{aiAnalysis.estimatedRevenue}</p>
+                  </div>
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <p className="text-sm font-medium text-blue-700">Probabilidad Conversión</p>
+                    <p className="text-2xl font-bold text-blue-900">
+                      {Math.round(aiAnalysis.businessMetrics?.conversionProbability * 100 || 0)}%
+                    </p>
+                  </div>
+                  <div className="bg-purple-50 p-4 rounded-lg">
+                    <p className="text-sm font-medium text-purple-700">Valor Cliente</p>
+                    <p className="text-2xl font-bold text-purple-900">
+                      €{aiAnalysis.businessMetrics?.customerLifetimeValue || 0}
+                    </p>
+                  </div>
+                </div>
+                {aiAnalysis.businessMetrics?.competitiveAdvantage && (
+                  <div className="mt-3 p-3 bg-orange-50 rounded-lg">
+                    <p className="text-sm font-medium text-orange-700">🏆 Ventaja Competitiva</p>
+                    <p className="text-orange-900">{aiAnalysis.businessMetrics.competitiveAdvantage}</p>
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+
+              {/* Customer Profile */}
+              {aiAnalysis.customerProfile && (
+                <>
+                  <div>
+                    <p className="font-semibold mb-3">👤 Perfil del Cliente</p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div>
+                        <p className="text-sm font-medium">Nombre</p>
+                        <p className="text-muted-foreground">{aiAnalysis.customerProfile.name || 'No detectado'}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">Teléfono</p>
+                        <p className="text-muted-foreground">{aiAnalysis.customerProfile.phone || 'No detectado'}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">Vehículo</p>
+                        <p className="text-muted-foreground">{aiAnalysis.customerProfile.vehicle || 'No detectado'}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">Cliente Recurrente</p>
+                        <Badge variant={aiAnalysis.customerProfile.isReturningCustomer ? 'default' : 'secondary'}>
+                          {aiAnalysis.customerProfile.isReturningCustomer ? '✅ Sí' : '❌ No'}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                  <Separator />
+                </>
+              )}
+
+              {/* Key Insights */}
+              {aiAnalysis.keyInsights && aiAnalysis.keyInsights.length > 0 && (
+                <>
+                  <div>
+                    <p className="font-semibold mb-3">💡 Insights Clave</p>
+                    <div className="space-y-2">
+                      {aiAnalysis.keyInsights.map((insight, index) => (
+                        <div key={index} className="flex items-start gap-2 p-3 bg-yellow-50 rounded-lg">
+                          <span className="text-yellow-600 font-bold">{index + 1}.</span>
+                          <p className="text-yellow-900">{insight}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <Separator />
+                </>
+              )}
+
+              {/* Recommendations & Next Steps */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <p className="font-semibold mb-2">Confianza</p>
+                  <p className="font-semibold mb-3">💡 Recomendaciones</p>
+                  <ul className="space-y-2">
+                    {aiAnalysis.recommendations.map((rec, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-green-600 font-bold">•</span>
+                        <span className="text-sm">{rec}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className="font-semibold mb-3">📋 Próximos Pasos</p>
+                  <ul className="space-y-2">
+                    {aiAnalysis.nextSteps.map((step, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-blue-600 font-bold">{index + 1}.</span>
+                        <span className="text-sm">{step}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* Confidence Score */}
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <span className="font-semibold">🎯 Nivel de Confianza del Análisis</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-32 bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-green-600 h-2 rounded-full" 
+                      style={{ width: `${aiAnalysis.confidenceScore * 100}%` }}
+                    ></div>
+                  </div>
                   <Badge variant="outline">
                     {Math.round(aiAnalysis.confidenceScore * 100)}%
                   </Badge>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="font-semibold mb-2">Recomendaciones</p>
-                  <ul className="list-disc list-inside space-y-1 text-sm">
-                    {aiAnalysis.recommendations.map((rec, index) => (
-                      <li key={index}>{rec}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <p className="font-semibold mb-2">Próximos Pasos</p>
-                  <ul className="list-disc list-inside space-y-1 text-sm">
-                    {aiAnalysis.nextSteps.map((step, index) => (
-                      <li key={index}>{step}</li>
-                    ))}
-                  </ul>
                 </div>
               </div>
             </div>

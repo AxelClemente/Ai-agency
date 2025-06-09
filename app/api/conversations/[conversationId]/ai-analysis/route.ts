@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { analyzeConversationWithAI, validateAnalysisResponse } from '@/lib/openai'
 
-// Mock AI analysis for now - replace with actual OpenAI/Claude integration
+// Real AI analysis using OpenAI GPT-4o
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ conversationId: string }> }
@@ -9,37 +10,78 @@ export async function POST(
     const { transcript, programmaticAnalysis } = await request.json()
     const { conversationId } = await params
 
-    console.log(`🧠 Running AI analysis for conversation ${conversationId}`)
+    console.log(`🧠 Running REAL AI analysis for conversation ${conversationId}`)
 
-    // TODO: Replace with actual AI API call
-    // const aiResponse = await callOpenAI(transcript, programmaticAnalysis)
-    
-    // Mock AI analysis response
-    const mockAIAnalysis = {
-      summary: generateMockSummary(transcript, programmaticAnalysis),
-      sentiment: detectSentiment(transcript),
-      recommendations: generateRecommendations(programmaticAnalysis),
-      nextSteps: generateNextSteps(programmaticAnalysis),
-      confidenceScore: 0.87,
-      cost: 0.03, // Track AI usage cost
-      processingTime: Math.random() * 2000 + 1000 // 1-3 seconds
+    // Validate input
+    if (!transcript || transcript.trim().length === 0) {
+      return NextResponse.json(
+        { error: 'Transcript is required and cannot be empty' },
+        { status: 400 }
+      )
     }
 
-    // Simulate AI processing time
-    await new Promise(resolve => setTimeout(resolve, mockAIAnalysis.processingTime))
+    // Call OpenAI GPT-4o for real analysis
+    const startTime = Date.now()
+    const aiAnalysis = await analyzeConversationWithAI(transcript, programmaticAnalysis)
+    const processingTime = Date.now() - startTime
+
+    // Validate response structure
+    if (!validateAnalysisResponse(aiAnalysis)) {
+      console.error('❌ Invalid AI response structure:', aiAnalysis)
+      return NextResponse.json(
+        { error: 'Invalid AI response structure' },
+        { status: 500 }
+      )
+    }
+
+    // Enhance with metadata
+    const enhancedAnalysis = {
+      ...aiAnalysis,
+      conversationId,
+      processingTime,
+      timestamp: new Date().toISOString(),
+      version: '1.0'
+    }
+
+    console.log(`✅ AI Analysis completed in ${processingTime}ms, cost: $${aiAnalysis.cost}`)
 
     // TODO: Save analysis to database
-    // await saveAnalysisToDatabase(conversationId, mockAIAnalysis)
+    // await saveAnalysisToDatabase(conversationId, enhancedAnalysis)
 
     // TODO: Emit WebSocket event for real-time updates
-    // emitConversationEvent(conversationId, 'analysis_complete', mockAIAnalysis)
+    // emitConversationEvent(conversationId, 'analysis_complete', enhancedAnalysis)
 
-    return NextResponse.json(mockAIAnalysis)
+    return NextResponse.json(enhancedAnalysis)
 
   } catch (error) {
     console.error('❌ AI Analysis error:', error)
+    
+    // Provide helpful error messages
+    if (error instanceof Error) {
+      if (error.message.includes('API key')) {
+        return NextResponse.json(
+          { error: 'OpenAI API key not configured' },
+          { status: 500 }
+        )
+      }
+      
+      if (error.message.includes('quota')) {
+        return NextResponse.json(
+          { error: 'OpenAI API quota exceeded' },
+          { status: 429 }
+        )
+      }
+
+      if (error.message.includes('JSON')) {
+        return NextResponse.json(
+          { error: 'AI response parsing failed' },
+          { status: 500 }
+        )
+      }
+    }
+
     return NextResponse.json(
-      { error: 'Error running AI analysis' },
+      { error: 'AI analysis failed', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     )
   }
