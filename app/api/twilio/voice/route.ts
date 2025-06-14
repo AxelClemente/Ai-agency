@@ -1,64 +1,132 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { VoiceResponse } from 'twilio/lib/twiml/VoiceResponse'
+import twilio from 'twilio'
+
+const VoiceResponse = twilio.twiml.VoiceResponse
 
 export async function POST(request: NextRequest) {
+  console.log('📞 Twilio webhook - Direct ElevenLabs integration with client data')
+  
   try {
+    // Parse the form data from Twilio
     const formData = await request.formData()
-    const callSid = formData.get('CallSid') as string
     const from = formData.get('From') as string
     const to = formData.get('To') as string
+    const callSid = formData.get('CallSid') as string
+    
+    console.log('📞 Call details:', {
+      from,
+      to,
+      callSid,
+      timestamp: new Date().toISOString()
+    })
 
-    console.log(`📞 Incoming call: ${from} → ${to} (${callSid})`)
+    // Get ElevenLabs configuration
+    const agentId = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID
+    const apiKey = process.env.ELEVENLABS_API_KEY
+    
+    if (!agentId || !apiKey) {
+      throw new Error('ElevenLabs configuration missing')
+    }
+    
+    console.log('🤖 Using ElevenLabs agent:', agentId)
 
-    const twiml = new VoiceResponse()
-
-    // Mensaje de bienvenida
-    twiml.say({
-      voice: 'Polly.Joanna-Neural',
-      language: 'es-ES'
-    }, 'Hola, te estoy conectando con AutoBox Manacor. Un momento por favor.')
-
-    // Intentar conectar con ElevenLabs Agent
-    try {
-      // TODO: Implementar streaming hacia ElevenLabs
-      const connect = twiml.connect()
-      connect.stream({
-        url: `wss://${request.headers.get('host')}/api/twilio/stream`,
-        name: 'elevenlabs-stream'
-      })
-
-    } catch (error) {
-      console.error('❌ Error connecting to ElevenLabs:', error)
-      
-      // Fallback: Redireccionar a móvil
-      twiml.say({
-        voice: 'Polly.Joanna-Neural', 
-        language: 'es-ES'
-      }, 'Te estoy redirigiendo con nuestro especialista.')
-      
-      twiml.dial(process.env.MOBILE_FALLBACK_NUMBER || '+34600000000')
+    // Prepare client data for the conversation
+    const clientData = {
+      custom_llm_extra_body: {
+        caller_phone_number: from,
+        call_sid: callSid,
+        twilio_call_data: {
+          from: from,
+          to: to,
+          call_type: "inbound"
+        }
+      }
     }
 
-    // Registrar llamada en base de datos
-    // TODO: Guardar en DB con WebSocket notification
-
-    return new NextResponse(twiml.toString(), {
-      headers: {
-        'Content-Type': 'text/xml',
-      },
-    })
-
-  } catch (error) {
-    console.error('❌ Twilio webhook error:', error)
+    // Get signed URL for ElevenLabs WebSocket connection (back to GET method)
+    const signedUrlResponse = await fetch(
+      `https://api.elevenlabs.io/v1/convai/conversation/get-signed-url?agent_id=${agentId}`,
+      {
+        method: 'GET',
+        headers: {
+          'xi-api-key': apiKey
+        }
+      }
+    );
     
+    if (!signedUrlResponse.ok) {
+      const errorText = await signedUrlResponse.text()
+      console.error('❌ ElevenLabs signed URL error:', errorText)
+      throw new Error(`Failed to get ElevenLabs signed URL: ${signedUrlResponse.status}`)
+    }
+    
+    const { signed_url } = await signedUrlResponse.json()
+    console.log('✅ Got ElevenLabs signed URL')
+    
+    // Create TwiML to connect to ElevenLabs WebSocket
     const twiml = new VoiceResponse()
-    twiml.say('Lo siento, hay un problema técnico. Inténtalo más tarde.')
-    twiml.hangup()
-
+    
+    // Connect to ElevenLabs WebSocket
+    const connect = twiml.connect()
+    const stream = connect.stream({
+      url: signed_url,
+    })
+    
+    // Add call metadata as parameters
+    stream.parameter({
+      name: 'callSid',
+      value: callSid
+    })
+    
+    stream.parameter({
+      name: 'from',
+      value: from
+    })
+    
+    stream.parameter({
+      name: 'to',
+      value: to
+    })
+    
+    // Log the TwiML response
+    console.log('📋 TwiML ElevenLabs Direct Integration:', twiml.toString())
+    
+    // Save call info
+    await saveCallInfo(callSid, from, to, agentId)
+    
+    // Return TwiML response
     return new NextResponse(twiml.toString(), {
+      status: 200,
       headers: {
         'Content-Type': 'text/xml',
       },
     })
+    
+  } catch (error) {
+    console.error('❌ Error connecting to ElevenLabs:', error)
+    
+    // Fallback TwiML
+    const errorTwiml = new VoiceResponse()
+    errorTwiml.say({
+      voice: 'alice',
+      language: 'es-ES'
+    }, 'Lo siento, nuestro servicio de inteligencia artificial no está disponible en este momento. Por favor, inténtelo más tarde.')
+    
+    return new NextResponse(errorTwiml.toString(), {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/xml',
+      },
+    })
+  }
+}
+
+async function saveCallInfo(callSid: string, from: string, to: string, agentId: string) {
+  try {
+    console.log('💾 Saving call info:', { callSid, from, to, agentId })
+    console.log('✅ Call info logged successfully')
+    
+  } catch (error) {
+    console.error('❌ Error saving call info:', error)
   }
 } 
