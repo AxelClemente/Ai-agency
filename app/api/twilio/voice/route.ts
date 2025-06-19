@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { VoiceResponse } from 'twilio/lib/twiml/VoiceResponse'
+import VoiceResponse from 'twilio/lib/twiml/VoiceResponse'
 
 export async function POST(request: NextRequest) {
   try {
