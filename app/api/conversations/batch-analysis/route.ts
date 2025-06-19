@@ -125,7 +125,9 @@ export async function POST(request: NextRequest) {
 }
 
 function generateAggregatedMetrics(results: BatchAnalysisResult[]): AggregatedMetrics {
-  const analyses = results.map(r => r.analysis).filter(Boolean)
+  const analyses = results
+    .map(r => r.analysis)
+    .filter((analysis): analysis is AIAnalysis => analysis !== undefined)
   
   // Calculate service distribution
   const serviceDistribution: Record<string, number> = {}
