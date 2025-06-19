@@ -88,11 +88,11 @@ export async function POST(
 }
 
 // Helper functions for mock AI analysis
-function generateMockSummary(transcript: string, programmaticAnalysis: any): string {
-  const serviceType = programmaticAnalysis?.serviceType || 'General'
-  const intent = programmaticAnalysis?.customerIntent || 'Consulta'
-  
-  return `El cliente contactó para ${intent.toLowerCase()} relacionado con ${serviceType}. Durante la conversación se mostró interesado en obtener información sobre los servicios disponibles. La interacción fue profesional y el cliente expresó sus necesidades de manera clara.`
+function generateMockSummary(transcript: string, programmaticAnalysis: unknown): string {
+  const pa = programmaticAnalysis as { serviceType?: string; customerIntent?: string };
+  const serviceType = pa?.serviceType || 'General';
+  const intent = pa?.customerIntent || 'Consulta';
+  return `El cliente contactó para ${intent.toLowerCase()} relacionado con ${serviceType}. Durante la conversación se mostró interesado en obtener información sobre los servicios disponibles. La interacción fue profesional y el cliente expresó sus necesidades de manera clara.`;
 }
 
 function detectSentiment(transcript: string): 'positive' | 'neutral' | 'negative' {
@@ -109,45 +109,38 @@ function detectSentiment(transcript: string): 'positive' | 'neutral' | 'negative
   return 'neutral'
 }
 
-function generateRecommendations(programmaticAnalysis: any): string[] {
-  const recommendations = []
-  
-  if (programmaticAnalysis?.urgencyLevel === 'high') {
-    recommendations.push('Contactar al cliente inmediatamente para agendar cita urgente')
+function generateRecommendations(programmaticAnalysis: unknown): string[] {
+  const pa = programmaticAnalysis as { urgencyLevel?: string; appointmentScheduled?: boolean; serviceType?: string };
+  const recommendations = [];
+  if (pa?.urgencyLevel === 'high') {
+    recommendations.push('Contactar al cliente inmediatamente para agendar cita urgente');
   }
-  
-  if (!programmaticAnalysis?.appointmentScheduled) {
-    recommendations.push('Hacer seguimiento para confirmar agendamiento de cita')
+  if (!pa?.appointmentScheduled) {
+    recommendations.push('Hacer seguimiento para confirmar agendamiento de cita');
   }
-  
-  if (programmaticAnalysis?.serviceType === 'ITV') {
-    recommendations.push('Ofrecer servicios adicionales como revisión general del vehículo')
+  if (pa?.serviceType === 'ITV') {
+    recommendations.push('Ofrecer servicios adicionales como revisión general del vehículo');
   }
-  
-  recommendations.push('Enviar información de precios por WhatsApp o email')
-  
-  return recommendations
+  recommendations.push('Enviar información de precios por WhatsApp o email');
+  return recommendations;
 }
 
-function generateNextSteps(programmaticAnalysis: any): string[] {
-  const nextSteps = []
-  
-  if (programmaticAnalysis?.contactInfo?.phone) {
-    nextSteps.push('Llamada de seguimiento en 24 horas')
+function generateNextSteps(programmaticAnalysis: unknown): string[] {
+  const pa = programmaticAnalysis as { contactInfo?: { phone?: string }; serviceType?: string };
+  const nextSteps = [];
+  if (pa?.contactInfo?.phone) {
+    nextSteps.push('Llamada de seguimiento en 24 horas');
   }
-  
-  if (programmaticAnalysis?.serviceType !== 'General') {
-    nextSteps.push(`Preparar presupuesto específico para ${programmaticAnalysis.serviceType}`)
+  if (pa?.serviceType !== 'General') {
+    nextSteps.push(`Preparar presupuesto específico para ${pa.serviceType}`);
   }
-  
-  nextSteps.push('Actualizar CRM con información del cliente')
-  nextSteps.push('Programar recordatorio de seguimiento')
-  
-  return nextSteps
+  nextSteps.push('Actualizar CRM con información del cliente');
+  nextSteps.push('Programar recordatorio de seguimiento');
+  return nextSteps;
 }
 
 // TODO: Implement actual OpenAI/Claude integration
-async function callOpenAI(transcript: string, programmaticAnalysis: any) {
+async function callOpenAI(transcript: string, programmaticAnalysis: unknown) {
   const prompt = `
 Contexto: Eres un analista experto de AutoBox Manacor, un taller mecánico especializado en:
 - ITV (Inspección Técnica de Vehículos)  

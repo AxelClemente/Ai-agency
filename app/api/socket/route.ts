@@ -5,7 +5,7 @@ import { Server as NetServer } from 'http'
 // Global socket server instance
 let io: SocketIOServer | undefined
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   // Check if Socket.io server is already initialized
   if (!io) {
     console.log('🚀 Initializing Socket.io server...')
@@ -71,19 +71,19 @@ export function initializeSocketServer(server: NetServer) {
 }
 
 // Utility functions to emit events
-export function emitConversationEvent(conversationId: string, event: string, data: any) {
+export function emitConversationEvent(conversationId: string, event: string, data: unknown) {
   if (io) {
     io.to(`conversation:${conversationId}`).emit(`conversation:${conversationId}:${event}`, data)
   }
 }
 
-export function emitMetricsUpdate(data: any) {
+export function emitMetricsUpdate(data: unknown) {
   if (io) {
     io.to('metrics').emit('metrics:updated', data)
   }
 }
 
-export function emitGlobalEvent(event: string, data: any) {
+export function emitGlobalEvent(event: string, data: unknown) {
   if (io) {
     io.emit(event, data)
   }

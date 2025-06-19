@@ -6,7 +6,7 @@ import { io, Socket } from 'socket.io-client'
 interface WebSocketContextType {
   socket: Socket | null
   isConnected: boolean
-  sendMessage: (event: string, data: any) => void
+  sendMessage: (event: string, data: unknown) => void
 }
 
 const WebSocketContext = createContext<WebSocketContextType>({
@@ -84,7 +84,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isMounted])
 
-  const sendMessage = (event: string, data: any) => {
+  const sendMessage = (event: string, data: unknown) => {
     if (socket && isConnected) {
       socket.emit(event, data)
     } else {
@@ -120,7 +120,7 @@ export const useWebSocket = () => {
 export const useConversationUpdates = (conversationId?: string) => {
   const { socket } = useWebSocket()
   const [transcript, setTranscript] = useState('')
-  const [analysis, setAnalysis] = useState(null)
+  const [analysis, setAnalysis] = useState<unknown>(null)
   const [status, setStatus] = useState<'active' | 'ended' | 'analyzing'>('active')
   const [isMounted, setIsMounted] = useState(false)
 

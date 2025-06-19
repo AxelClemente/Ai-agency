@@ -20,6 +20,21 @@ import { useSession } from 'next-auth/react'
 import { TranscriptionModal } from './modal/transcription-modal'
 import { toast } from "sonner"
 
+interface TranscriptionMessage {
+  role: 'user' | 'ai';
+  message: string;
+  timestamp: string;
+}
+
+interface ModalConversation {
+  id: string;
+  agentId: string;
+  duration: number;
+  transcript: string;
+  messages: TranscriptionMessage[];
+  startedAt: string;
+}
+
 interface Conversation {
   id: string;
   agentId: string;
@@ -30,7 +45,7 @@ interface Conversation {
   createdAt: string;
   cost: number;
   transcript: string;
-  messages: any[];
+  messages: TranscriptionMessage[];
 }
 
 export default function RecordingsPage() {
@@ -301,7 +316,7 @@ export default function RecordingsPage() {
           <TranscriptionModal
             isOpen={isTranscriptionModalOpen}
             onClose={handleCloseTranscription}
-            conversation={selectedConversation}
+            conversation={selectedConversation as ModalConversation}
           />
         )}
       </div>

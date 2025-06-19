@@ -15,12 +15,23 @@ import {
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
+interface AgentConfigRaw {
+  conversation_config?: {
+    agent?: {
+      first_message?: string;
+      prompt?: {
+        prompt?: string;
+      };
+    };
+  };
+}
+
 interface EditAgentModalProps {
   isOpen: boolean;
   onClose: () => void;
   agentId: string;
   agentName: string;
-  agentConfig: any; // Datos ya cargados externamente
+  agentConfig: AgentConfigRaw; // Datos ya cargados externamente
 }
 
 interface AgentConfig {

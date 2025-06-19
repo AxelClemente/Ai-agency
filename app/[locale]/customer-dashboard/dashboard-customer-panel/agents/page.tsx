@@ -22,6 +22,7 @@ import { useRouter } from 'next/navigation'
 import { EditAgentModal } from './components/edit-agent-modal'
 import { KnowledgeBaseModal } from './components/knowledge-base-modal'
 import { CreateAgentModal } from './components/create-agent-modal'
+import type { KnowledgeBaseDocument } from './components/knowledge-base-modal'
 
 interface AgentWithStats {
   id: string;
@@ -33,6 +34,10 @@ interface AgentWithStats {
   calls: number;
 }
 
+interface AgentConfigRaw {
+  // Define the structure of the agent config
+}
+
 export default function AgentsPage() {
   const [agents, setAgents] = useState<AgentWithStats[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,9 +45,9 @@ export default function AgentsPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isKnowledgeBaseModalOpen, setIsKnowledgeBaseModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [agentConfig, setAgentConfig] = useState<any>(null);
+  const [agentConfig, setAgentConfig] = useState<AgentConfigRaw | null>(null);
   const [isLoadingConfig, setIsLoadingConfig] = useState(false);
-  const [knowledgeBaseDocuments, setKnowledgeBaseDocuments] = useState<any[]>([]);
+  const [knowledgeBaseDocuments, setKnowledgeBaseDocuments] = useState<KnowledgeBaseDocument[]>([]);
   const [isLoadingDocuments, setIsLoadingDocuments] = useState(false);
   const { data: session } = useSession();
   const { toast } = useToast();

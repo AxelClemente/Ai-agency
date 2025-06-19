@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useConversationUpdates } from '@/components/websocket-provider'
+import type { AIAnalysis } from '../../../../types/conversation'
 
 interface ConversationData {
   id: string
@@ -31,34 +31,6 @@ interface ProgrammaticAnalysis {
   }
 }
 
-interface AIAnalysis {
-  summary: string
-  serviceType: string
-  customerIntent: string
-  urgencyLevel: 'low' | 'medium' | 'high'
-  sentiment: 'positive' | 'neutral' | 'negative'
-  appointmentScheduled: boolean
-  estimatedRevenue: number
-  keyInsights: string[]
-  recommendations: string[]
-  nextSteps: string[]
-  customerProfile: {
-    name?: string | null
-    phone?: string | null
-    vehicle?: string | null
-    isReturningCustomer: boolean
-  }
-  businessMetrics: {
-    conversionProbability: number
-    customerLifetimeValue: number
-    competitiveAdvantage: string
-  }
-  confidenceScore: number
-  cost?: number
-  processingTime?: number
-  model?: string
-}
-
 export default function ConversationAnalysisPage({
   params
 }: {
@@ -74,14 +46,14 @@ export default function ConversationAnalysisPage({
   }, [params])
   
   // WebSocket real-time updates (only when conversationId is available)
-  const { transcript: liveTranscript, analysis: liveAnalysis, status: liveStatus } = useConversationUpdates(conversationId || undefined)
+  const { transcript: liveTranscript, status: liveStatus } = useConversationUpdates(conversationId || undefined)
   
   // Local state
   const [conversationData, setConversationData] = useState<ConversationData | null>(null)
   const [programmaticAnalysis, setProgrammaticAnalysis] = useState<ProgrammaticAnalysis | null>(null)
-  const [aiAnalysis, setAIAnalysis] = useState<AIAnalysis | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [aiAnalysis, setAIAnalysis] = useState<AIAnalysis | null>(null)
 
   // Load conversation data when conversationId is available
   useEffect(() => {
@@ -220,7 +192,6 @@ export default function ConversationAnalysisPage({
       })
       
       const analysis = await response.json()
-      setAIAnalysis(analysis)
       
     } catch (error) {
       console.error('Error running AI analysis:', error)
@@ -482,23 +453,6 @@ export default function ConversationAnalysisPage({
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>🧠 Análisis con IA GPT-4o (Bajo Demanda)</span>
-            {aiAnalysis && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Badge variant="outline">
-                  {aiAnalysis.model || 'GPT-4o'}
-                </Badge>
-                {aiAnalysis.cost && (
-                  <Badge variant="outline">
-                    ${aiAnalysis.cost.toFixed(4)}
-                  </Badge>
-                )}
-                {aiAnalysis.processingTime && (
-                  <Badge variant="outline">
-                    {aiAnalysis.processingTime}ms
-                  </Badge>
-                )}
-              </div>
-            )}
           </CardTitle>
         </CardHeader>
         <CardContent>

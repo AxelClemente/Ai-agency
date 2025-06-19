@@ -16,6 +16,7 @@ import {
   RealEstateAnalysisComponent,
   BusinessInsight
 } from '../utils/analysis';
+import type { RestaurantAnalysis, SupportAnalysis, MedicalAnalysis, RealEstateAnalysis } from '../utils/types/analysis-types';
 
 interface TranscriptSummaryPanelProps {
   isOpen: boolean;
@@ -63,8 +64,9 @@ export function TranscriptSummaryPanel({
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const userMessages = messages.filter(m => m.role === 'user').length;
-  const agentMessages = messages.filter(m => m.role === 'ai').length;
+  // const conversationId = conversationId // Reservado para uso futuro
+  // const userMessages = messages.filter(m => m.role === 'user').length // Reservado para uso futuro
+  // const agentMessages = messages.filter(m => m.role === 'ai').length // Reservado para uso futuro
 
   const getAgentInfo = (id: string) => {
     const agentMap: Record<string, { name: string; image: string; alt: string }> = {
@@ -137,13 +139,13 @@ export function TranscriptSummaryPanel({
   const renderAnalysisComponent = () => {
     switch (businessData.type) {
       case 'hosteleria':
-        return <RestaurantAnalysisComponent insights={businessData.insights as any} />;
+        return <RestaurantAnalysisComponent insights={businessData.insights as RestaurantAnalysis} />;
       case 'support':
-        return <SupportAnalysisComponent insights={businessData.insights as any} />;
+        return <SupportAnalysisComponent insights={businessData.insights as SupportAnalysis} />;
       case 'medical':
-        return <MedicalAnalysisComponent insights={businessData.insights as any} />;
+        return <MedicalAnalysisComponent insights={businessData.insights as MedicalAnalysis} />;
       case 'realstate':
-        return <RealEstateAnalysisComponent insights={businessData.insights as any} />;
+        return <RealEstateAnalysisComponent insights={businessData.insights as RealEstateAnalysis} />;
       default:
         return <div className="text-sm text-gray-600">Análisis no disponible</div>;
     }

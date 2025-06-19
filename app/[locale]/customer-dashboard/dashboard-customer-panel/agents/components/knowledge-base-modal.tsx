@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -32,7 +30,7 @@ interface KnowledgeBaseModalProps {
   onDocumentsUpdate: (documents: KnowledgeBaseDocument[]) => void;
 }
 
-interface KnowledgeBaseDocument {
+export interface KnowledgeBaseDocument {
   id: string;
   name: string;
   prompt_injectable: boolean;
@@ -182,7 +180,7 @@ export function KnowledgeBaseModal({ isOpen, onClose, agentId, agentName, docume
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
   };
 
-  const getFileIcon = (fileType?: string) => {
+  const getFileIcon = () => {
     return <FileText className="h-4 w-4" />;
   };
 
@@ -294,7 +292,7 @@ export function KnowledgeBaseModal({ isOpen, onClose, agentId, agentName, docume
                         className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
                       >
                         <div className="flex items-center gap-3">
-                          {getFileIcon(doc.file_type)}
+                          {getFileIcon()}
                           <div>
                             <p className="font-medium text-sm">{doc.name}</p>
                             <div className="flex items-center gap-2 text-xs text-muted-foreground">

@@ -4,6 +4,12 @@ import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { useEffect } from 'react';
 
+interface TranscriptionMessage {
+  role: 'user' | 'ai';
+  message: string;
+  timestamp: string;
+}
+
 interface TranscriptionModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -12,7 +18,7 @@ interface TranscriptionModalProps {
     agentId: string;
     duration: number;
     transcript: string;
-    messages: any[];
+    messages: TranscriptionMessage[];
     startedAt: string;
   };
 }
@@ -128,7 +134,7 @@ export function TranscriptionModal({
             </h3>
             <div className="bg-gray-50 p-4 rounded-lg max-h-96 overflow-y-auto space-y-3">
               {conversation.messages && conversation.messages.length > 0 ? (
-                conversation.messages.map((message: any, index: number) => (
+                conversation.messages.map((message: TranscriptionMessage, index: number) => (
                   <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     {/* Mensaje del Agente */}
                     {message.role === 'ai' && (

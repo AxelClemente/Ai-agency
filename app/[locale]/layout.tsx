@@ -8,13 +8,6 @@ import { metadata as appMetadata } from '@/app/metadata-config';
 import { Toaster } from "sonner"
 import { WebSocketProvider } from '@/components/websocket-provider'
 
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-poppins',
-  display: 'swap',
-});
-
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -44,7 +37,7 @@ export default async function LocaleLayout({
   let messages;
   try {
     messages = (await import(`../../messages/${locale}.json`)).default;
-  } catch (_) {
+  } catch {
     notFound();
   }
 

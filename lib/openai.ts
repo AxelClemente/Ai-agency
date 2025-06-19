@@ -1,4 +1,6 @@
 import OpenAI from 'openai'
+// Importo la interfaz AIAnalysis
+import type { AIAnalysis } from '../types/conversation';
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error('OPENAI_API_KEY is not set in environment variables')
@@ -84,8 +86,8 @@ Analiza la siguiente conversación:
 // Function to analyze conversation with OpenAI
 export async function analyzeConversationWithAI(
   transcript: string,
-  programmaticAnalysis?: any
-): Promise<any> {
+  programmaticAnalysis?: Record<string, unknown>
+): Promise<AIAnalysis> {
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-4o", // Using GPT-4o as requested
@@ -135,21 +137,21 @@ Analiza esta conversación y responde con el JSON solicitado.`
 }
 
 // Calculate approximate cost based on usage
-function calculateCost(usage: any): number {
-  if (!usage) return 0
-  
+function calculateCost(usage: OpenAI.Completions.CompletionUsage | undefined): number {
+  if (!usage || typeof usage.prompt_tokens !== 'number' || typeof usage.completion_tokens !== 'number') return 0;
+
   // GPT-4o pricing (approximate)
-  const inputCostPer1k = 0.005  // $0.005 per 1K input tokens
-  const outputCostPer1k = 0.015 // $0.015 per 1K output tokens
-  
-  const inputCost = (usage.prompt_tokens / 1000) * inputCostPer1k
-  const outputCost = (usage.completion_tokens / 1000) * outputCostPer1k
-  
-  return Number((inputCost + outputCost).toFixed(4))
+  const inputCostPer1k = 0.005;  // $0.005 per 1K input tokens
+  const outputCostPer1k = 0.015; // $0.015 per 1K output tokens
+
+  const inputCost = (usage.prompt_tokens / 1000) * inputCostPer1k;
+  const outputCost = (usage.completion_tokens / 1000) * outputCostPer1k;
+
+  return Number((inputCost + outputCost).toFixed(4));
 }
 
 // Validate analysis response
-export function validateAnalysisResponse(analysis: any): boolean {
+export function validateAnalysisResponse(analysis: AIAnalysis): boolean {
   const requiredFields = [
     'summary', 'serviceType', 'customerIntent', 'urgencyLevel', 
     'sentiment', 'appointmentScheduled', 'estimatedRevenue',

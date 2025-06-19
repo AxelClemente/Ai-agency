@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
-import { WebSocketServer } from 'ws'
+
 
 // WebSocket handler para streaming de audio Twilio ↔ ElevenLabs
-export async function GET(request: NextRequest) {
+export async function GET() {
   // TODO: Implementar WebSocket upgrade para streaming
   
   console.log('🔄 WebSocket connection attempt for Twilio streaming')
@@ -25,12 +25,12 @@ export async function GET(request: NextRequest) {
 }
 
 // Función helper para manejar streaming de audio (implementar después)
-async function handleAudioStream(audioData: Buffer) {
+//async function handleAudioStream(audioData: Buffer) {
   // TODO: Enviar audio a ElevenLabs
   // TODO: Recibir respuesta de ElevenLabs  
   // TODO: Enviar respuesta de vuelta a Twilio
   // TODO: Capturar transcripción para análisis
-}
+//}
 
 // Configuración de ElevenLabs bridge
 const ELEVENLABS_CONFIG = {

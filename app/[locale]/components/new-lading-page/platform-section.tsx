@@ -101,8 +101,8 @@ export default function PlatformSection() {
             {/* Testimonial */}
             <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
               <blockquote className="text-gray-300 mb-4">
-                "Writer enables us to co-build, combining IT's technical skills and the business' domain knowledge to
-                drive greater impact than we could alone."
+                &quot;Writer enables us to co-build, combining IT&apos;s technical skills and the business&apos; domain knowledge to
+                drive greater impact than we could alone.&quot;
               </blockquote>
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 rounded-full bg-gray-700 overflow-hidden">

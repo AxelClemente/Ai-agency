@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function EmpowermentSection() {
   const features = [
@@ -48,13 +49,13 @@ export default function EmpowermentSection() {
 
             {/* CTA Link */}
             <div>
-              <a
+              <Link
                 href="/talk-to-expert"
                 className="inline-flex items-center space-x-2 text-purple-600 hover:text-purple-700 font-medium"
               >
                 <span>Talk to an expert</span>
                 <ArrowRight className="h-4 w-4" />
-              </a>
+              </Link>
             </div>
           </div>
 

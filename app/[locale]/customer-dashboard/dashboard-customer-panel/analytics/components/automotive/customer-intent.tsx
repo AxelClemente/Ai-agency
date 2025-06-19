@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 // import { Progress } from "@/components/ui/progress"
-import { Search, Calendar, DollarSign, Info, Clock, AlertTriangle } from "lucide-react"
+import { Search, AlertTriangle } from "lucide-react"
 
 // Simplified data without icons for now
 const intentData = [
@@ -220,7 +220,7 @@ export function CustomerIntent() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                 {intent.examples.map((example, idx) => (
                   <div key={idx} className="text-sm bg-gray-50 p-2 rounded italic">
-                    "{example}"
+                    &quot;{example}&quot;
                   </div>
                 ))}
               </div>

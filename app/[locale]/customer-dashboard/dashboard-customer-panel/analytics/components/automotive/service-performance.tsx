@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 // import { Progress } from "@/components/ui/progress"
-import { Wrench, Car, Shield, Droplets, Steering, Settings } from "lucide-react"
+import { Droplets, Settings, Car } from "lucide-react"
 
 // Simplified data without icons for now
 const serviceData = [
@@ -52,7 +52,7 @@ const serviceData = [
   },
   {
     service: "Dirección",
-    icon: Steering,
+    icon: Car,
     requests: 67,
     percentage: 7.9,
     conversionRate: 76.1,

@@ -1,11 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState} from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
-import { Separator } from '@/components/ui/separator'
 
 interface ExecutiveMetrics {
   totalConversations: number
@@ -16,7 +14,7 @@ interface ExecutiveMetrics {
   sentimentDistribution: Record<string, number>
   topInsights: string[]
   competitiveAdvantages: string[]
-  lostOpportunities: any[]
+  lostOpportunities: LostOpportunity[]
   totalCost: number
   averageProcessingTime: number
   successRate: number
@@ -33,6 +31,12 @@ interface BatchAnalysisResponse {
   averageProcessingTime: number
   totalCost: number
   aggregatedMetrics: ExecutiveMetrics
+}
+
+interface LostOpportunity {
+  reason?: string
+  conversationId?: string
+  [key: string]: unknown
 }
 
 export default function ExecutiveDashboard() {
@@ -94,17 +98,18 @@ export default function ExecutiveDashboard() {
     percentage: Math.round((count / metrics.totalConversations) * 100)
   })) : []
 
-  const urgencyChartData = metrics ? Object.entries(metrics.urgencyDistribution).map(([urgency, count]) => ({
-    urgency,
-    count,
-    percentage: Math.round((count / metrics.totalConversations) * 100)
-  })) : []
+  // Declaraciones para uso futuro (descomentar cuando se necesiten)
+  // const urgencyChartData = metrics ? Object.entries(metrics.urgencyDistribution).map(([urgency, count]) => ({
+  //   urgency,
+  //   count,
+  //   percentage: Math.round((count / metrics.totalConversations) * 100)
+  // })) : []
 
-  const sentimentChartData = metrics ? Object.entries(metrics.sentimentDistribution).map(([sentiment, count]) => ({
-    sentiment,
-    count,
-    percentage: Math.round((count / metrics.totalConversations) * 100)
-  })) : []
+  // const sentimentChartData = metrics ? Object.entries(metrics.sentimentDistribution).map(([sentiment, count]) => ({
+  //   sentiment,
+  //   count,
+  //   percentage: Math.round((count / metrics.totalConversations) * 100)
+  // })) : []
 
   return (
     <div className="container mx-auto p-6 space-y-6">

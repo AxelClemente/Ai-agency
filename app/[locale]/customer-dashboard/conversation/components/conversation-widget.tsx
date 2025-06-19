@@ -52,7 +52,7 @@ export function ConversationWidget({ agentId, isPanelOpen, setIsPanelOpen }: Con
         agentId
       }]);
     },
-    onError: (err) => {
+    onError: () => {
       toast({
         title: 'Error',
         description: 'Hubo un problema con la conversación',

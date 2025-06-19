@@ -12,7 +12,6 @@ import { useTranslations, useLocale } from 'next-intl'
 export default function SignUpForm() {
   const t = useTranslations('Auth')
   const router = useRouter()
-  const currentLocale = useLocale()
   const [formData, setFormData] = useState({
     name: '',
     email: '',

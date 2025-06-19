@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { analyzeConversationWithAI } from '@/lib/openai'
 import { DIVERSE_CONVERSATIONS } from '@/lib/mock-conversations'
+import type { AIAnalysis } from '../../../../types/conversation'
 
 interface BatchAnalysisResult {
   conversationId: string
   success: boolean
-  analysis?: any
+  analysis?: AIAnalysis
   error?: string
   cost?: number
   processingTime?: number
@@ -20,7 +21,7 @@ interface AggregatedMetrics {
   sentimentDistribution: Record<string, number>
   topInsights: string[]
   competitiveAdvantages: string[]
-  lostOpportunities: any[]
+  lostOpportunities: unknown[]
   totalCost: number
   averageProcessingTime: number
   successRate: number

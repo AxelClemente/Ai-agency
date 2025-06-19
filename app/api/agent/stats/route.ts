@@ -46,18 +46,19 @@ export async function GET(request: Request) {
 
     // Transformar agentes de ElevenLabs al formato esperado por el frontend
     const agentStats = await Promise.all(
-      elevenlabsAgents.map(async (agent: any) => {
+      elevenlabsAgents.map(async (agent: unknown) => {
+        const ag = agent as { agent_id: string; name: string };
         const conversationCount = await prisma.conversation.count({
           where: {
             userId: userId,
-            agentId: agent.agent_id
+            agentId: ag.agent_id
           }
         });
 
         return {
-          id: agent.agent_id,
-          name: agent.name,
-          description: agent.name, // ElevenLabs no devuelve description en el list, usamos name
+          id: ag.agent_id,
+          name: ag.name,
+          description: ag.name, // ElevenLabs no devuelve description en el list, usamos name
           image: '/placeholder.svg?height=32&width=32', // Placeholder image
           category: 'AI Agent', // Categoría por defecto
           status: 'active' as const, // Los agentes de ElevenLabs se consideran activos

@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   try {
-    let { 
+    const { 
       transcript, 
       userId, 
       agentId,
@@ -26,16 +26,13 @@ export async function POST(request: Request) {
     }
 
     // Validación de tipos en runtime
-    if (!Array.isArray(messages)) {
-      console.warn('Messages no es un array:', messages);
-      messages = [];
-    }
+    const safeMessages = Array.isArray(messages) ? messages : [];
 
     // Calculamos métricas agregadas con validación
     const metrics: ConversationMetrics = {
-      totalLatency: messages.length ? messages.reduce((acc: number, msg: Message) => acc + (msg.latency || 0), 0) : 0,
-      averageLatency: messages.length ? messages.reduce((acc: number, msg: Message) => acc + (msg.latency || 0), 0) / messages.length : 0,
-      messageCount: messages.length,
+      totalLatency: safeMessages.length ? safeMessages.reduce((acc: number, msg: Message) => acc + (msg.latency || 0), 0) : 0,
+      averageLatency: safeMessages.length ? safeMessages.reduce((acc: number, msg: Message) => acc + (msg.latency || 0), 0) / safeMessages.length : 0,
+      messageCount: safeMessages.length,
       creditsUsed: cost || 0,
       costPerMinute: duration ? (cost || 0) / (duration / 60) : 0,
       totalTokens: metadata?.totalTokens || 0,
@@ -54,6 +51,10 @@ export async function POST(request: Request) {
       topics: metadata?.topics
     };
 
+    // Convertir a JSON plano para Prisma
+    const metricsPlain = JSON.parse(JSON.stringify(metrics));
+    const metadataPlain = JSON.parse(JSON.stringify(conversationMetadata));
+
     const convo = await prisma.conversation.create({
       data: {
         transcript,
@@ -64,9 +65,9 @@ export async function POST(request: Request) {
         status: status as ConversationStatus,
         startedAt: conversationMetadata.startedAt,
         endedAt: conversationMetadata.endedAt,
-        messages,
-        metrics,
-        metadata: conversationMetadata
+        messages: safeMessages,
+        metrics: metricsPlain,
+        metadata: metadataPlain
       }
     });
 
