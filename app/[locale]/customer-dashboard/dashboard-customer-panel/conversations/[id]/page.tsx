@@ -4,18 +4,18 @@ import { DashboardHeader } from "../../components/dashboard-header"
 import { Button } from "@/components/ui/button"
 import { Brain, Clock, MessageSquare, User } from "lucide-react"
 
-interface ConversationAnalysisPageProps {
-  params: {
-    id: string
-  }
-}
-
-export default async function ConversationAnalysisPage({ params }: ConversationAnalysisPageProps) {
+export default async function ConversationAnalysisPage({
+  params
+}: {
+  params: Promise<{ id: string }>
+}) {
   // TODO: Fetch conversation data using params.id
   // const conversation = await prisma.conversation.findUnique({
   //   where: { id: params.id },
   //   include: { analysis: true }
   // })
+
+  const { id } = await params;
 
   return (
     <div className="flex flex-col">
@@ -25,7 +25,7 @@ export default async function ConversationAnalysisPage({ params }: ConversationA
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-bold tracking-tight">Análisis de Conversación</h2>
-            <p className="text-muted-foreground">ID: {params.id}</p>
+            <p className="text-muted-foreground">ID: {id}</p>
           </div>
           <Button variant="outline" className="ml-auto">
             <Brain className="mr-2 h-4 w-4" />
