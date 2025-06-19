@@ -243,7 +243,6 @@ export function ConversationWidget({ agentId, isPanelOpen, setIsPanelOpen }: Con
         messages={messages}
         agentId={agentId}
         duration={getDuration()}
-        conversationId={conversationId}
       />
     </>
   );
