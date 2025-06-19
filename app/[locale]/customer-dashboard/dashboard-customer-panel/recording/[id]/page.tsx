@@ -127,7 +127,7 @@ export default function RecordingDetailPage({ params }: { params: { id: string }
               <CardContent>
                 <p className="text-sm">
                   Customer called regarding an issue with their recent order #45678. The customer was concerned about a
-                  delayed shipment. Agent John verified the customer's information and checked the order status. The
+                  delayed shipment. Agent John verified the customer&apos;s information and checked the order status. The
                   agent explained that the delay was due to a temporary warehouse issue and provided an updated delivery
                   estimate. The agent offered a 10% discount on the next order as compensation for the inconvenience.
                   The customer accepted the solution and expressed satisfaction with the resolution.
@@ -295,7 +295,7 @@ export default function RecordingDetailPage({ params }: { params: { id: string }
                     <h4 className="text-sm font-medium">Empathy Expression</h4>
                     <p className="mt-1 text-sm text-muted-foreground">
                       Agent could improve on expressing empathy when customer mentioned frustration with the delay.
-                      Consider using more empathetic language like "I understand how frustrating this must be for you."
+                      Consider using more empathetic language like &quot;I understand how frustrating this must be for you.&quot;
                     </p>
                   </div>
                   <div className="rounded-md border p-3">
@@ -423,7 +423,7 @@ export default function RecordingDetailPage({ params }: { params: { id: string }
                     <div className="flex-1">
                       <p className="font-medium">Customer</p>
                       <p className="text-sm">
-                        Hi, I'm calling about my order. It was supposed to arrive yesterday, but I still haven't
+                        Hi, I&apos;m calling about my order. It was supposed to arrive yesterday, but I still haven&apos;t
                         received it.
                       </p>
                     </div>
@@ -433,7 +433,7 @@ export default function RecordingDetailPage({ params }: { params: { id: string }
                     <div className="flex-1">
                       <p className="font-medium">Agent (John)</p>
                       <p className="text-sm">
-                        I'm sorry to hear that. I'd be happy to look into this for you. May I have your order number,
+                        I&apos;m sorry to hear that. I&apos;d be happy to look into this for you. May I have your order number,
                         please?
                       </p>
                     </div>
@@ -442,7 +442,7 @@ export default function RecordingDetailPage({ params }: { params: { id: string }
                     <div className="w-16 shrink-0 text-sm text-muted-foreground">0:22</div>
                     <div className="flex-1">
                       <p className="font-medium">Customer</p>
-                      <p className="text-sm">Yes, it's 45678.</p>
+                      <p className="text-sm">Yes, it&apos;s 45678.</p>
                     </div>
                   </div>
                   <div className="flex gap-4">
@@ -458,7 +458,7 @@ export default function RecordingDetailPage({ params }: { params: { id: string }
                     <div className="w-16 shrink-0 text-sm text-muted-foreground">0:30</div>
                     <div className="flex-1">
                       <p className="font-medium">Customer</p>
-                      <p className="text-sm">It's customer@example.com</p>
+                      <p className="text-sm">It&apos;s customer@example.com</p>
                     </div>
                   </div>
                   <div className="flex gap-4">
@@ -466,7 +466,7 @@ export default function RecordingDetailPage({ params }: { params: { id: string }
                     <div className="flex-1">
                       <p className="font-medium">Agent (John)</p>
                       <p className="text-sm">
-                        Perfect, I've located your order. Let me check the status for you... I see that there was a
+                        Perfect, I&apos;ve located your order. Let me check the status for you... I see that there was a
                         delay at our warehouse. I apologize for the inconvenience.
                       </p>
                     </div>
@@ -475,7 +475,7 @@ export default function RecordingDetailPage({ params }: { params: { id: string }
                     <div className="w-16 shrink-0 text-sm text-muted-foreground">0:50</div>
                     <div className="flex-1">
                       <p className="font-medium">Customer</p>
-                      <p className="text-sm">That's frustrating. I needed those items for this weekend.</p>
+                      <p className="text-sm">That&apos;s frustrating. I needed those items for this weekend.</p>
                     </div>
                   </div>
                   <div className="flex gap-4">

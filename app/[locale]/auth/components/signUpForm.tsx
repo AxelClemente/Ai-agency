@@ -7,7 +7,7 @@ import { User, Mail, Lock } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
-import { useTranslations, useLocale } from 'next-intl'
+import { useTranslations } from 'next-intl'
 
 export default function SignUpForm() {
   const t = useTranslations('Auth')

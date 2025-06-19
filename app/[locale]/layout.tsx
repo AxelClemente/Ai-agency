@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Poppins } from 'next/font/google';
+import { Inter} from 'next/font/google';
 import { AuthProvider } from "@/app/[locale]/components/providers/auth-provider";
 import "@/app/globals.css";
 import { NextIntlClientProvider } from 'next-intl';

@@ -1,6 +1,3 @@
-import { NextRequest } from 'next/server'
-
-
 // WebSocket handler para streaming de audio Twilio ↔ ElevenLabs
 export async function GET() {
   // TODO: Implementar WebSocket upgrade para streaming

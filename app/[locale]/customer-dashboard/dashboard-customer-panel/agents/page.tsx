@@ -24,6 +24,17 @@ import { KnowledgeBaseModal } from './components/knowledge-base-modal'
 import { CreateAgentModal } from './components/create-agent-modal'
 import type { KnowledgeBaseDocument } from './components/knowledge-base-modal'
 
+interface AgentConfigRaw {
+  conversation_config?: {
+    agent?: {
+      first_message?: string;
+      prompt?: {
+        prompt?: string;
+      };
+    };
+  };
+}
+
 interface AgentWithStats {
   id: string;
   name: string;
@@ -32,10 +43,6 @@ interface AgentWithStats {
   category: string;
   status: 'active' | 'inactive';
   calls: number;
-}
-
-interface AgentConfigRaw {
-  // Define the structure of the agent config
 }
 
 export default function AgentsPage() {
@@ -118,7 +125,7 @@ export default function AgentsPage() {
       console.log('📡 Agent config response:', data);
 
       if (data.success && data.agent) {
-        setAgentConfig(data.agent);
+        setAgentConfig(data.agent as AgentConfigRaw);
         setIsEditModalOpen(true);
         console.log('✅ Config loaded, opening modal');
       } else {

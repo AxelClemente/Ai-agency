@@ -86,17 +86,6 @@ const getRevenueColor = (revenue: string) => {
   }
 }
 
-const getUrgencyColor = (urgency: string) => {
-  switch (urgency) {
-    case "Muy Alta": return "bg-red-600 text-white"
-    case "Alta": return "bg-red-500 text-white"
-    case "Media": return "bg-yellow-500 text-black"
-    case "Baja": return "bg-green-500 text-white"
-    case "Variable": return "bg-gray-500 text-white"
-    default: return "bg-gray-300 text-black"
-  }
-}
-
 export function ServicePerformance() {
   const maxRequests = Math.max(...serviceData.map(s => s.requests))
   
@@ -141,7 +130,7 @@ export function ServicePerformance() {
           <CardTitle>Análisis Detallado por Servicio</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {serviceData.map((service, index) => (
+          {serviceData.map((service) => (
             <div key={service.service} className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border rounded-lg">
               {/* Servicio */}
               <div className="flex items-center space-x-3">

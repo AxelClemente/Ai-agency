@@ -1,4 +1,3 @@
-import { NextRequest } from 'next/server'
 import { Server as SocketIOServer } from 'socket.io'
 import { Server as NetServer } from 'http'
 

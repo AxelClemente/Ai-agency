@@ -1,6 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest) {
+interface KnowledgeBaseDocument {
+  id: string;
+  name: string;
+  prompt_injectable?: boolean;
+  [key: string]: unknown;
+}
+
+export async function GET() {
   console.log('📋 Knowledge Base List - Starting...');
   
   try {
@@ -53,7 +60,7 @@ export async function GET(req: NextRequest) {
 
     console.log('✅ Documents processed successfully:', {
       count: documents.length,
-      documents: documents.map((doc: any) => ({
+      documents: documents.map((doc: KnowledgeBaseDocument) => ({
         id: doc.id,
         name: doc.name,
         prompt_injectable: doc.prompt_injectable

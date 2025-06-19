@@ -25,7 +25,6 @@ interface TranscriptSummaryPanelProps {
   messages: Message[];
   agentId: string;
   duration: number;
-  conversationId: string;
 }
 
 export function TranscriptSummaryPanel({
@@ -34,8 +33,7 @@ export function TranscriptSummaryPanel({
   transcript,
   messages,
   agentId,
-  duration,
-  conversationId
+  duration
 }: TranscriptSummaryPanelProps) {
   const router = useRouter();
 

@@ -161,7 +161,7 @@ export function CustomerIntent() {
           <CardTitle>Análisis Detallado de Intenciones</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {intentData.map((intent, index) => (
+          {intentData.map((intent) => (
             <div key={intent.intent} className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border rounded-lg">
               {/* Intención */}
               <div className="flex items-center space-x-3">
@@ -209,7 +209,7 @@ export function CustomerIntent() {
           <CardTitle>Frases Comunes por Intención</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {intentData.map((intent, index) => (
+          {intentData.map((intent) => (
             <div key={intent.intent} className="p-4 border rounded-lg">
               <div className="flex items-center space-x-2 mb-3">
                 <div className={`p-1 rounded ${intent.color} text-white w-6 h-6 flex items-center justify-center text-xs`}>

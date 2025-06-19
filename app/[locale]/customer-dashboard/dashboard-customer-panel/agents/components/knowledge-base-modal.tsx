@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Upload, FileText, Trash2, Plus, Check, X, Loader2 } from "lucide-react";
+import { Upload, FileText, Trash2, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface KnowledgeBaseModalProps {

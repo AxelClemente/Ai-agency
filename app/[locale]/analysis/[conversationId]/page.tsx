@@ -53,7 +53,7 @@ export default function ConversationAnalysisPage({
   const [programmaticAnalysis, setProgrammaticAnalysis] = useState<ProgrammaticAnalysis | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [aiAnalysis, setAIAnalysis] = useState<AIAnalysis | null>(null)
+  const [aiAnalysis] = useState<AIAnalysis | null>(null)
 
   // Load conversation data when conversationId is available
   useEffect(() => {
@@ -191,7 +191,7 @@ export default function ConversationAnalysisPage({
         })
       })
       
-      const analysis = await response.json()
+      await response.json()
       
     } catch (error) {
       console.error('Error running AI analysis:', error)

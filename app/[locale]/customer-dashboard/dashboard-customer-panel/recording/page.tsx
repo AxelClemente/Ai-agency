@@ -294,7 +294,7 @@ export default function RecordingsPage() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem 
                               className="text-destructive"
-                              onSelect={(e) => {
+                              onSelect={() => {
                                 console.log('🖱️ Delete button clicked for conversation:', conversation.id);
                                 handleDeleteConversation(conversation.id);
                               }}
