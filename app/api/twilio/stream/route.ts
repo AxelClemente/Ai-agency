@@ -1,3 +1,5 @@
+import { ELEVENLABS_CONFIG } from '@/lib/elevenlabs-config'
+
 // WebSocket handler para streaming de audio Twilio ↔ ElevenLabs
 export async function GET() {
   // TODO: Implementar WebSocket upgrade para streaming
@@ -8,6 +10,7 @@ export async function GET() {
   return new Response(JSON.stringify({
     message: 'Twilio WebSocket Stream Handler',
     status: 'ready',
+    config: ELEVENLABS_CONFIG,
     instructions: [
       '1. Configure Twilio webhook to point here',
       '2. Setup ElevenLabs agent bridge',
@@ -27,18 +30,4 @@ export async function GET() {
   // TODO: Recibir respuesta de ElevenLabs  
   // TODO: Enviar respuesta de vuelta a Twilio
   // TODO: Capturar transcripción para análisis
-//}
-
-// Configuración de ElevenLabs bridge
-const ELEVENLABS_CONFIG = {
-  agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID || 'agent_default',
-  apiKey: process.env.ELEVENLABS_API_KEY,
-  voiceSettings: {
-    stability: 0.5,
-    similarityBoost: 0.75,
-    style: 0.0,
-    useSpeakerBoost: true
-  }
-}
-
-export { ELEVENLABS_CONFIG } 
+//} 
