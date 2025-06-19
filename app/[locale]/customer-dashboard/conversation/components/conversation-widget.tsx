@@ -91,11 +91,8 @@ export function ConversationWidget({ agentId, isPanelOpen, setIsPanelOpen }: Con
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Error saving transcript');
+        throw new Error('Error saving transcript');
       }
-      
-      const savedConversation = await response.json();
       
       toast({
         title: 'Conversación guardada',
