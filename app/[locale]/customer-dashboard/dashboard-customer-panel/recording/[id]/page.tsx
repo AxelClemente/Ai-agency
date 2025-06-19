@@ -8,9 +8,9 @@ import { DashboardHeader } from "../../components/dashboard-header"
 import { ArrowLeft, Download, FileAudio, Play, Share2 } from "lucide-react"
 import Link from "next/link"
 
-export default function RecordingDetailPage({ params }: { params: { id: string } }) {
+export default async function RecordingDetailPage({ params }: { params: Promise<{ id: string }> }) {
   // In a real app, you would fetch the recording data based on the ID
-  const recordingId = params.id
+  const { id: recordingId } = await params;
 
   return (
     <div className="flex flex-col">
