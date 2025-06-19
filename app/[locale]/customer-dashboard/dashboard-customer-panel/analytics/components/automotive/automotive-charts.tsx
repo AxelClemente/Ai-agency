@@ -242,8 +242,11 @@ export function AutomotiveCharts({ type }: AutomotiveChartsProps) {
             <RadialBar
               dataKey="percentage"
               cornerRadius={10}
-              fill={(entry) => entry.color}
-            />
+            >
+              {sentimentData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </RadialBar>
             <Tooltip formatter={(value) => [`${value}%`, "Porcentaje"]} />
             <Legend />
           </RadialBarChart>
@@ -313,8 +316,9 @@ export function AutomotiveCharts({ type }: AutomotiveChartsProps) {
             <YAxis yAxisId="right" orientation="right" />
             <Tooltip 
               formatter={(value, name) => {
-                if (name.includes("revenue")) return [`€${value}`, "Revenue"]
-                if (name.includes("conversion") || name.includes("satisfaction")) return [`${value}%`, name]
+                const nameStr = String(name);
+                if (nameStr.includes("revenue")) return [`€${value}`, "Revenue"]
+                if (nameStr.includes("conversion") || nameStr.includes("satisfaction")) return [`${value}%`, name]
                 return [value, name]
               }}
             />
