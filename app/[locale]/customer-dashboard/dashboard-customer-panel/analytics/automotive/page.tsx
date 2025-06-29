@@ -24,7 +24,7 @@ export default function AutomotiveAnalyticsPage() {
           <div className="flex flex-col items-center sm:items-start w-full">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center space-x-2 text-center sm:text-left">
               <Car className="h-8 w-8 text-blue-600" />
-              <span>AutoBox Manacor - Analytics</span>
+              <span>AutoBox Manacor</span>
             </h2>
             <p className="text-muted-foreground text-center sm:text-left">
               Análisis completo de conversaciones del agente de voz especializado en servicios automotrices

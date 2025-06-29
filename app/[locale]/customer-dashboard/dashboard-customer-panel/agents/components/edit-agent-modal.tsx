@@ -13,7 +13,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
 
 interface AgentConfigRaw {
   conversation_config?: {
@@ -40,8 +39,6 @@ interface AgentConfig {
 }
 
 export function EditAgentModal({ isOpen, onClose, agentId, agentName, agentConfig }: EditAgentModalProps) {
-  const [isSaving, setIsSaving] = useState(false);
-
   // Extraer configuración de los datos ya cargados
   const conversationConfig = agentConfig?.conversation_config;
   const initialConfig = {
@@ -58,58 +55,6 @@ export function EditAgentModal({ isOpen, onClose, agentId, agentName, agentConfi
     firstMessageLength: initialConfig.first_message.length,
     systemPromptLength: initialConfig.system_prompt.length
   });
-
-  const handleSave = async () => {
-    console.log('💾 Saving agent config:', {
-      agentId,
-      firstMessageLength: config.first_message.length,
-      systemPromptLength: config.system_prompt.length
-    });
-
-    if (!config.first_message.trim() || !config.system_prompt.trim()) {
-      toast("Campos requeridos", {
-        description: "Por favor complete todos los campos"
-      });
-      return;
-    }
-
-    setIsSaving(true);
-
-    try {
-      const response = await fetch(`/api/agents/${agentId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          firstMessage: config.first_message,
-          systemPrompt: config.system_prompt
-        })
-      });
-
-      const data = await response.json();
-      console.log('📡 Save response:', data);
-
-      if (data.success) {
-        toast("Agente actualizado", {
-          description: "La configuración del agente se ha actualizado correctamente"
-        });
-        onClose();
-      } else {
-        console.error('❌ Failed to save:', data.error);
-        toast("Error al guardar", {
-          description: data.error || "No se pudo actualizar la configuración del agente"
-        });
-      }
-    } catch (error) {
-      console.error('💥 Error saving agent config:', error);
-      toast("Error al guardar", {
-        description: "Ocurrió un error al guardar la configuración"
-      });
-    } finally {
-      setIsSaving(false);
-    }
-  };
 
   const handleClose = () => {
     console.log('🚪 Closing modal');
