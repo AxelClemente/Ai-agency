@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 
 export default function EmpowermentSection() {
   const features = [
@@ -21,12 +22,12 @@ export default function EmpowermentSection() {
   return (
     <section className="py-20 bg-gradient-to-br from-purple-50 to-pink-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-16 items-stretch min-h-full">
           {/* Left Content */}
           <div className="space-y-8">
             {/* Header */}
             <div>
-              <div className="text-sm font-medium text-gray-600 uppercase tracking-wider mb-4">EMPOWERMENT</div>
+              <div className="text-sm font-medium text-gray-600 uppercase tracking-wider mb-4">Dashboard personalizado</div>
               <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">Insights y métricas</h2>
               <p className="text-xl text-gray-600 leading-relaxed">
               Desarrollamos software que te ofrece información relevante y análisis inteligentes, ayudándote a entender el comportamiento de tus clientes y a mejorar tus procesos.
@@ -58,66 +59,27 @@ export default function EmpowermentSection() {
             </div>
           </div>
 
-          {/* Right Content - Image Collage */}
-          <div className="relative">
-            <div className="relative">
-              {/* Main container with circular pattern overlay */}
-              <div className="relative rounded-3xl overflow-hidden">
-                {/* Image Grid */}
-                <div className="grid grid-cols-2 gap-4 p-8">
-                  <div className="space-y-4">
-                    <div className="aspect-[4/3] rounded-2xl overflow-hidden">
-                      <Image
-                        src="/placeholder.svg?height=200&width=300"
-                        alt="Team collaboration"
-                        width={300}
-                        height={200}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="aspect-[4/3] rounded-2xl overflow-hidden">
-                      <Image
-                        src="/placeholder.svg?height=200&width=300"
-                        alt="Training session"
-                        width={300}
-                        height={200}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-4 pt-8">
-                    <div className="aspect-[4/3] rounded-2xl overflow-hidden">
-                      <Image
-                        src="/placeholder.svg?height=200&width=300"
-                        alt="Workshop"
-                        width={300}
-                        height={200}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="aspect-[4/3] rounded-2xl overflow-hidden">
-                      <Image
-                        src="/placeholder.svg?height=200&width=300"
-                        alt="Team meeting"
-                        width={300}
-                        height={200}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Circular Pattern Overlay */}
-                <div className="absolute bottom-4 right-4">
-                  <div className="w-20 h-20 rounded-full border-4 border-purple-600 flex items-center justify-center bg-white/90 backdrop-blur-sm">
-                    <div className="w-12 h-12 rounded-full border-2 border-purple-400">
-                      <div className="w-full h-full rounded-full border border-purple-300 flex items-center justify-center">
-                        <div className="w-4 h-4 rounded-full bg-purple-600"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          {/* Right Content - Carousel */}
+          <div className="flex flex-col gap-8 h-full min-h-full items-stretch">
+            <div className="relative rounded-3xl overflow-hidden w-full h-full min-h-[240px]">
+              <Image
+                src="/images/dashboard1.png"
+                alt="Dashboard ejemplo 1"
+                width={1200}
+                height={800}
+                className="w-full h-full object-cover rounded-3xl"
+                priority
+              />
+            </div>
+            <div className="relative rounded-3xl overflow-hidden w-full h-full min-h-[240px]">
+              <Image
+                src="/images/dashboard2.png"
+                alt="Dashboard ejemplo 2"
+                width={1200}
+                height={800}
+                className="w-full h-full object-cover rounded-3xl"
+                priority
+              />
             </div>
           </div>
         </div>
