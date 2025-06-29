@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function AgentsSection() {
   const [activeTab, setActiveTab] = useState("Agentes de voz")

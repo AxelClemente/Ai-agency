@@ -5,16 +5,16 @@ import Link from "next/link"
 export default function EmpowermentSection() {
   const features = [
     {
-      title: "Self-paced training",
-      description: "Writer AI Academy: certifications, on-demand courses, and more",
+      title: "Diseña tus flujos",
+      description: "Define conversaciones, crea reglas personalizadas y automatiza cada interacción con precisión.",
     },
     {
-      title: "Proven methodology",
-      description: "Tested by change management and AI transformation programs",
+      title: "Entiende a tus clientes",
+      description: "Analiza comportamientos, identifica patrones y actúa con base en datos reales.",
     },
     {
-      title: "Dedicated team",
-      description: "Experts who understand AI maturity, train your technical teams, and more",
+      title: "Controla y escala",
+      description: "Haz upselling, deriva llamadas a humanos cuando sea necesario y mejora continuamente cada punto de contacto",
     },
   ]
 
@@ -27,10 +27,9 @@ export default function EmpowermentSection() {
             {/* Header */}
             <div>
               <div className="text-sm font-medium text-gray-600 uppercase tracking-wider mb-4">EMPOWERMENT</div>
-              <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">We build your builders</h2>
+              <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">Insights y métricas</h2>
               <p className="text-xl text-gray-600 leading-relaxed">
-                Your team knows the work best. We upskill your next generation of AI builders to reimagine how work gets
-                done—with AI at the center.
+              Desarrollamos software que te ofrece información relevante y análisis inteligentes, ayudándote a entender el comportamiento de tus clientes y a mejorar tus procesos.
               </p>
             </div>
 
@@ -53,7 +52,7 @@ export default function EmpowermentSection() {
                 href="/talk-to-expert"
                 className="inline-flex items-center space-x-2 text-purple-600 hover:text-purple-700 font-medium"
               >
-                <span>Talk to an expert</span>
+                <span>Solicita una demo</span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>

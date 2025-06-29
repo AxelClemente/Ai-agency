@@ -1,13 +1,15 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 export default function CustomerDashboardPage() {
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null)
+  const router = useRouter()
 
   const customerMetrics = [
     { 
@@ -60,7 +62,17 @@ export default function CustomerDashboardPage() {
   }, []);
 
   return (
-    <section className="pt-8 pb-12 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-20 bg-black min-h-screen">
+    <section className="relative pt-8 pb-12 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-20 bg-black min-h-screen">
+      {/* Go Back Button */}
+      <button
+        onClick={() => router.push("/")}
+        className="absolute top-4 left-4 flex items-center text-white hover:text-purple-400 transition z-20"
+        aria-label="Volver al inicio"
+      >
+        <ArrowLeft className="h-5 w-5 mr-2" />
+        <span className="hidden sm:inline">Ai Agency</span>
+      </button>
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">

@@ -3,22 +3,22 @@ import { ArrowUpRight, Building2, Heart, ShoppingBag, Laptop } from "lucide-reac
 export default function IndustriesSection() {
   const industries = [
     {
-      title: "Financial services & insurance",
+      title: "Restauración",
       icon: Building2,
       href: "/industries/financial-services",
     },
     {
-      title: "Healthcare & life sciences",
+      title: "Hoteles",
       icon: Heart,
       href: "/industries/healthcare",
     },
     {
-      title: "Retail & consumer goods",
+      title: "Talleres",
       icon: ShoppingBag,
       href: "/industries/retail",
     },
     {
-      title: "Technology",
+      title: "Salud",
       icon: Laptop,
       href: "/industries/technology",
     },
@@ -30,7 +30,7 @@ export default function IndustriesSection() {
         {/* Header */}
         <div className="text-center mb-16">
           <div className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-4">INDUSTRIES</div>
-          <h2 className="text-4xl lg:text-5xl font-bold text-white">Reimagine work across the enterprise</h2>
+          <h2 className="text-4xl lg:text-5xl font-bold text-white">Una solución. Múltiples industrias.</h2>
         </div>
 
         {/* Industries Grid */}

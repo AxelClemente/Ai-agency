@@ -4,9 +4,9 @@ import Image from "next/image"
 export default function TestimonialsSection() {
   const testimonials = [
     {
-      company: "accenture",
+      company: "Clínica",
       quote:
-        "Drives greater creativity. With Writer, we've enhanced content creation, productivity, and our entire marketing impact.",
+        "Se automatiza la gestión de citas, confirmaciones, recordatorios y cancelaciones, que representa el 60–70% del volumen de llamadas",
       author: {
         name: "Jill Kramer",
         title: "Chief Marketing & Communications Officer at Accenture",
@@ -14,9 +14,9 @@ export default function TestimonialsSection() {
       },
     },
     {
-      company: "Qualcomm",
+      company: "Restauración",
       quote:
-        "Provided instant benefits from day 1. Optimizes our campaign assets for different audiences and streamlines our internal communications.",
+        "Se reduce la necesidad de tener personal extra solo para atender el teléfono, lo que puede ahorrar entre 800 € y 1.500 € al mes en costes operativos",
       author: {
         name: "Cristina Tiu",
         title: "Chief Marketing & Communications Executive",
@@ -24,9 +24,9 @@ export default function TestimonialsSection() {
       },
     },
     {
-      company: "CIRRUS MD",
+      company: "Atención al cliente",
       quote:
-        "Revolutionizing how we scale care. It enables us to maintain personalized patient relationships at scale, streamlined experience for our physicians.",
+        "Un call center tradicional puede requerir 10 agentes para gestionar 1.000 llamadas al día. Un agente de voz puede absorber gran parte de esas llamadas, permitiendo que el equipo humano se centre en los casos más complejos",
       author: {
         name: "Tanya Gilland",
         title: "EVP of Product Management & Innovation at Cirrus MD",
@@ -41,7 +41,8 @@ export default function TestimonialsSection() {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4">
-            See how our customers streamline workflows with <span className="text-indigo-600">generative AI</span>
+            Reduce costes operativos hasta en un<br />
+            <span className="text-indigo-600">un 60%</span>
           </h2>
         </div>
 
