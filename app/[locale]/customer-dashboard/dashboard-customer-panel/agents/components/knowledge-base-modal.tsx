@@ -36,14 +36,26 @@ export interface KnowledgeBaseDocument {
   created_at?: string;
   file_size?: number;
   file_type?: string;
+  dependent_agents?: { id: string }[];
 }
 
 export function KnowledgeBaseModal({ isOpen, onClose, agentId, agentName, documents, onDocumentsUpdate }: KnowledgeBaseModalProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [fileName, setFileName] = useState('');
+  const [showUrlForm, setShowUrlForm] = useState(false);
+  const [showTextForm, setShowTextForm] = useState(false);
+  const [urlData, setUrlData] = useState({ url: '', name: '' });
+  const [textData, setTextData] = useState({ text: '', name: '' });
+  const [isAdding, setIsAdding] = useState(false);
 
   console.log('📚 KnowledgeBaseModal - Render:', { isOpen, agentId, agentName, documentsCount: documents.length });
+
+  // Filtrar documentos por agente
+  const filteredDocuments = documents.filter(doc =>
+    Array.isArray(doc.dependent_agents) &&
+    doc.dependent_agents.some(agent => agent.id === agentId)
+  );
 
   const handleFileUpload = async (file: File) => {
     console.log('📤 Uploading file:', file.name);
@@ -190,8 +202,57 @@ export function KnowledgeBaseModal({ isOpen, onClose, agentId, agentName, docume
     setIsUploading(false);
     setDragOver(false);
     setFileName('');
+    setShowUrlForm(false);
+    setShowTextForm(false);
+    setUrlData({ url: '', name: '' });
+    setTextData({ text: '', name: '' });
+    setIsAdding(false);
     // Call parent close
     onClose();
+  };
+
+  const handleAddUrl = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAdding(true);
+    try {
+      const response = await fetch('/api/knowledge-base/url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: urlData.url, name: urlData.name }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.error || 'Error adding URL');
+      toast('Documento creado desde URL');
+      setShowUrlForm(false);
+      setUrlData({ url: '', name: '' });
+      await loadDocuments();
+    } catch (error) {
+      toast('Error al crear documento desde URL', { description: error instanceof Error ? error.message : String(error) });
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleAddText = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAdding(true);
+    try {
+      const response = await fetch('/api/knowledge-base/text', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: textData.text, name: textData.name }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.error || 'Error adding text');
+      toast('Documento creado desde texto');
+      setShowTextForm(false);
+      setTextData({ text: '', name: '' });
+      await loadDocuments();
+    } catch (error) {
+      toast('Error al crear documento desde texto', { description: error instanceof Error ? error.message : String(error) });
+    } finally {
+      setIsAdding(false);
+    }
   };
 
   return (
@@ -264,6 +325,63 @@ export function KnowledgeBaseModal({ isOpen, onClose, agentId, agentName, docume
                   />
                 </CardContent>
               </Card>
+              <div className="flex gap-2 mb-2">
+                <Button variant="outline" size="sm" onClick={() => setShowUrlForm(v => !v)}>
+                  Add URL
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => setShowTextForm(v => !v)}>
+                  Create Text
+                </Button>
+              </div>
+              {showUrlForm && (
+                <form onSubmit={handleAddUrl} className="bg-gray-50 p-4 rounded-lg mb-2 flex flex-col gap-2">
+                  <input
+                    type="text"
+                    placeholder="Document Name (optional)"
+                    className="border rounded px-2 py-1"
+                    value={urlData.name}
+                    onChange={e => setUrlData(d => ({ ...d, name: e.target.value }))}
+                    disabled={isAdding}
+                  />
+                  <input
+                    type="url"
+                    placeholder="Paste URL here"
+                    className="border rounded px-2 py-1"
+                    value={urlData.url}
+                    onChange={e => setUrlData(d => ({ ...d, url: e.target.value }))}
+                    required
+                    disabled={isAdding}
+                  />
+                  <div className="flex gap-2">
+                    <Button type="submit" size="sm" disabled={isAdding}>Add</Button>
+                    <Button type="button" size="sm" variant="ghost" onClick={() => setShowUrlForm(false)} disabled={isAdding}>Cancel</Button>
+                  </div>
+                </form>
+              )}
+              {showTextForm && (
+                <form onSubmit={handleAddText} className="bg-gray-50 p-4 rounded-lg mb-2 flex flex-col gap-2">
+                  <input
+                    type="text"
+                    placeholder="Document Name (optional)"
+                    className="border rounded px-2 py-1"
+                    value={textData.name}
+                    onChange={e => setTextData(d => ({ ...d, name: e.target.value }))}
+                    disabled={isAdding}
+                  />
+                  <textarea
+                    placeholder="Paste or write text here"
+                    className="border rounded px-2 py-1 min-h-[80px]"
+                    value={textData.text}
+                    onChange={e => setTextData(d => ({ ...d, text: e.target.value }))}
+                    required
+                    disabled={isAdding}
+                  />
+                  <div className="flex gap-2">
+                    <Button type="submit" size="sm" disabled={isAdding}>Add</Button>
+                    <Button type="button" size="sm" variant="ghost" onClick={() => setShowTextForm(false)} disabled={isAdding}>Cancel</Button>
+                  </div>
+                </form>
+              )}
             </TabsContent>
 
             <TabsContent value="manage" className="space-y-4 mt-4">
@@ -278,7 +396,7 @@ export function KnowledgeBaseModal({ isOpen, onClose, agentId, agentName, docume
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {documents.length === 0 ? (
+                  {filteredDocuments.length === 0 ? (
                     <div className="text-center py-8">
                       <FileText className="h-12 w-12 mx-auto text-gray-400 mb-4" />
                       <p className="text-sm text-muted-foreground">
@@ -287,7 +405,7 @@ export function KnowledgeBaseModal({ isOpen, onClose, agentId, agentName, docume
                     </div>
                   ) : (
                     <div className="space-y-2 max-h-[300px] overflow-y-auto">
-                      {documents.map((doc) => (
+                      {filteredDocuments.map((doc) => (
                         <div
                           key={doc.id}
                           className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"

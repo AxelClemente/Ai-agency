@@ -115,14 +115,14 @@ export function CreateAgentModal({ isOpen, onOpenChange, onSuccess }: CreateAgen
             <Label htmlFor="firstMessage">
               First Message
               <span className="text-sm text-muted-foreground ml-2">
-                ({formData.firstMessage.length}/500)
+                ({formData.firstMessage.length}/1000)
               </span>
             </Label>
             <Textarea
               id="firstMessage"
               value={formData.firstMessage}
               onChange={(e) => {
-                if (e.target.value.length <= 500) {
+                if (e.target.value.length <= 1000) {
                   setFormData(prev => ({ ...prev, firstMessage: e.target.value }));
                 }
               }}
@@ -137,14 +137,14 @@ export function CreateAgentModal({ isOpen, onOpenChange, onSuccess }: CreateAgen
             <Label htmlFor="systemPrompt">
               System Prompt
               <span className="text-sm text-muted-foreground ml-2">
-                ({formData.systemPrompt.length}/2000)
+                ({formData.systemPrompt.length}/4000)
               </span>
             </Label>
             <Textarea
               id="systemPrompt"
               value={formData.systemPrompt}
               onChange={(e) => {
-                if (e.target.value.length <= 2000) {
+                if (e.target.value.length <= 4000) {
                   setFormData(prev => ({ ...prev, systemPrompt: e.target.value }));
                 }
               }}
