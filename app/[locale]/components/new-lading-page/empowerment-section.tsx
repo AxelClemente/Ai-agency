@@ -1,7 +1,6 @@
 import { ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 
 export default function EmpowermentSection() {
   const features = [
