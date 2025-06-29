@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, ArrowUp } from "lucide-react"
 
 export default function TechnologySection() {
   const llmMetrics = [
@@ -22,7 +22,7 @@ export default function TechnologySection() {
   ]
 
   return (
-    <section className="py-20 bg-black">
+    <section className="py-20 bg-black relative">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
@@ -162,6 +162,14 @@ export default function TechnologySection() {
           </div>
         </div>
       </div>
+      {/* Flecha flotante para volver arriba */}
+      <a
+        href="#hero"
+        aria-label="Volver arriba"
+        className="flex fixed right-4 bottom-4 md:right-8 md:bottom-8 z-50 items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-indigo-600 shadow-lg hover:bg-indigo-700 transition-colors duration-200 group"
+      >
+        <ArrowUp className="h-5 w-5 md:h-6 md:w-6 text-white group-hover:-translate-y-1 transition-transform duration-200" />
+      </a>
     </section>
   )
 }

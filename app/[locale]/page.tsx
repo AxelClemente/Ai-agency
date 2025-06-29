@@ -6,7 +6,7 @@ import AgentsSection from "@/app/[locale]/components/new-lading-page/agents-sect
 import TestimonialsSection from "@/app/[locale]/components/new-lading-page/testimonials-section"
 import IndustriesSection from "@/app/[locale]/components/new-lading-page/industries-section"
 import EmpowermentSection from "@/app/[locale]/components/new-lading-page/empowerment-section"
-import CaseStudiesSection from "@/app/[locale]/components/new-lading-page/case-studies-section"
+//import CaseStudiesSection from "@/app/[locale]/components/new-lading-page/case-studies-section"
 import PlatformSection from "@/app/[locale]/components/new-lading-page/platform-section"
 import TechnologySection from "@/app/[locale]/components/new-lading-page/technology-section"
 
@@ -26,14 +26,16 @@ export default async function Page({
     <div className="min-h-screen bg-black text-white">
       <Header />
       <main>
-        <HeroSection />
+        <div id="hero">
+          <HeroSection />
+        </div>
         <TrustedBySection />
         <AgentsSection />
         <TestimonialsSection /> 
         <IndustriesSection /> 
         <EmpowermentSection /> 
-        <CaseStudiesSection />
-        <PlatformSection /> 
+        {/* <CaseStudiesSection /> */}
+         <PlatformSection />  
         <TechnologySection />
       </main>
     </div>
