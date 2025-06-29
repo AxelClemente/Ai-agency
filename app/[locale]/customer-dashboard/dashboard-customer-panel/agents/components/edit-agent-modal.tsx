@@ -118,78 +118,68 @@ export function EditAgentModal({ isOpen, onClose, agentId, agentName, agentConfi
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Editar Agente</DialogTitle>
-          <DialogDescription>
-            Modifica el mensaje inicial y el prompt del sistema para <strong>{agentName}</strong>
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-hidden max-w-full max-h-full h-full min-h-screen p-0 sm:p-6">
+        <div className="h-full flex flex-col overflow-y-auto p-4 sm:p-6">
+          <DialogHeader>
+            <DialogTitle className="mb-4">Editar Agente</DialogTitle>
+            <DialogDescription>
+              Modifica el mensaje inicial y el prompt del sistema para <strong>{agentName}</strong>
+            </DialogDescription>
+          </DialogHeader>
 
-        <div className="space-y-6 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="first-message">
-              Mensaje Inicial
-              <span className="text-xs text-muted-foreground ml-2">
-                ({config.first_message.length}/1000)
-              </span>
-            </Label>
-            <Textarea
-              id="first-message"
-              placeholder="Escribe el mensaje inicial que enviará el agente..."
-              value={config.first_message}
-              onChange={(e) => setConfig(prev => ({ ...prev, first_message: e.target.value }))}
-              className="min-h-[100px]"
-              maxLength={1000}
-            />
-            <p className="text-xs text-muted-foreground">
-              El primer mensaje que el agente enviará cuando inicie una conversación.
-            </p>
+          <div className="space-y-6 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="first-message">
+                Mensaje Inicial
+                <span className="text-xs text-muted-foreground ml-2">
+                  ({config.first_message.length}/1000)
+                </span>
+              </Label>
+              <Textarea
+                id="first-message"
+                placeholder="Escribe el mensaje inicial que enviará el agente..."
+                value={config.first_message}
+                onChange={(e) => setConfig(prev => ({ ...prev, first_message: e.target.value }))}
+                className="min-h-[100px]"
+                maxLength={1000}
+              />
+              <p className="text-xs text-muted-foreground">
+                El primer mensaje que el agente enviará cuando inicie una conversación.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="system-prompt">
+                System Prompt
+                <span className="text-xs text-muted-foreground ml-2">
+                  ({config.system_prompt.length}/5000)
+                </span>
+              </Label>
+              <Textarea
+                id="system-prompt"
+                placeholder="Define el comportamiento, personalidad y reglas del agente..."
+                value={config.system_prompt}
+                onChange={(e) => setConfig(prev => ({ ...prev, system_prompt: e.target.value }))}
+                className="min-h-[200px]"
+                maxLength={5000}
+              />
+              <p className="text-xs text-muted-foreground">
+                Instrucciones que definen cómo debe comportarse el agente durante las conversaciones.
+              </p>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="system-prompt">
-              System Prompt
-              <span className="text-xs text-muted-foreground ml-2">
-                ({config.system_prompt.length}/5000)
-              </span>
-            </Label>
-            <Textarea
-              id="system-prompt"
-              placeholder="Define el comportamiento, personalidad y reglas del agente..."
-              value={config.system_prompt}
-              onChange={(e) => setConfig(prev => ({ ...prev, system_prompt: e.target.value }))}
-              className="min-h-[200px]"
-              maxLength={5000}
-            />
-            <p className="text-xs text-muted-foreground">
-              Instrucciones que definen cómo debe comportarse el agente durante las conversaciones.
-            </p>
-          </div>
+          <DialogFooter>
+            <div className="w-full space-y-2">
+              <Button className="w-full" type="submit">
+                Guardar Cambios
+              </Button>
+              <Button className="w-full" variant="outline" onClick={handleClose} type="button">
+                Cancelar
+              </Button>
+            </div>
+          </DialogFooter>
         </div>
-
-        <DialogFooter>
-          <Button 
-            variant="outline" 
-            onClick={handleClose} 
-            disabled={isSaving}
-          >
-            Cancelar
-          </Button>
-          <Button 
-            onClick={handleSave} 
-            disabled={isSaving || !config.first_message.trim() || !config.system_prompt.trim()}
-          >
-            {isSaving ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                Guardando...
-              </>
-            ) : (
-              'Guardar Cambios'
-            )}
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
