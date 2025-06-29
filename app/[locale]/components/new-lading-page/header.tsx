@@ -29,43 +29,40 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <div className="flex items-center space-x-1 text-white hover:text-gray-300 cursor-pointer">
-              <span>Productos</span>
-              <ChevronDown className="h-4 w-4" />
-            </div>
-            <div className="flex items-center space-x-1 text-white hover:text-gray-300 cursor-pointer">
-              <span>Servicios</span>
-              <ChevronDown className="h-4 w-4" />
-            </div>
-            <Link href="/research" className="text-white hover:text-gray-300">
-              Precios
-            </Link>
-            <Link href="/pricing" className="text-white hover:text-gray-300">
-              About
-            </Link>
-            <Link href="/customers" className="text-white hover:text-gray-300">
-              Blog
-            </Link>
-            <div className="flex items-center space-x-1 text-white hover:text-gray-300 cursor-pointer">
-              <span>Idiomas</span>
-              <ChevronDown className="h-4 w-4" />
-            </div>
-          </nav>
-
-          {/* CTA Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
+          {/* Navegación + Botones alineados a la derecha */}
+          <div className="hidden md:flex items-center space-x-2">
+            <nav className="flex items-center space-x-8">
+              <div className="flex items-center space-x-1 text-white hover:text-gray-300 cursor-pointer">
+                <span>Productos</span>
+                <ChevronDown className="h-4 w-4" />
+              </div>
+              <div className="flex items-center space-x-1 text-white hover:text-gray-300 cursor-pointer">
+                <span>Servicios</span>
+                <ChevronDown className="h-4 w-4" />
+              </div>
+              <Link href="/research" className="text-white hover:text-gray-300">
+                Precios
+              </Link>
+              <Link href="/pricing" className="text-white hover:text-gray-300">
+                About
+              </Link>
+              <Link href="/customers" className="text-white hover:text-gray-300">
+                Blog
+              </Link>
+              <div className="flex items-center space-x-1 text-white hover:text-gray-300 cursor-pointer">
+                <span>Idiomas</span>
+                <ChevronDown className="h-4 w-4" />
+              </div>
+            </nav>
             <Link href={`/${currentLocale}/customer-dashboard`}>
-              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full font-medium">
+              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 h-[45px] rounded-full font-medium">
                 Solicita una demo
               </Button>
             </Link>
             {session ? (
-              <Button 
-                variant="ghost" 
+              <Button
                 onClick={handleAuthAction}
-                className="text-white hover:text-gray-300"
+                className="bg-[#2d2d2d] hover:bg-[#232323] text-white px-6 h-[45px] rounded-full font-medium transition-colors"
               >
                 Sign out
               </Button>
