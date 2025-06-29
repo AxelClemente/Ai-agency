@@ -132,7 +132,7 @@ export default function AnalyticsPage() {
                 <div className="text-left">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-2xl">🚗</span>
-                    <p className="font-semibold text-lg">AutoBox Manacor Demo</p>
+                    <p className="font-semibold text-lg">AutoBox Manacor</p>
                   </div>
                   <p className="text-sm text-muted-foreground">
                     Dashboard automotive especializado con datos mock realistas

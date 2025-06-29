@@ -1,6 +1,6 @@
 "use client"
 
-import { BarChart, Mic, Upload, Users, Settings, HelpCircle, LogOut } from "lucide-react"
+import { BarChart, Mic, Upload, Users, Settings, HelpCircle, LogOut, Car } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -69,6 +69,12 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <div className="px-2 pb-2">
+            <Link href="/customer-dashboard/dashboard-customer-panel/analytics/automotive" className="flex items-center gap-2 px-2 py-1" style={{ fontSize: '14px', color: 'rgb(24,24,27)' }}>
+              <Car className="h-4 w-4" />
+              <span>AutoBox Manacor</span>
+            </Link>
+          </div>
           <SidebarGroupContent>
             <SidebarMenu>
               {sidebarItems.map((item) => (

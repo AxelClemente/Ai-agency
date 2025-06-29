@@ -11,15 +11,7 @@ export default function AnalyticsPage() {
     <div className="flex flex-col">
       <DashboardHeader />
       <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-bold tracking-tight">Analytics</h2>
-          <Link href="/customer-dashboard/dashboard-customer-panel/analytics/automotive">
-            <Button variant="outline" className="flex items-center space-x-2">
-              <Car className="h-4 w-4" />
-              <span>AutoBox Manacor Demo</span>
-            </Button>
-          </Link>
-        </div>
+        <h2 className="text-3xl font-bold tracking-tight">Analytics</h2>
         <Tabs defaultValue="adherence" className="space-y-4">
           <TabsList>
             <TabsTrigger value="adherence">Adherence Analysis</TabsTrigger>
