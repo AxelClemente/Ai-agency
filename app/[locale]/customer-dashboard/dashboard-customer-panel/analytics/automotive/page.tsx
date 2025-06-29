@@ -14,14 +14,16 @@ export default function AutomotiveAnalyticsPage() {
     <div className="flex flex-col">
       <DashboardHeader />
       <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
-          <Link href="/customer-dashboard/dashboard-customer-panel/analytics">
-            <Button variant="outline" size="sm" className="w-full sm:w-auto mb-2 sm:mb-0">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Analytics General
-            </Button>
-          </Link>
-          <div className="flex flex-col items-center sm:items-start w-full">
+        <div className="flex flex-col gap-2 mb-4">
+          <div>
+            <Link href="/customer-dashboard/dashboard-customer-panel/analytics">
+              <Button variant="outline" size="sm" className="sm:w-auto">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Analytics General!
+              </Button>
+            </Link>
+          </div>
+          <div>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center space-x-2 text-center sm:text-left">
               <Car className="h-8 w-8 text-blue-600" />
               <span>AutoBox Manacor</span>
