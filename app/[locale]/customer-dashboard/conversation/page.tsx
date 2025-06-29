@@ -17,13 +17,13 @@ export default function ConversationPage() {
   }
 
   return (
-    <main className={`flex flex-col items-center justify-center min-h-screen bg-gray-100 p-8 transition-all duration-300 ${
+    <main className={`flex flex-col items-center justify-center min-h-screen bg-[#f2f4f5] pt-6 pb-8 sm:pt-12 sm:pb-16 lg:pt-20 lg:pb-20 transition-all duration-300 ${
       isPanelOpen ? 'mr-[500px]' : ''
     }`}>
-      <h1 className="text-[40px] font-normal font-poppins mb-6">
+      <h1 className="text-2xl sm:text-3xl lg:text-[40px] font-normal font-poppins mb-4 sm:mb-6 text-center">
         🎙️ Habla con nuestro agente
       </h1>
-      <p className="mb-4 text-gray-600">
+      <p className="mb-4 text-gray-600 text-sm sm:text-base text-center">
         Usa los controles de abajo para interactuar con nuestro asistente virtual.
       </p>
       

@@ -180,13 +180,12 @@ export function ConversationWidget({ agentId, isPanelOpen, setIsPanelOpen }: Con
 
   return (
     <>
-      <div className="space-y-4 flex flex-col items-center">
-        <div className="flex justify-center gap-4">
+      <div className="space-y-4 flex flex-col items-center w-full">
+        <div className="flex flex-col gap-2 sm:flex-row sm:justify-center sm:gap-4 w-full">
           <Button 
             onClick={startConversation} 
             disabled={conversation.status === 'connected'}
-            className="bg-black hover:bg-gray-800 text-white rounded-full 
-                       px-8 h-12 transition-all duration-200"
+            className="bg-black hover:bg-gray-800 text-white rounded-full px-4 h-12 w-full sm:w-auto transition-all duration-200"
           >
             Iniciar Conversación
           </Button>
@@ -194,28 +193,26 @@ export function ConversationWidget({ agentId, isPanelOpen, setIsPanelOpen }: Con
             onClick={stopConversation} 
             disabled={conversation.status !== 'connected'}
             variant="outline"
-            className="text-gray-500 hover:text-gray-700 rounded-full 
-                       px-8 h-12 transition-all duration-200 border-gray-300"
+            className="text-gray-500 hover:text-gray-700 rounded-full px-4 h-12 w-full sm:w-auto transition-all duration-200 border-gray-300"
           >
             Finalizar Conversación
           </Button>
           <Button 
             onClick={handleTestPanel}
             variant="outline"
-            className="text-blue-500 hover:text-blue-700 rounded-full 
-                       px-8 h-12 transition-all duration-200 border-blue-300"
+            className="text-blue-500 hover:text-blue-700 rounded-full px-4 h-12 w-full sm:w-auto transition-all duration-200 border-blue-300"
           >
             Test
           </Button>
         </div>
 
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-gray-500 text-center">
           <p>Estado: {conversation.status}</p>
         </div>
 
         <div className="relative w-full">
           <textarea
-            className="w-full min-h-[300px] p-6 border rounded-2xl bg-white shadow-sm
+            className="w-full min-h-[180px] sm:min-h-[300px] p-4 sm:p-6 border rounded-2xl bg-white shadow-sm
                        focus:ring-2 focus:ring-blue-500 focus:border-transparent
                        resize-none font-medium text-gray-700"
             readOnly

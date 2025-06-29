@@ -165,16 +165,18 @@ export function TranscriptSummaryPanel({
       
       {/* Panel */}
       <div className={`
-        fixed top-16 right-0 h-[calc(100vh-4rem)] w-[600px] bg-white shadow-2xl z-50
+        fixed w-full h-full top-0 right-0 z-50 bg-white shadow-2xl
+        sm:w-[600px] sm:top-16 sm:right-0 sm:h-[calc(100vh-4rem)]
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+        flex flex-col
       `}>
         <div className="flex flex-col h-full">
           {/* Header con Avatar */}
-          <div className="flex items-center justify-between p-6 border-b bg-white">
-            <div className="flex items-center space-x-4">
+          <div className="flex items-center justify-between p-4 sm:p-6 border-b bg-white">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               {/* Avatar del Agente */}
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
                 <Image
                   src={agentInfo.image}
                   alt={agentInfo.alt}
@@ -184,10 +186,10 @@ export function TranscriptSummaryPanel({
                 />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
                   Resumen de Conversación
                 </h2>
-                <p className="text-sm text-gray-500">
+                <p className="text-xs sm:text-sm text-gray-500">
                   Agente de {agentInfo.name}
                 </p>
               </div>
@@ -198,12 +200,12 @@ export function TranscriptSummaryPanel({
               onClick={onClose}
               className="h-8 w-8 p-0 hover:bg-gray-100"
             >
-              <X className="h-4 w-4" />
+              <X className="w-5 h-5" />
             </Button>
           </div>
 
           {/* Content mejorado */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
             {/* Solo Duración - más prominente */}
             <div className="bg-blue-50 p-6 rounded-lg">
               <div className="flex items-center space-x-2">

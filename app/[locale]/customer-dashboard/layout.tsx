@@ -31,7 +31,7 @@ export default async function CustomerDashboardLayout({
     <>
       
       <div className="flex flex-col w-full min-h-screen">
-        <main className="w-full flex-1 mt-16 sm:mt-0">
+        <main className="w-full flex-1 mt-0">
           {children}
         </main>
       </div>

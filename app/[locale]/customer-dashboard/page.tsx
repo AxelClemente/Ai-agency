@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -52,8 +52,15 @@ export default function CustomerDashboardPage() {
     "Visualiza estadísticas detalladas sobre el rendimiento del bot, identificamos puntos de mejora y optimizamos la experiencia del cliente con datos claros y útiles.",
   ]
 
+  useEffect(() => {
+    document.body.style.background = "#000";
+    return () => {
+      document.body.style.background = "";
+    };
+  }, []);
+
   return (
-    <section className="py-20 bg-black min-h-screen">
+    <section className="pt-8 pb-12 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-20 bg-black min-h-screen">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
