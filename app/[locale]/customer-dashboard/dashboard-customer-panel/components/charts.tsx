@@ -15,6 +15,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts"
+import React from "react"
 
 // Sample data for charts
 const lineData = [
@@ -59,17 +60,18 @@ export function LineChart() {
   )
 }
 
-export function BarChart() {
+export function BarChart({ data }: { data?: { name: string; value: number }[] }) {
+  const chartData = data || barData
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <RechartsBarChart data={barData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+      <RechartsBarChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
         <YAxis />
         <Tooltip />
         <Legend />
         <Bar dataKey="value" fill="#8884d8">
-          {barData.map((entry, index) => (
+          {chartData.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Bar>

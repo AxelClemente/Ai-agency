@@ -18,6 +18,7 @@ import { DashboardHeader } from "../components/dashboard-header"
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { TranscriptionModal } from './modal/transcription-modal'
+import { RestaurantAnalysisModal } from './modal/restaurant-analysis-modal'
 import { toast } from "sonner"
 
 interface TranscriptionMessage {
@@ -53,6 +54,7 @@ export default function RecordingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [isTranscriptionModalOpen, setIsTranscriptionModalOpen] = useState(false);
+  const [isRestaurantAnalysisModalOpen, setIsRestaurantAnalysisModalOpen] = useState(false);
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -104,13 +106,27 @@ export default function RecordingsPage() {
   };
 
   const handleViewTranscription = (conversation: Conversation) => {
-    setSelectedConversation(conversation);
-    setIsTranscriptionModalOpen(true);
+    setTimeout(() => {
+      setSelectedConversation(conversation);
+      setIsTranscriptionModalOpen(true);
+    }, 100);
   };
 
   const handleCloseTranscription = () => {
     setIsTranscriptionModalOpen(false);
-    setSelectedConversation(null);
+    setTimeout(() => setSelectedConversation(null), 100);
+  };
+
+  const handleViewRestaurantAnalysis = (conversation: Conversation) => {
+    setTimeout(() => {
+      setSelectedConversation(conversation);
+      setIsRestaurantAnalysisModalOpen(true);
+    }, 100);
+  };
+
+  const handleCloseRestaurantAnalysis = () => {
+    setIsRestaurantAnalysisModalOpen(false);
+    setTimeout(() => setSelectedConversation(null), 100);
   };
 
   const handleDeleteConversation = async (conversationId: string) => {
@@ -289,6 +305,9 @@ export default function RecordingsPage() {
                             <DropdownMenuItem onClick={() => handleViewTranscription(conversation)}>
                               Transcription
                             </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleViewRestaurantAnalysis(conversation)}>
+                              AI Analysis
+                            </DropdownMenuItem>
                             <DropdownMenuItem>Download Recording</DropdownMenuItem>
                             <DropdownMenuItem>Share</DropdownMenuItem>
                             <DropdownMenuSeparator />
@@ -317,6 +336,15 @@ export default function RecordingsPage() {
             isOpen={isTranscriptionModalOpen}
             onClose={handleCloseTranscription}
             conversation={selectedConversation as ModalConversation}
+          />
+        )}
+        
+        {/* Modal de Análisis AI */}
+        {selectedConversation && (
+          <RestaurantAnalysisModal
+            isOpen={isRestaurantAnalysisModalOpen}
+            onClose={handleCloseRestaurantAnalysis}
+            conversation={selectedConversation}
           />
         )}
       </div>

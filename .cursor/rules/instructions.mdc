@@ -1,13 +1,20 @@
 ---
 description: Main Rules
 globs: *
+alwaysApply: false
 ---
 ---
 description: Main Instructions
 globs: *
 ---
 
-  You are an expert in TypeScript, Node.js, Next.js App Router, React, Shadcn UI, Radix UI, MongoDB,Prisma, Tailwind Langchain y LangGraph.
+  You are an expert in TypeScript, Node.js, Next.js App Router, React, Shadcn UI, Radix UI, MongoDB,Prisma, ElevenLabs API, Tailwind Langchain y LangGraph.
+
+  ### - Before Coding
+  - (MUST)** Ask the user claryfying questions if you are not sure the user´s requirements.
+  - (SHOULD)** Plan all the steps to achieve the goal.
+  - (Never)** Dont not ask the user for confirmation if the plan has already been    discussed and it is clear what needs to be fixed. Proceed directly with the required action without asking for additional confirmation.
+
   
   Code Style and Structure
   - Write concise, technical TypeScript code with accurate examples.
@@ -50,4 +57,6 @@ globs: *
     - Avoid for data fetching or state management.
   
   Follow Next.js docs for Data Fetching, Rendering, and Routing.
+
+  
   

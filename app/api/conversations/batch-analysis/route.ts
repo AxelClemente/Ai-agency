@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 import { analyzeConversationWithAI } from '@/lib/openai'
 import { DIVERSE_CONVERSATIONS } from '@/lib/mock-conversations'
 import type { AIAnalysis } from '../../../../types/conversation'
@@ -27,101 +28,43 @@ interface AggregatedMetrics {
   successRate: number
 }
 
+// Solo permitir POST para batch analysis
 export async function POST(request: NextRequest) {
-  try {
-    const { conversationIds, includeAggregation = true } = await request.json()
-    
-    console.log(`🚀 Starting batch AI analysis for ${conversationIds?.length || 'all'} conversations`)
-    
-    // If no specific IDs provided, analyze all diverse conversations
-    const targetIds = conversationIds || DIVERSE_CONVERSATIONS.map(c => c.id)
-    const conversations = DIVERSE_CONVERSATIONS.filter(c => targetIds.includes(c.id))
-    
-    if (conversations.length === 0) {
-      return NextResponse.json(
-        { error: 'No valid conversations found' },
-        { status: 400 }
-      )
-    }
+  // (Opcional) Validar que el usuario es admin
+  // ...
 
-    console.log(`📊 Processing ${conversations.length} conversations with GPT-4o`)
-    
-    // Run AI analysis on all conversations (with error handling)
-    const batchStartTime = Date.now()
-    const results: BatchAnalysisResult[] = await Promise.allSettled(
-      conversations.map(async (conversation) => {
-        const startTime = Date.now()
-        try {
-          const analysis = await analyzeConversationWithAI(conversation.transcript)
-          const processingTime = Date.now() - startTime
-          
-          return {
-            conversationId: conversation.id,
-            success: true,
-            analysis,
-            cost: analysis.cost || 0,
-            processingTime
-          }
-        } catch (error) {
-          console.error(`❌ Analysis failed for ${conversation.id}:`, error)
-          return {
-            conversationId: conversation.id,
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error',
-            processingTime: Date.now() - startTime
-          }
+  // Obtener todas las conversaciones del agente de hostelería sin análisis
+  const agentId = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID_SUPPORT
+  if (!agentId) {
+    return NextResponse.json({ error: 'AgentId not configured' }, { status: 500 })
+  }
+
+  const conversations = await prisma.conversation.findMany({
+    where: {
+      agentId,
+      analysis: null
+    }
+  })
+
+  let processed = 0
+  let errors: string[] = []
+
+  for (const conv of conversations) {
+    try {
+      const analysis = await analyzeConversationWithAI(conv.transcript)
+      await prisma.conversationAnalysis.create({
+        data: {
+          conversationId: conv.id,
+          programmaticData: analysis as any,
         }
       })
-    ).then(results => 
-      results.map(result => 
-        result.status === 'fulfilled' ? result.value : {
-          conversationId: 'unknown',
-          success: false,
-          error: 'Promise rejected',
-          processingTime: 0
-        }
-      )
-    )
-
-    const batchProcessingTime = Date.now() - batchStartTime
-    const successfulResults = results.filter(r => r.success)
-    const successRate = successfulResults.length / results.length
-
-    console.log(`✅ Batch analysis completed: ${successfulResults.length}/${results.length} successful`)
-
-    // Generate aggregated metrics if requested
-    let aggregatedMetrics: AggregatedMetrics | null = null
-    
-    if (includeAggregation && successfulResults.length > 0) {
-      aggregatedMetrics = generateAggregatedMetrics(successfulResults)
+      processed++
+    } catch (e) {
+      errors.push(conv.id)
     }
-
-    const response = {
-      batchId: `batch-${Date.now()}`,
-      timestamp: new Date().toISOString(),
-      totalConversations: conversations.length,
-      successfulAnalyses: successfulResults.length,
-      failedAnalyses: results.length - successfulResults.length,
-      successRate: Math.round(successRate * 100),
-      totalProcessingTime: batchProcessingTime,
-      averageProcessingTime: Math.round(batchProcessingTime / conversations.length),
-      totalCost: successfulResults.reduce((sum, r) => sum + (r.cost || 0), 0),
-      results,
-      aggregatedMetrics
-    }
-
-    return NextResponse.json(response)
-
-  } catch (error) {
-    console.error('❌ Batch analysis error:', error)
-    return NextResponse.json(
-      { 
-        error: 'Batch analysis failed', 
-        details: error instanceof Error ? error.message : 'Unknown error' 
-      },
-      { status: 500 }
-    )
   }
+
+  return NextResponse.json({ success: true, processed, errors })
 }
 
 function generateAggregatedMetrics(results: BatchAnalysisResult[]): AggregatedMetrics {

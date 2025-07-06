@@ -55,6 +55,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   conversations Conversation[]
+  restaurantAnalyses RestaurantAnalysis[]
 }
 
 model VerificationToken {
@@ -100,6 +101,7 @@ model Conversation {
   user        User     @relation(fields: [userId], references: [id])
   
   analysis    ConversationAnalysis?
+  restaurantAnalysis RestaurantAnalysis?
   
   @@index([userId])
   @@index([agentId])
@@ -115,4 +117,61 @@ model ConversationAnalysis {
   
   // Relación con conversación
   conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+model RestaurantAnalysis {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  conversationId  String   @unique @db.ObjectId
+  userId          String   @db.ObjectId
+  agentId         String
+  
+  // Datos básicos de la conversación
+  timestamp       DateTime
+  duration        Int      // duración en segundos
+  
+  // Análisis específico de restaurante/pizzería
+  products        Json     // Array de productos: [{ name: "Pizza Margarita", quantity: 2, price: 12.50 }, ...]
+  orderType       String?  // "delivery" | "pickup" | "dine-in" | "reservation_only"
+  totalAmount     Float?   // Monto total del pedido
+  
+  // Datos de reserva (si aplica)
+  reservation     Json?    // { date: "2024-06-20", time: "20:00", people: 4, tableType: "indoor" }
+  
+  // Información del cliente
+  customerName    String?
+  customerPhone   String?
+  customerAddress String?  // Para delivery
+  
+  // Análisis de intención y resultado
+  customerIntent  String?  // "order" | "reservation" | "information" | "complaint"
+  outcome         String?  // "completed_order" | "completed_reservation" | "abandoned" | "information_only"
+  sentiment       String?  // "positive" | "neutral" | "negative"
+  
+  // Metadata adicional
+  specialRequests Json?    // Array de solicitudes especiales
+  paymentMethod   String?  // "cash" | "card" | "online"
+  estimatedTime   String?  // Tiempo estimado de entrega/preparación
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relación con conversación
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user            User         @relation(fields: [userId], references: [id])
+  
+  @@index([userId])
+  @@index([agentId])
+  @@index([timestamp])
+}
+
+model Reservation {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String?  @db.ObjectId // Opcional: si la reserva está asociada a un usuario registrado
+  name      String
+  phone     String
+  date      DateTime // Fecha y hora de la reserva
+  people    Int      // Número de personas
+  notes     String?  // Comentarios adicionales
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
