@@ -8,7 +8,8 @@ Reemplazar el tab "Adherence Analysis" en Analytics por un análisis real de ped
 - ✅ **Persistencia en MongoDB/Prisma**: Los análisis AI se guardan estructurados en la base de datos, permitiendo consultas y visualización robusta.
 - ✅ **UI avanzada de Pedidos y Reservas**: Modal profesional en el dashboard que muestra transcripción, análisis AI, productos, tipo de pedido, cliente y detalles adicionales.
 - ✅ **Renderizado robusto de productos**: El frontend muestra productos aunque el campo sea `name` o `product`, y maneja casos edge.
-- ✅ **Gráfico de productos vendidos** (mock) y métricas superiores (ventas, pedidos, reservas).
+- ✅ **Gráfico de productos vendidos** conectado a datos reales y mocks, usando el endpoint `/api/analytics/products`.
+- ✅ **Procesamiento y cacheo de mocks**: Los mocks se procesan en memoria y se cachean para acelerar el desarrollo y evitar múltiples llamadas a OpenAI.
 - ✅ **Calendario interactivo** profesional, con navegación de meses y badges de reservas por día.
 - ✅ **Vista de día (DayView)**: al pulsar un día en el calendario, se muestra el detalle horario y permite volver.
 - ✅ **Navegación fluida** entre calendario y vista de día.
@@ -18,6 +19,8 @@ Reemplazar el tab "Adherence Analysis" en Analytics por un análisis real de ped
 - **Backend**:
   - API `/api/conversations/[conversationId]/restaurant-analysis` analiza la transcripción con OpenAI, mapea la respuesta y guarda el análisis en MongoDB vía Prisma.
   - El modelo `RestaurantAnalysis` almacena productos, tipo de pedido, cliente, reservas, total, etc.
+  - Endpoint `/api/analytics/products` suma productos vendidos de análisis reales y de mocks procesados en memoria.
+  - **Mocks:** Si el ID es `mock-*`, el endpoint genera el análisis AI en memoria (sin guardar en DB) y lo cachea para acelerar el desarrollo.
   - Se agregaron logs de debugging para verificar el flujo de datos y la persistencia.
 - **Frontend**:
   - Modal `RestaurantAnalysisModal` muestra la transcripción y el análisis AI de forma clara y profesional.
@@ -25,10 +28,19 @@ Reemplazar el tab "Adherence Analysis" en Analytics por un análisis real de ped
   - Manejo seguro de estados y errores, evitando bloqueos de UI.
   - Acceso flexible a `orderType` y otros campos para máxima compatibilidad.
   - Botón de re-análisis AI y feedback inmediato al usuario.
+  - El gráfico de productos vendidos hace fetch a `/api/analytics/products` y muestra datos reales + mocks.
 - **UX/QA**:
   - El análisis AI extrae correctamente productos, tipo de pedido y cliente.
   - El modal es demo-friendly y listo para negocio.
   - El sistema es robusto ante respuestas ambiguas o incompletas del AI.
+  - El gráfico de productos vendidos refleja tanto datos reales como de prueba.
+
+## Uso de Mocks
+- Los mocks permiten probar el flujo completo de análisis AI y visualización sin depender de datos reales.
+- Se procesan en memoria y se cachean para evitar múltiples llamadas a OpenAI y acelerar el desarrollo.
+- No se guardan en la base de datos, por lo que no "ensucian" el entorno de producción.
+- El endpoint de analytics suma los productos de los mocks y los reales para alimentar el gráfico.
+- En producción, se eliminarán los mocks y el sistema solo usará datos reales de la base de datos.
 
 ## Nueva Estructura del Primer Tab
 - **Nombre del Tab:** Análisis de Pedidos y Reservas
@@ -43,11 +55,9 @@ Reemplazar el tab "Adherence Analysis" en Analytics por un análisis real de ped
      - Al pulsar un día, se muestra el detalle horario y se puede volver al calendario.
 
 ## Próximos Pasos
-1. **Integrar datos reales para Productos Vendidos:**
-   - Extraer productos pedidos de las transcripciones de conversaciones del agente de hostelería.
-   - Usar la API de conversaciones (`/api/conversations`) para obtener los datos.
-   - Procesar las transcripciones para identificar y contar los productos.
-   - Actualizar el gráfico de productos vendidos con datos reales.
+1. **(Futuro) Eliminar mocks y usar solo datos reales:**
+   - Cuando haya suficientes análisis reales, eliminar el procesamiento de mocks y dejar el endpoint solo con datos de la base de datos.
+   - El gráfico será instantáneo y reflejará solo la operación real del negocio.
 2. **Mostrar precios de productos y total en el frontend:**
    - **Enfoque 1:** Usar una tabla de menú con precios para calcular el total programáticamente.
    - **Enfoque 2:** Extraer precios directamente de la transcripción si el agente los menciona.

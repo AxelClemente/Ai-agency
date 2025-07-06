@@ -20,6 +20,7 @@ import { useSession } from 'next-auth/react'
 import { TranscriptionModal } from './modal/transcription-modal'
 import { RestaurantAnalysisModal } from './modal/restaurant-analysis-modal'
 import { toast } from "sonner"
+import { mockConversations, MockConversation } from '@/lib/mock-conversations'
 
 interface TranscriptionMessage {
   role: 'user' | 'ai';
@@ -47,6 +48,8 @@ interface Conversation {
   cost: number;
   transcript: string;
   messages: TranscriptionMessage[];
+  isMock: boolean;
+  mockType: string;
 }
 
 export default function RecordingsPage() {
@@ -60,18 +63,37 @@ export default function RecordingsPage() {
   useEffect(() => {
     async function fetchConversations() {
       if (!session?.user?.id) return;
-
       try {
         const response = await fetch(`/api/conversations?userId=${session.user.id}`);
         const data = await response.json();
-
+        let realConversations: Conversation[] = [];
         if (data.success) {
-          setConversations(data.conversations);
+          realConversations = data.conversations;
         } else {
           toast("No se pudieron cargar las conversaciones", {
             description: "Hubo un error al intentar cargar las conversaciones"
           });
         }
+        // Adaptar mocks a Conversation
+        const mockList: Conversation[] = mockConversations.map((mock) => ({
+          id: mock.id,
+          agentId: 'mock-agent',
+          duration: mock.messages.length * 10, // Simulación
+          status: 'mock',
+          startedAt: mock.messages[0]?.timestamp || '',
+          endedAt: mock.messages.at(-1)?.timestamp || '',
+          createdAt: mock.messages[0]?.timestamp || '',
+          cost: 0,
+          transcript: mock.messages.map(m => `${m.role === 'agente' ? 'Agente' : 'Cliente'}: ${m.message}`).join('\n'),
+          messages: mock.messages.map(m => ({
+            role: m.role === 'agente' ? 'ai' : 'user',
+            message: m.message,
+            timestamp: m.timestamp,
+          })),
+          isMock: true,
+          mockType: mock.type,
+        }));
+        setConversations([...mockList, ...realConversations]);
       } catch (error) {
         console.error('Error fetching conversations:', error);
         toast("Error al cargar las conversaciones", {
@@ -81,7 +103,6 @@ export default function RecordingsPage() {
         setIsLoading(false);
       }
     }
-
     fetchConversations();
   }, [session?.user?.id, toast]);
 
@@ -278,14 +299,17 @@ export default function RecordingsPage() {
                       <div className="flex items-center space-x-2">
                         <FileAudio className="h-4 w-4 text-primary" />
                         <span>Conversación #{conversation.id.slice(-8)}</span>
+                        {conversation.isMock && (
+                          <Badge variant="secondary">Mock</Badge>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell>{formatDate(conversation.startedAt)}</TableCell>
                     <TableCell>{formatDuration(conversation.duration)}</TableCell>
-                    <TableCell>{getAgentName(conversation.agentId)}</TableCell>
+                    <TableCell>{conversation.isMock ? (conversation.mockType === 'reserva' ? 'Mock Reserva' : 'Mock Pedido') : getAgentName(conversation.agentId)}</TableCell>
                     <TableCell>
-                      <Badge variant="default">
-                        Completed
+                      <Badge variant={conversation.isMock ? 'outline' : 'default'}>
+                        {conversation.isMock ? 'Test' : 'Completed'}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
@@ -310,16 +334,18 @@ export default function RecordingsPage() {
                             </DropdownMenuItem>
                             <DropdownMenuItem>Download Recording</DropdownMenuItem>
                             <DropdownMenuItem>Share</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem 
-                              className="text-destructive"
-                              onSelect={() => {
-                                console.log('🖱️ Delete button clicked for conversation:', conversation.id);
-                                handleDeleteConversation(conversation.id);
-                              }}
-                            >
-                              Delete
-                            </DropdownMenuItem>
+                            {!conversation.isMock && <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem 
+                                className="text-destructive"
+                                onSelect={() => {
+                                  console.log('🖱️ Delete button clicked for conversation:', conversation.id);
+                                  handleDeleteConversation(conversation.id);
+                                }}
+                              >
+                                Delete
+                              </DropdownMenuItem>
+                            </>}
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>

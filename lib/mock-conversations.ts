@@ -1,270 +1,310 @@
 // Mock conversations for AutoBox Manacor aggregated dashboard
-export interface MockConversation {
-  id: string
-  phoneNumber: string
-  duration: number
-  timestamp: string
-  transcript: string
-  status: 'completed'
-  expectedService: string
-  expectedUrgency: 'low' | 'medium' | 'high'
-  expectedOutcome: string
+export interface MockMessage {
+  role: 'agente' | 'cliente';
+  message: string;
+  timestamp: string;
 }
 
-export const DIVERSE_CONVERSATIONS: MockConversation[] = [
-  // ========== ITV SCENARIOS ==========
-  {
-    id: 'conv-itv-urgent-001',
-    phoneNumber: '+34 600 111 001',
-    duration: 245,
-    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Hola, buenos días. Quería saber si tienen disponibilidad para la ITV de mi coche esta semana. Es urgente porque se me vence el miércoles y necesito hacer un viaje el jueves. ¿Qué horarios tienen disponibles? También me gustaría saber el precio.',
-    status: 'completed',
-    expectedService: 'ITV',
-    expectedUrgency: 'high',
-    expectedOutcome: 'scheduled'
-  },
-  {
-    id: 'conv-itv-routine-002',
-    phoneNumber: '+34 600 111 002',
-    duration: 180,
-    timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Buenas tardes. Tengo que pasar la ITV de mi SEAT León del 2020. No tengo prisa, pero me gustaría saber precios y cuándo tienen disponibilidad para la próxima semana o la que viene.',
-    status: 'completed',
-    expectedService: 'ITV',
-    expectedUrgency: 'low',
-    expectedOutcome: 'quote_requested'
-  },
-  {
-    id: 'conv-itv-failed-003',
-    phoneNumber: '+34 600 111 003',
-    duration: 320,
-    timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Hola, vengo de pasar la ITV en otro sitio y me ha dado fallo por las luces. ¿Pueden revisarme las luces y después llevarme a pasar la ITV de nuevo? Es urgente porque necesito el coche arreglado cuanto antes.',
-    status: 'completed',
-    expectedService: 'ITV',
-    expectedUrgency: 'high',
-    expectedOutcome: 'repair_and_retest'
-  },
+export interface MockConversation {
+  id: string;
+  isMock: true;
+  type: 'pedido' | 'reserva';
+  messages: MockMessage[];
+}
 
-  // ========== NEUMÁTICOS SCENARIOS ==========
+export const mockConversations: MockConversation[] = [
+  // Pedido 1
   {
-    id: 'conv-tire-winter-004',
-    phoneNumber: '+34 600 222 004',
-    duration: 280,
-    timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Buenas tardes. Llamo para preguntar por el cambio de neumáticos de invierno. Tengo un Mercedes Clase A y quiero cambiar las cuatro ruedas antes de que llegue el frío. ¿Qué marcas tienen y cuánto me costaría? También me gustaría saber si tienen Michelin.',
-    status: 'completed',
-    expectedService: 'Neumáticos',
-    expectedUrgency: 'medium',
-    expectedOutcome: 'quote_requested'
+    id: 'mock-1',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: '¡Hola! Gracias por llamar a Pizza Posta, ¿qué te gustaría pedir hoy?', timestamp: '2025-07-01T12:00:00' },
+      { role: 'cliente', message: 'Hola, quiero una pizza Napolitana y una cerveza.', timestamp: '2025-07-01T12:00:10' },
+      { role: 'agente', message: 'Perfecto, una Napolitana y una cerveza. ¿Algo más?', timestamp: '2025-07-01T12:00:20' },
+      { role: 'cliente', message: 'No, eso es todo. ¿Cuánto sería?', timestamp: '2025-07-01T12:00:30' },
+      { role: 'agente', message: 'Serían 25,5 euros en total. ¿Lo pasas a recoger o prefieres entrega?', timestamp: '2025-07-01T12:00:40' },
+      { role: 'cliente', message: 'Lo recojo yo, gracias.', timestamp: '2025-07-01T12:00:50' },
+      { role: 'agente', message: '¡Perfecto! Estará listo en 20 minutos.', timestamp: '2025-07-01T12:01:00' },
+    ],
   },
+  // Pedido 2
   {
-    id: 'conv-tire-emergency-005',
-    phoneNumber: '+34 600 222 005',
-    duration: 195,
-    timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Hola, tengo una emergencia. Se me ha pinchado una rueda y necesito cambiarla urgentemente. ¿Pueden atenderme hoy mismo? Estoy en Manacor centro y tengo que ir a trabajar mañana temprano. Es un BMW X3.',
-    status: 'completed',
-    expectedService: 'Neumáticos',
-    expectedUrgency: 'high',
-    expectedOutcome: 'emergency_repair'
+    id: 'mock-2',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: 'Bienvenido a Pizza Posta, ¿qué deseas ordenar?', timestamp: '2025-07-01T13:10:00' },
+      { role: 'cliente', message: '¿Tienen pizza Fugazzeta?', timestamp: '2025-07-01T13:10:10' },
+      { role: 'agente', message: 'Sí, Fugazzeta cuesta 20 euros. ¿Te la preparo?', timestamp: '2025-07-01T13:10:20' },
+      { role: 'cliente', message: 'Sí, una Fugazzeta y una tarta de queso.', timestamp: '2025-07-01T13:10:30' },
+      { role: 'agente', message: 'Perfecto, Fugazzeta y tarta de queso. Total: 26 euros. ¿Para recoger o envío?', timestamp: '2025-07-01T13:10:40' },
+      { role: 'cliente', message: 'Para recoger.', timestamp: '2025-07-01T13:10:50' },
+      { role: 'agente', message: 'Listo, en 25 minutos estará tu pedido.', timestamp: '2025-07-01T13:11:00' },
+    ],
   },
+  // Pedido 3
   {
-    id: 'conv-tire-quote-006',
-    phoneNumber: '+34 600 222 006',
-    duration: 220,
-    timestamp: new Date(Date.now() - 15 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Buenos días. Quería un presupuesto para cambiar los neumáticos delanteros de mi Volkswagen Golf. No hay prisa, pero quiero comparar precios. ¿Qué marcas tienen disponibles y cuáles me recomiendan?',
-    status: 'completed',
-    expectedService: 'Neumáticos',
-    expectedUrgency: 'low',
-    expectedOutcome: 'quote_only'
+    id: 'mock-3',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: '¡Buenas tardes! ¿Qué te gustaría pedir?', timestamp: '2025-07-01T14:20:00' },
+      { role: 'cliente', message: 'Una pizza 4 Quesos y dos cervezas.', timestamp: '2025-07-01T14:20:10' },
+      { role: 'agente', message: 'Perfecto, 4 Quesos y dos cervezas. Total: 31 euros. ¿Algo más?', timestamp: '2025-07-01T14:20:20' },
+      { role: 'cliente', message: 'No, gracias.', timestamp: '2025-07-01T14:20:30' },
+      { role: 'agente', message: '¿Para recoger o envío?', timestamp: '2025-07-01T14:20:40' },
+      { role: 'cliente', message: 'Envío, por favor.', timestamp: '2025-07-01T14:20:50' },
+      { role: 'agente', message: 'En 40 minutos lo tienes en tu casa.', timestamp: '2025-07-01T14:21:00' },
+    ],
   },
-
-  // ========== FRENOS SCENARIOS ==========
+  // Pedido 4
   {
-    id: 'conv-brake-noise-007',
-    phoneNumber: '+34 600 333 007',
-    duration: 372,
-    timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-    transcript: 'Hola, tengo una emergencia. Mi coche está haciendo un ruido muy fuerte cuando freno y tengo que viajar mañana temprano. ¿Pueden atenderme hoy mismo? Es un Seat León del 2018. El ruido es como un chirrido muy fuerte cuando piso el freno. Estoy preocupado porque puede ser peligroso.',
-    status: 'completed',
-    expectedService: 'Frenos',
-    expectedUrgency: 'high',
-    expectedOutcome: 'emergency_scheduled'
+    id: 'mock-4',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: 'Pizza Posta, ¿en qué puedo ayudarte?', timestamp: '2025-07-01T15:00:00' },
+      { role: 'cliente', message: '¿Tienen opciones veganas?', timestamp: '2025-07-01T15:00:10' },
+      { role: 'agente', message: 'Sí, todas nuestras pizzas pueden ser veganas. ¿Te gustaría alguna en especial?', timestamp: '2025-07-01T15:00:20' },
+      { role: 'cliente', message: 'Una pizza Marinara vegana y un refresco.', timestamp: '2025-07-01T15:00:30' },
+      { role: 'agente', message: 'Perfecto, Marinara vegana y refresco. Total: 19,5 euros. ¿Para recoger?', timestamp: '2025-07-01T15:00:40' },
+      { role: 'cliente', message: 'Sí, gracias.', timestamp: '2025-07-01T15:00:50' },
+      { role: 'agente', message: 'Estará listo en 15 minutos.', timestamp: '2025-07-01T15:01:00' },
+    ],
   },
+  // Pedido 5
   {
-    id: 'conv-brake-routine-008',
-    phoneNumber: '+34 600 333 008',
-    duration: 190,
-    timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Buenas tardes. Tengo que cambiar las pastillas de freno de mi Audi A4. Me lo dijo el mecánico en la última revisión, pero no es urgente. ¿Cuándo tienen disponibilidad y cuánto me costaría?',
-    status: 'completed',
-    expectedService: 'Frenos',
-    expectedUrgency: 'medium',
-    expectedOutcome: 'scheduled'
+    id: 'mock-5',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: '¡Hola! ¿Qué deseas pedir hoy?', timestamp: '2025-07-01T16:00:00' },
+      { role: 'cliente', message: 'Una pizza Capuleto y una tarta de queso.', timestamp: '2025-07-01T16:00:10' },
+      { role: 'agente', message: 'Capuleto y tarta de queso. Total: 29 euros. ¿Algo más?', timestamp: '2025-07-01T16:00:20' },
+      { role: 'cliente', message: 'No, solo eso.', timestamp: '2025-07-01T16:00:30' },
+      { role: 'agente', message: '¿Para recoger o envío?', timestamp: '2025-07-01T16:00:40' },
+      { role: 'cliente', message: 'Recogeré yo.', timestamp: '2025-07-01T16:00:50' },
+      { role: 'agente', message: 'Perfecto, en 20 minutos estará listo.', timestamp: '2025-07-01T16:01:00' },
+    ],
   },
-
-  // ========== ACEITE SCENARIOS ==========
+  // Pedido 6
   {
-    id: 'conv-oil-change-009',
-    phoneNumber: '+34 600 444 009',
-    duration: 145,
-    timestamp: new Date(Date.now() - 18 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Hola, necesito cambiar el aceite de mi coche. Es un mantenimiento rutinario, no hay prisa. ¿Qué tipos de aceite tienen y cuánto cuesta? También me gustaría saber si incluye el filtro.',
-    status: 'completed',
-    expectedService: 'Aceite',
-    expectedUrgency: 'low',
-    expectedOutcome: 'scheduled'
+    id: 'mock-6',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: 'Bienvenido a Pizza Posta, ¿qué te apetece hoy?', timestamp: '2025-07-01T17:00:00' },
+      { role: 'cliente', message: '¿Cuánto cuesta la pizza Bryan?', timestamp: '2025-07-01T17:00:10' },
+      { role: 'agente', message: 'La Bryan cuesta 23 euros.', timestamp: '2025-07-01T17:00:20' },
+      { role: 'cliente', message: 'Perfecto, quiero una Bryan y un tiramisú.', timestamp: '2025-07-01T17:00:30' },
+      { role: 'agente', message: 'Bryan y tiramisú. Total: 29 euros. ¿Para recoger?', timestamp: '2025-07-01T17:00:40' },
+      { role: 'cliente', message: 'Sí, gracias.', timestamp: '2025-07-01T17:00:50' },
+      { role: 'agente', message: 'Listo, en 20 minutos.', timestamp: '2025-07-01T17:01:00' },
+    ],
   },
+  // Pedido 7
   {
-    id: 'conv-oil-urgent-010',
-    phoneNumber: '+34 600 444 010',
-    duration: 165,
-    timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Buenos días, se me ha encendido la luz del aceite en el salpicadero. ¿Pueden revisarme el coche hoy? No sé si es grave, pero no me atrevo a conducir mucho así. Es un Mercedes Clase C.',
-    status: 'completed',
-    expectedService: 'Aceite',
-    expectedUrgency: 'high',
-    expectedOutcome: 'emergency_check'
+    id: 'mock-7',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: 'Pizza Posta, ¿qué deseas pedir?', timestamp: '2025-07-01T18:00:00' },
+      { role: 'cliente', message: 'Una pizza Margherita, por favor.', timestamp: '2025-07-01T18:00:10' },
+      { role: 'agente', message: 'Margherita, 20 euros. ¿Algo más?', timestamp: '2025-07-01T18:00:20' },
+      { role: 'cliente', message: 'No, solo eso.', timestamp: '2025-07-01T18:00:30' },
+      { role: 'agente', message: '¿Para recoger o envío?', timestamp: '2025-07-01T18:00:40' },
+      { role: 'cliente', message: 'Envío, por favor.', timestamp: '2025-07-01T18:00:50' },
+      { role: 'agente', message: 'En 30 minutos lo tienes.', timestamp: '2025-07-01T18:01:00' },
+    ],
   },
-
-  // ========== DIRECCIÓN SCENARIOS ==========
+  // Pedido 8
   {
-    id: 'conv-steering-011',
-    phoneNumber: '+34 600 555 011',
-    duration: 210,
-    timestamp: new Date(Date.now() - 10 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Buenas tardes. Mi coche tira hacia la izquierda cuando conduzco. Creo que necesita una alineación. ¿Pueden revisarlo esta semana? También noto que el volante vibra un poco.',
-    status: 'completed',
-    expectedService: 'Dirección',
-    expectedUrgency: 'medium',
-    expectedOutcome: 'scheduled'
+    id: 'mock-8',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: '¡Hola! ¿Te gustaría probar alguna de nuestras pizzas especiales?', timestamp: '2025-07-01T19:00:00' },
+      { role: 'cliente', message: '¿Qué lleva la pizza Alonso?', timestamp: '2025-07-01T19:00:10' },
+      { role: 'agente', message: 'Lleva boniato, queso azul, nueces y cebolllino. Cuesta 22 euros.', timestamp: '2025-07-01T19:00:20' },
+      { role: 'cliente', message: 'Perfecto, una Alonso y una cerveza.', timestamp: '2025-07-01T19:00:30' },
+      { role: 'agente', message: 'Alonso y cerveza. Total: 25,5 euros. ¿Para recoger?', timestamp: '2025-07-01T19:00:40' },
+      { role: 'cliente', message: 'Sí, gracias.', timestamp: '2025-07-01T19:00:50' },
+      { role: 'agente', message: 'Listo, en 20 minutos.', timestamp: '2025-07-01T19:01:00' },
+    ],
   },
-
-  // ========== SERVICIOS MÚLTIPLES ==========
+  // Pedido 9
   {
-    id: 'conv-multi-service-012',
-    phoneNumber: '+34 600 666 012',
-    duration: 420,
-    timestamp: new Date(Date.now() - 14 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Hola, necesito una revisión completa de mi coche. Tengo que pasar la ITV el mes que viene y quiero asegurarme de que todo está bien. También creo que necesito cambiar el aceite y las pastillas de freno. ¿Pueden hacerme un presupuesto completo?',
-    status: 'completed',
-    expectedService: 'General',
-    expectedUrgency: 'medium',
-    expectedOutcome: 'comprehensive_quote'
+    id: 'mock-9',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: 'Bienvenido a Pizza Posta, ¿qué deseas?', timestamp: '2025-07-01T20:00:00' },
+      { role: 'cliente', message: 'Una pizza Tartine y un refresco.', timestamp: '2025-07-01T20:00:10' },
+      { role: 'agente', message: 'Tartine y refresco. Total: 25 euros. ¿Algo más?', timestamp: '2025-07-01T20:00:20' },
+      { role: 'cliente', message: 'No, solo eso.', timestamp: '2025-07-01T20:00:30' },
+      { role: 'agente', message: '¿Para recoger?', timestamp: '2025-07-01T20:00:40' },
+      { role: 'cliente', message: 'Sí.', timestamp: '2025-07-01T20:00:50' },
+      { role: 'agente', message: 'En 15 minutos estará listo.', timestamp: '2025-07-01T20:01:00' },
+    ],
   },
-
-  // ========== CONSULTAS DE PRECIO SOLO ==========
+  // Pedido 10
   {
-    id: 'conv-price-only-013',
-    phoneNumber: '+34 600 777 013',
-    duration: 90,
-    timestamp: new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Hola, quería saber cuánto cuesta la ITV. Solo el precio, gracias. Estoy comparando varios talleres de la zona.',
-    status: 'completed',
-    expectedService: 'ITV',
-    expectedUrgency: 'low',
-    expectedOutcome: 'price_inquiry_only'
+    id: 'mock-10',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: 'Pizza Posta, ¿en qué puedo ayudarte?', timestamp: '2025-07-01T21:00:00' },
+      { role: 'cliente', message: 'Quiero una pizza Bufala y una ensalada de burrata.', timestamp: '2025-07-01T21:00:10' },
+      { role: 'agente', message: 'Bufala y ensalada de burrata. Total: 35 euros. ¿Para recoger?', timestamp: '2025-07-01T21:00:20' },
+      { role: 'cliente', message: 'Sí, gracias.', timestamp: '2025-07-01T21:00:30' },
+      { role: 'agente', message: 'En 20 minutos estará listo.', timestamp: '2025-07-01T21:00:40' },
+    ],
   },
+  // Pedido 11
   {
-    id: 'conv-price-tires-014',
-    phoneNumber: '+34 600 777 014',
-    duration: 120,
-    timestamp: new Date(Date.now() - 22 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Buenos días, ¿cuánto cuesta cambiar cuatro neumáticos de un Ford Focus? Solo quiero el precio aproximado para comparar. Gracias.',
-    status: 'completed',
-    expectedService: 'Neumáticos',
-    expectedUrgency: 'low',
-    expectedOutcome: 'price_inquiry_only'
+    id: 'mock-11',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: '¡Hola! ¿Qué te gustaría pedir?', timestamp: '2025-07-01T22:00:00' },
+      { role: 'cliente', message: 'Una pizza Fumé y una cerveza.', timestamp: '2025-07-01T22:00:10' },
+      { role: 'agente', message: 'Fumé y cerveza. Total: 26,5 euros. ¿Algo más?', timestamp: '2025-07-01T22:00:20' },
+      { role: 'cliente', message: 'No, solo eso.', timestamp: '2025-07-01T22:00:30' },
+      { role: 'agente', message: '¿Para recoger?', timestamp: '2025-07-01T22:00:40' },
+      { role: 'cliente', message: 'Sí.', timestamp: '2025-07-01T22:00:50' },
+      { role: 'agente', message: 'En 20 minutos estará listo.', timestamp: '2025-07-01T22:01:00' },
+    ],
   },
-
-  // ========== CLIENTES INSATISFECHOS ==========
+  // Pedido 12
   {
-    id: 'conv-complaint-015',
-    phoneNumber: '+34 600 888 015',
-    duration: 180,
-    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Llamo para quejarme. Vine la semana pasada a cambiar las pastillas de freno y ahora hacen ruido. Esto no puede ser normal. Quiero que me lo solucionen sin coste adicional porque claramente hay algo mal hecho.',
-    status: 'completed',
-    expectedService: 'Frenos',
-    expectedUrgency: 'high',
-    expectedOutcome: 'complaint_resolution'
+    id: 'mock-12',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: 'Bienvenido a Pizza Posta, ¿qué deseas pedir?', timestamp: '2025-07-01T23:00:00' },
+      { role: 'cliente', message: 'Una pizza Posta y un vino por copa.', timestamp: '2025-07-01T23:00:10' },
+      { role: 'agente', message: 'Posta y vino. Total: 28 euros. ¿Para recoger?', timestamp: '2025-07-01T23:00:20' },
+      { role: 'cliente', message: 'Sí, gracias.', timestamp: '2025-07-01T23:00:30' },
+      { role: 'agente', message: 'En 20 minutos estará listo.', timestamp: '2025-07-01T23:00:40' },
+    ],
   },
-
-  // ========== COMPETIDORES ==========
+  // Pedido 13
   {
-    id: 'conv-competitor-016',
-    phoneNumber: '+34 600 999 016',
-    duration: 150,
-    timestamp: new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Hola, me han dado un presupuesto en otro taller para cambiar los neumáticos por 400 euros. ¿Ustedes pueden mejorarlo? Si no, me voy al otro sitio.',
-    status: 'completed',
-    expectedService: 'Neumáticos',
-    expectedUrgency: 'medium',
-    expectedOutcome: 'lost_to_competitor'
+    id: 'mock-13',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: 'Pizza Posta, ¿qué deseas pedir?', timestamp: '2025-07-02T12:00:00' },
+      { role: 'cliente', message: 'Una pizza Franzini y una cerveza.', timestamp: '2025-07-02T12:00:10' },
+      { role: 'agente', message: 'Franzini y cerveza. Total: 26,5 euros. ¿Algo más?', timestamp: '2025-07-02T12:00:20' },
+      { role: 'cliente', message: 'No, solo eso.', timestamp: '2025-07-02T12:00:30' },
+      { role: 'agente', message: '¿Para recoger?', timestamp: '2025-07-02T12:00:40' },
+      { role: 'cliente', message: 'Sí.', timestamp: '2025-07-02T12:00:50' },
+      { role: 'agente', message: 'En 20 minutos estará listo.', timestamp: '2025-07-02T12:01:00' },
+    ],
   },
-
-  // ========== SEGUIMIENTOS ==========
+  // Pedido 14
   {
-    id: 'conv-followup-017',
-    phoneNumber: '+34 600 100 017',
-    duration: 85,
-    timestamp: new Date(Date.now() - 28 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Hola, llamé ayer para agendar la ITV. ¿Ya tienen disponibilidad para esta semana? Me dijeron que me llamarían de vuelta pero no he recibido ninguna llamada.',
-    status: 'completed',
-    expectedService: 'ITV',
-    expectedUrgency: 'medium',
-    expectedOutcome: 'follow_up'
+    id: 'mock-14',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: '¡Hola! ¿Qué te gustaría pedir hoy?', timestamp: '2025-07-02T13:00:00' },
+      { role: 'cliente', message: 'Una pizza Capuleto y un tiramisú.', timestamp: '2025-07-02T13:00:10' },
+      { role: 'agente', message: 'Capuleto y tiramisú. Total: 29 euros. ¿Para recoger?', timestamp: '2025-07-02T13:00:20' },
+      { role: 'cliente', message: 'Sí, gracias.', timestamp: '2025-07-02T13:00:30' },
+      { role: 'agente', message: 'En 20 minutos estará listo.', timestamp: '2025-07-02T13:00:40' },
+    ],
   },
-
-  // ========== CLIENTES SATISFECHOS ==========
+  // Pedido 15
   {
-    id: 'conv-satisfied-018',
-    phoneNumber: '+34 600 200 018',
-    duration: 110,
-    timestamp: new Date(Date.now() - 30 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Buenos días, llamo para agendar otra cita. El mes pasado me cambiaron las pastillas de freno y quedé muy contento con el servicio. Ahora necesito cambiar el aceite. ¿Cuándo tienen disponibilidad?',
-    status: 'completed',
-    expectedService: 'Aceite',
-    expectedUrgency: 'low',
-    expectedOutcome: 'returning_customer'
+    id: 'mock-15',
+    isMock: true,
+    type: 'pedido',
+    messages: [
+      { role: 'agente', message: 'Pizza Posta, ¿qué deseas pedir?', timestamp: '2025-07-02T14:00:00' },
+      { role: 'cliente', message: 'Una pizza Mitad y Mitad, por favor.', timestamp: '2025-07-02T14:00:10' },
+      { role: 'agente', message: 'Mitad y Mitad, 25 euros. ¿Algo más?', timestamp: '2025-07-02T14:00:20' },
+      { role: 'cliente', message: 'No, solo eso.', timestamp: '2025-07-02T14:00:30' },
+      { role: 'agente', message: '¿Para recoger?', timestamp: '2025-07-02T14:00:40' },
+      { role: 'cliente', message: 'Sí.', timestamp: '2025-07-02T14:00:50' },
+      { role: 'agente', message: 'En 20 minutos estará listo.', timestamp: '2025-07-02T14:01:00' },
+    ],
   },
-
-  // ========== EMERGENCIAS NOCTURNAS ==========
+  // Reserva 1
   {
-    id: 'conv-emergency-019',
-    phoneNumber: '+34 600 300 019',
-    duration: 200,
-    timestamp: new Date(Date.now() - 32 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Hola, sé que es tarde pero tengo una emergencia. Mi coche no frena bien y mañana tengo que llevar a mi hijo al hospital para una cita médica importante. ¿Hay alguna forma de que me puedan atender urgentemente?',
-    status: 'completed',
-    expectedService: 'Frenos',
-    expectedUrgency: 'high',
-    expectedOutcome: 'emergency_after_hours'
+    id: 'mock-16',
+    isMock: true,
+    type: 'reserva',
+    messages: [
+      { role: 'agente', message: '¡Hola! ¿Deseas hacer una reserva o pedir para llevar?', timestamp: '2025-07-02T15:00:00' },
+      { role: 'cliente', message: 'Quiero reservar una mesa para 4 personas a las 21:00.', timestamp: '2025-07-02T15:00:10' },
+      { role: 'agente', message: 'Reserva para 4 a las 21:00. ¿Nombre de la reserva?', timestamp: '2025-07-02T15:00:20' },
+      { role: 'cliente', message: 'A nombre de Laura.', timestamp: '2025-07-02T15:00:30' },
+      { role: 'agente', message: 'Listo, reserva confirmada. ¡Te esperamos!', timestamp: '2025-07-02T15:00:40' },
+    ],
   },
-
-  // ========== CONSULTA TÉCNICA ==========
+  // Reserva 2
   {
-    id: 'conv-technical-020',
-    phoneNumber: '+34 600 400 020',
-    duration: 250,
-    timestamp: new Date(Date.now() - 34 * 60 * 60 * 1000).toISOString(),
-    transcript: 'Buenos días, mi coche hace un ruido extraño al arrancar. Solo dura unos segundos y después para. Un amigo me dijo que podría ser la correa de distribución. ¿Pueden revisarlo? Es un Volkswagen Passat del 2019.',
-    status: 'completed',
-    expectedService: 'Diagnosis',
-    expectedUrgency: 'medium',
-    expectedOutcome: 'diagnostic_needed'
-  }
-]
+    id: 'mock-17',
+    isMock: true,
+    type: 'reserva',
+    messages: [
+      { role: 'agente', message: 'Pizza Posta, ¿en qué puedo ayudarte?', timestamp: '2025-07-02T16:00:00' },
+      { role: 'cliente', message: '¿Puedo reservar para 2 personas hoy a las 20:30?', timestamp: '2025-07-02T16:00:10' },
+      { role: 'agente', message: 'Sí, reserva para 2 a las 20:30. ¿Nombre?', timestamp: '2025-07-02T16:00:20' },
+      { role: 'cliente', message: 'Carlos.', timestamp: '2025-07-02T16:00:30' },
+      { role: 'agente', message: 'Reserva confirmada, Carlos. ¡Hasta luego!', timestamp: '2025-07-02T16:00:40' },
+    ],
+  },
+  // Reserva 3
+  {
+    id: 'mock-18',
+    isMock: true,
+    type: 'reserva',
+    messages: [
+      { role: 'agente', message: '¡Buenas tardes! ¿Reserva o pedido?', timestamp: '2025-07-02T17:00:00' },
+      { role: 'cliente', message: 'Reserva para 6 personas mañana a las 22:00.', timestamp: '2025-07-02T17:00:10' },
+      { role: 'agente', message: 'Reserva para 6 a las 22:00. ¿Nombre?', timestamp: '2025-07-02T17:00:20' },
+      { role: 'cliente', message: 'Martina.', timestamp: '2025-07-02T17:00:30' },
+      { role: 'agente', message: 'Reserva hecha, Martina. ¡Gracias!', timestamp: '2025-07-02T17:00:40' },
+    ],
+  },
+  // Reserva 4
+  {
+    id: 'mock-19',
+    isMock: true,
+    type: 'reserva',
+    messages: [
+      { role: 'agente', message: 'Pizza Posta, ¿quieres reservar o pedir?', timestamp: '2025-07-02T18:00:00' },
+      { role: 'cliente', message: 'Reservar para 3 personas hoy a las 20:00.', timestamp: '2025-07-02T18:00:10' },
+      { role: 'agente', message: 'Reserva para 3 a las 20:00. ¿Nombre?', timestamp: '2025-07-02T18:00:20' },
+      { role: 'cliente', message: 'Sofía.', timestamp: '2025-07-02T18:00:30' },
+      { role: 'agente', message: 'Reserva confirmada, Sofía.', timestamp: '2025-07-02T18:00:40' },
+    ],
+  },
+  // Reserva 5
+  {
+    id: 'mock-20',
+    isMock: true,
+    type: 'reserva',
+    messages: [
+      { role: 'agente', message: '¡Hola! ¿Deseas reservar mesa o pedir para llevar?', timestamp: '2025-07-02T19:00:00' },
+      { role: 'cliente', message: 'Reservar para 2 personas el viernes a las 22:30.', timestamp: '2025-07-02T19:00:10' },
+      { role: 'agente', message: 'Reserva para 2 a las 22:30 el viernes. ¿Nombre?', timestamp: '2025-07-02T19:00:20' },
+      { role: 'cliente', message: 'Miguel.', timestamp: '2025-07-02T19:00:30' },
+      { role: 'agente', message: 'Reserva confirmada, Miguel. ¡Te esperamos!', timestamp: '2025-07-02T19:00:40' },
+    ],
+  },
+];
 
 // Helper function to get conversation by ID
 export function getConversationById(id: string): MockConversation | undefined {
-  return DIVERSE_CONVERSATIONS.find(conv => conv.id === id)
+  return mockConversations.find(conv => conv.id === id)
 }
 
 // Helper function to get all conversation IDs
 export function getAllConversationIds(): string[] {
-  return DIVERSE_CONVERSATIONS.map(conv => conv.id)
+  return mockConversations.map(conv => conv.id)
 } 

@@ -60,7 +60,7 @@ export function LineChart() {
   )
 }
 
-export function BarChart({ data }: { data?: { name: string; value: number }[] }) {
+export function BarChart({ data, onBarClick }: { data?: { name: string; value: number; [key: string]: any }[], onBarClick?: (product: any) => void }) {
   const chartData = data || barData
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -70,7 +70,7 @@ export function BarChart({ data }: { data?: { name: string; value: number }[] })
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar dataKey="value" fill="#8884d8">
+        <Bar dataKey="value" fill="#8884d8" onClick={onBarClick ? (data, idx) => onBarClick(chartData[idx]) : undefined}>
           {chartData.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}

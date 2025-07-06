@@ -4,6 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BarChart, LineChart, PieChart } from "../components/charts"
 import { DashboardHeader } from "../components/dashboard-header"
 import ReservationCalendar from "./components/reservation-calendar"
+import { useEffect, useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 // Productos del menú (ejemplo, se puede expandir)
 const PRODUCTOS = [
@@ -28,6 +30,38 @@ const reservasPorDia = [
 ]
 
 export default function AnalyticsPage() {
+  // Estado para productos vendidos (ahora con conversations)
+  const [ventasProductos, setVentasProductos] = useState<any[]>([]);
+  const [loadingProductos, setLoadingProductos] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    async function fetchProductos() {
+      setLoadingProductos(true);
+      try {
+        const res = await fetch('/api/analytics/products');
+        const data = await res.json();
+        if (data.products) {
+          setVentasProductos(
+            data.products.map((p: any) => ({
+              name: p.name,
+              value: p.quantity,
+              conversations: p.conversations
+            }))
+          );
+        } else {
+          setVentasProductos([]);
+        }
+      } catch (e) {
+        setVentasProductos([]);
+      } finally {
+        setLoadingProductos(false);
+      }
+    }
+    fetchProductos();
+  }, []);
+
   // Cálculos mock para métricas superiores
   const estimateSells = ventasProductos.reduce((acc, p) => acc + p.value * 20, 0) // Suponiendo precio promedio 20€
   const orders = ventasProductos.reduce((acc, p) => acc + p.value, 0)
@@ -88,7 +122,42 @@ export default function AnalyticsPage() {
                   <CardDescription>Top productos pedidos por los clientes</CardDescription>
                 </CardHeader>
                 <CardContent className="pl-2">
-                  <BarChart data={ventasProductos} />
+                  {loadingProductos ? (
+                    <div className="text-muted-foreground">Cargando productos...</div>
+                  ) : ventasProductos.length === 0 ? (
+                    <div className="text-muted-foreground">No hay datos de productos vendidos.</div>
+                  ) : (
+                    <BarChart
+                      data={ventasProductos}
+                      onBarClick={(product: any) => {
+                        setSelectedProduct(product);
+                        setModalOpen(true);
+                      }}
+                    />
+                  )}
+                  {/* Modal de detalles de conversaciones */}
+                  <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+                    <DialogContent className="max-w-lg">
+                      <DialogHeader>
+                        <DialogTitle>Conversaciones para "{selectedProduct?.name}"</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-2">
+                        {selectedProduct?.conversations?.length > 0 ? (
+                          selectedProduct.conversations.map((conv: any, idx: number) => (
+                            <div key={conv.id} className="flex justify-between items-center border-b pb-1 last:border-b-0 last:pb-0">
+                              <div>
+                                <span className="font-mono text-xs">ID: {conv.id}</span><br />
+                                <span className="text-xs text-muted-foreground">{conv.date ? new Date(conv.date).toLocaleString() : 'Sin fecha'}</span>
+                              </div>
+                              <div className="text-xs">Duración: {Math.floor((conv.duration || 0) / 60)}:{String((conv.duration || 0) % 60).padStart(2, '0')}</div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-muted-foreground">No hay conversaciones asociadas.</div>
+                        )}
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </CardContent>
               </Card>
               <Card className="col-span-1">

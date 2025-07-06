@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/auth.config';
 import { prisma } from '@/lib/prisma';
 import { analyzePizzeriaTranscript } from '@/lib/restaurant-agent-openai';
+import { mockConversations } from '@/lib/mock-conversations';
 
 export async function POST(
   request: NextRequest,
@@ -17,6 +18,55 @@ export async function POST(
     const { conversationId } = await params;
     if (!conversationId) {
       return NextResponse.json({ error: 'Conversation ID is required' }, { status: 400 });
+    }
+
+    // Soporte para mocks
+    if (conversationId.startsWith('mock-')) {
+      const mock = mockConversations.find(m => m.id === conversationId);
+      if (!mock) {
+        return NextResponse.json({ error: 'Mock conversation not found' }, { status: 404 });
+      }
+
+      // Generar transcript para el análisis
+      const transcript = mock.messages.map(m => `${m.role === 'agente' ? 'Agente' : 'Cliente'}: ${m.message}`).join('\n');
+      const analysisResult = await analyzePizzeriaTranscript(transcript);
+
+      // Mapear productos
+      const products =
+        analysisResult.products && Array.isArray(analysisResult.products) && analysisResult.products.length > 0
+          ? analysisResult.products
+          : (analysisResult.items && Array.isArray(analysisResult.items) && analysisResult.items.length > 0
+              ? analysisResult.items
+              : []);
+
+      // Simular objeto de análisis (no guardar en DB)
+      const restaurantAnalysis = {
+        id: 'mock-analysis-' + mock.id,
+        conversationId: mock.id,
+        userId: 'mock-user',
+        agentId: 'mock-agent',
+        timestamp: mock.messages[0]?.timestamp || '',
+        duration: mock.messages.length * 10,
+        products,
+        orderType: analysisResult.orderType || analysisResult.order_type,
+        totalAmount: analysisResult.totalAmount,
+        reservation: analysisResult.reservation,
+        customerName: analysisResult.customerName || analysisResult.customer_name,
+        customerPhone: analysisResult.customerPhone || analysisResult.contact,
+        customerAddress: analysisResult.customerAddress,
+        customerIntent: analysisResult.customerIntent,
+        outcome: analysisResult.outcome,
+        sentiment: analysisResult.sentiment,
+        specialRequests: analysisResult.specialRequests,
+        paymentMethod: analysisResult.paymentMethod,
+        estimatedTime: analysisResult.estimatedTime,
+        createdAt: new Date().toISOString(),
+      };
+
+      return NextResponse.json({
+        message: 'Mock analysis completed',
+        analysis: restaurantAnalysis
+      });
     }
 
     // Obtener la conversación y verificar que pertenece al usuario
@@ -112,6 +162,52 @@ export async function GET(
     const { conversationId } = await params;
     if (!conversationId) {
       return NextResponse.json({ error: 'Conversation ID is required' }, { status: 400 });
+    }
+
+    // Soporte para mocks
+    if (conversationId.startsWith('mock-')) {
+      const mock = mockConversations.find(m => m.id === conversationId);
+      if (!mock) {
+        return NextResponse.json({ error: 'Mock conversation not found' }, { status: 404 });
+      }
+
+      // Generar transcript para el análisis
+      const transcript = mock.messages.map(m => `${m.role === 'agente' ? 'Agente' : 'Cliente'}: ${m.message}`).join('\n');
+      const analysisResult = await analyzePizzeriaTranscript(transcript);
+
+      // Mapear productos
+      const products =
+        analysisResult.products && Array.isArray(analysisResult.products) && analysisResult.products.length > 0
+          ? analysisResult.products
+          : (analysisResult.items && Array.isArray(analysisResult.items) && analysisResult.items.length > 0
+              ? analysisResult.items
+              : []);
+
+      // Simular objeto de análisis (no guardar en DB)
+      const restaurantAnalysis = {
+        id: 'mock-analysis-' + mock.id,
+        conversationId: mock.id,
+        userId: 'mock-user',
+        agentId: 'mock-agent',
+        timestamp: mock.messages[0]?.timestamp || '',
+        duration: mock.messages.length * 10,
+        products,
+        orderType: analysisResult.orderType || analysisResult.order_type,
+        totalAmount: analysisResult.totalAmount,
+        reservation: analysisResult.reservation,
+        customerName: analysisResult.customerName || analysisResult.customer_name,
+        customerPhone: analysisResult.customerPhone || analysisResult.contact,
+        customerAddress: analysisResult.customerAddress,
+        customerIntent: analysisResult.customerIntent,
+        outcome: analysisResult.outcome,
+        sentiment: analysisResult.sentiment,
+        specialRequests: analysisResult.specialRequests,
+        paymentMethod: analysisResult.paymentMethod,
+        estimatedTime: analysisResult.estimatedTime,
+        createdAt: new Date().toISOString(),
+      };
+
+      return NextResponse.json({ analysis: restaurantAnalysis });
     }
 
     // Obtener el análisis existente
