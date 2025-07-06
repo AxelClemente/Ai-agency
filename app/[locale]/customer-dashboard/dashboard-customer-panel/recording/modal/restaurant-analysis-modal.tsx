@@ -60,6 +60,53 @@ interface RestaurantAnalysisModalProps {
   conversation: Conversation;
 }
 
+// Tabla de menú local para precios
+const MENU_PRICES: Record<string, number> = {
+  // Entrantes, ensaladas, etc
+  "Fainá o Farinata": 5,
+  "Queso Mozzarella": 2, // extra
+  "Provolone": 9,
+  "Tomates Quemados": 11,
+  "Ensalada de Burrata": 13,
+  "Parmigiana": 14,
+
+  // Pizzas principales
+  "Napolitana": 22,
+  "Espinacas": 22,
+  "Fugazzeta": 20,
+  "Alonso": 22,
+  "Tartine": 22,
+  "Bufala": 22,
+  "Franzini": 23,
+  "Norma": 23,
+  "Fumé": 23,
+  "Marinara": 16,
+  "Posta": 24,
+  "Bryan": 23,
+  "Fugazzeta Rellena": 30,
+  "Calzone": 21,
+  "Margherita": 20,
+  "4 Quesos": 24,
+  "Capuleto": 23,
+  "Tomatana": 23,
+  "Mitad y Mitad": 25,
+
+  // Postres
+  "Tarta de queso casera con mermelada": 6,
+  "Tarta de queso": 6,
+  "Cheesecake with Jam": 6,
+  "Tiramisú": 6,
+
+  // Bebidas
+  "Cerveza": 3.5,
+  "Refrescos": 3,
+  "Agua con gas": 2.5,
+  "Vinos naturales por copa": 4,
+
+  // Extras
+  "Agrega ingredientes": 3.5,
+};
+
 export function RestaurantAnalysisModal({ isOpen, onClose, conversation }: RestaurantAnalysisModalProps) {
   const [analysis, setAnalysis] = useState<RestaurantAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -165,6 +212,15 @@ export function RestaurantAnalysisModal({ isOpen, onClose, conversation }: Resta
   // Determinar productos y tipo de pedido de forma robusta y segura
   const products = Array.isArray(analysis?.products) ? analysis.products : [];
   const orderType = analysis?.orderType ?? (products[0]?.orderType ?? products[0]?.order_type) ?? 'No determinado';
+
+  // Enriquecer productos con precio
+  const productsWithPrice = products.map((p) => {
+    const price = p.price ?? MENU_PRICES[p.name || (p as any).product || ""] ?? null;
+    return { ...p, price };
+  });
+
+  // Calcular total
+  const totalAmount = productsWithPrice.reduce((sum, p) => sum + ((p.price ?? 0) * (p.quantity ?? 1)), 0);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -292,7 +348,7 @@ export function RestaurantAnalysisModal({ isOpen, onClose, conversation }: Resta
                 </Card>
 
                 {/* Productos pedidos */}
-                {products.length > 0 && (
+                {productsWithPrice.length > 0 && (
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
@@ -302,20 +358,23 @@ export function RestaurantAnalysisModal({ isOpen, onClose, conversation }: Resta
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2">
-                        {products.map((product, index) => (
+                        {productsWithPrice.map((product, index) => (
                           <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
                             <span className="font-medium">
                               {product.name || (product as any).product || "Producto no identificado"}
                             </span>
                             <div className="flex items-center gap-2">
+                              {product.price !== null && (
+                                <span className="text-xs text-muted-foreground mr-2">€{product.price}</span>
+                              )}
                               <Badge variant="outline">x{product.quantity}</Badge>
                             </div>
                           </div>
                         ))}
-                        {analysis?.totalAmount && (
-                          <div className="flex justify-between items-center pt-2 border-t">
+                        {productsWithPrice.length > 0 && (
+                          <div className="flex justify-between items-center pt-2 border-t mt-2">
                             <span className="font-bold">Total:</span>
-                            <span className="font-bold text-lg">€{analysis.totalAmount}</span>
+                            <span className="font-bold text-lg">€{totalAmount}</span>
                           </div>
                         )}
                       </div>
