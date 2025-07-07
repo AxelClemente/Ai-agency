@@ -7,15 +7,6 @@ import ReservationCalendar from "./components/reservation-calendar"
 import { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
-// Productos del menú (ejemplo, se puede expandir)
-const PRODUCTOS = [
-  "Napolitana", "Espinacas", "Fugazzeta", "Alonso", "Tartine", "Bufala", "Franzini", "Norma", "Fumé", "Marinara",
-  "Posta", "Bryan", "Fugazzeta Rellena", "Calzone", "Margherita", "4 Quesos", "Capuleto", "Tomatana", "Mitad y Mitad",
-  // Entrantes, postres, bebidas...
-  "Fainá", "Provolone", "Tomates Quemados", "Ensalada de Burrata", "Parmigiana", "Tarta de Queso", "Tiramisú",
-  "Cerveza", "Refrescos", "Agua"
-]
-
 // Tipado local para las conversaciones asociadas a productos
 interface ConversationSummary {
   id: string;
@@ -26,6 +17,13 @@ interface ConversationSummary {
 interface ProductSummary {
   name: string;
   value: number;
+  conversations: ConversationSummary[];
+  [key: string]: string | number | ConversationSummary[];
+}
+
+interface ApiProduct {
+  name: string;
+  quantity: number;
   conversations: ConversationSummary[];
 }
 
@@ -79,10 +77,10 @@ export default function AnalyticsPage() {
         const data = await res.json();
         console.log('📥 [FRONTEND] Products data:', data);
         if (data.products) {
-          const mappedProducts = data.products.map((p: any) => ({
+          const mappedProducts = data.products.map((p: ApiProduct) => ({
             name: p.name,
             value: p.quantity,
-            conversations: p.conversations as ConversationSummary[]
+            conversations: p.conversations
           }));
           console.log('✅ [FRONTEND] Setting products:', mappedProducts);
           setVentasProductos(mappedProducts);
@@ -170,9 +168,9 @@ export default function AnalyticsPage() {
                     <div className="text-muted-foreground">No hay datos de productos vendidos.</div>
                   ) : (
                     <BarChart
-                      data={ventasProductos}
-                      onBarClick={(product: ProductSummary) => {
-                        setSelectedProduct(product);
+                      data={ventasProductos as any}
+                      onBarClick={(product: any) => {
+                        setSelectedProduct(product as ProductSummary);
                         setModalOpen(true);
                       }}
                     />

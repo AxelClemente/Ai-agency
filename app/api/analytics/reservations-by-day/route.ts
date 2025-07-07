@@ -8,7 +8,7 @@ import { isValid, parseISO, format } from 'date-fns';
 // Cache para análisis de mocks
 const mockReservationCache = new Map();
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     // Verificar autenticación
     const session = await getServerSession(authOptions);

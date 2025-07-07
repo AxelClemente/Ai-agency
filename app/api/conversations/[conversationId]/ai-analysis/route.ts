@@ -17,15 +17,16 @@ interface PizzeriaAnalysisResult {
   contact?: string;
   notes?: string;
   customer_name?: string;
+  tableType?: string;
 }
 
 // Normalizador de reservas para limpiar valores 'not provided' o vacíos
-function normalizeReservation(reservation: any) {
+function normalizeReservation(reservation: PizzeriaAnalysisResult) {
   if (!reservation) return undefined;
   return {
     date: reservation.date && reservation.date !== 'not provided' ? reservation.date : undefined,
     time: reservation.time && reservation.time !== 'not provided' ? reservation.time : undefined,
-    people: reservation.people && reservation.people !== 'not provided' ? reservation.people : undefined,
+    people: reservation.people ? reservation.people : undefined,
     name: reservation.name && reservation.name !== 'not provided' ? reservation.name : undefined,
     contact: reservation.contact && reservation.contact !== 'not provided' ? reservation.contact : undefined,
     notes: reservation.notes && reservation.notes !== 'not provided' ? reservation.notes : undefined,

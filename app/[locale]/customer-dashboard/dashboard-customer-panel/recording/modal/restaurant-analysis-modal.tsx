@@ -5,8 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Loader2, Brain, Utensils, Calendar, User, MapPin, CreditCard, Clock } from "lucide-react";
+import { Loader2, Brain, Utensils, Calendar, User, MapPin } from "lucide-react";
 import { toast } from "sonner";
 
 interface TranscriptionMessage {
@@ -202,14 +201,12 @@ export function RestaurantAnalysisModal({ isOpen, onClose, conversation }: Resta
   };
 
   // Helper para saber si el análisis es "vacío" o no útil
-  const isAnalysisEmpty = (analysis: any) => {
+  const isAnalysisEmpty = (analysis: RestaurantAnalysis | null) => {
     if (!analysis) return true;
-    if (Array.isArray(analysis)) {
-      return analysis.every(isAnalysisEmpty);
-    }
-    if (analysis.type === 'order' && (!analysis.items || analysis.items.length === 0)) return true;
-    if (analysis.type === 'reservation' && (!analysis.date || analysis.date === 'not provided')) return true;
-    return false;
+    // Check if analysis has useful data
+    const hasProducts = analysis.products && analysis.products.length > 0;
+    const hasReservation = analysis.reservation && analysis.reservation.date && analysis.reservation.date !== 'not provided';
+    return !hasProducts && !hasReservation;
   };
 
   // Determinar productos y tipo de pedido de forma robusta y segura
@@ -218,7 +215,7 @@ export function RestaurantAnalysisModal({ isOpen, onClose, conversation }: Resta
 
   // Enriquecer productos con precio
   const productsWithPrice = products.map((p) => {
-    const price = p.price ?? MENU_PRICES[p.name || (p as any).product || ""] ?? null;
+    const price = p.price ?? MENU_PRICES[p.name || ""] ?? null;
     return { ...p, price };
   });
 
@@ -364,7 +361,7 @@ export function RestaurantAnalysisModal({ isOpen, onClose, conversation }: Resta
                         {productsWithPrice.map((product, index) => (
                           <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
                             <span className="font-medium">
-                              {product.name || (product as any).product || "Producto no identificado"}
+                              {product.name || "Producto no identificado"}
                             </span>
                             <div className="flex items-center gap-2">
                               {product.price !== null && (

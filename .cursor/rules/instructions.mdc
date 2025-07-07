@@ -22,6 +22,7 @@ globs: *
   - Prefer iteration and modularization over code duplication.
   - Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
   - Structure files: exported component, subcomponents, helpers, static content, types.
+  - Never use the 'any' type. Always specify a proper, explicit TypeScript type instead. Avoid generating code that violates the ESLint rule @typescript-eslint/no-explicit-any
   
   Naming Conventions
   - Use lowercase with dashes for directories (e.g., components/auth-wizard).

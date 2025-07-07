@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       if (!isValid(parsedDate)) {
         throw new Error('Invalid date format');
       }
-    } catch (error) {
+    } catch {
       console.log('❌ [RESERVATION CREATE PUBLIC] Invalid date format:', date);
       return NextResponse.json({ 
         error: 'Invalid date format. Use YYYY-MM-DD' 

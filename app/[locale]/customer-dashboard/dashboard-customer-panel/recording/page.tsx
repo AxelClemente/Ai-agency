@@ -20,7 +20,7 @@ import { useSession } from 'next-auth/react'
 import { TranscriptionModal } from './modal/transcription-modal'
 import { RestaurantAnalysisModal } from './modal/restaurant-analysis-modal'
 import { toast } from "sonner"
-import { mockConversations, MockConversation } from '@/lib/mock-conversations'
+import { mockConversations } from '@/lib/mock-conversations'
 
 interface TranscriptionMessage {
   role: 'user' | 'ai';

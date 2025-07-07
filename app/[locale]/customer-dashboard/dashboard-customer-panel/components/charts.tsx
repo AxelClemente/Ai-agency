@@ -45,6 +45,12 @@ const pieData = [
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"]
 
+interface ChartDataItem {
+  name: string;
+  value: number;
+  [key: string]: string | number;
+}
+
 export function LineChart() {
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -60,7 +66,7 @@ export function LineChart() {
   )
 }
 
-export function BarChart({ data, onBarClick }: { data?: { name: string; value: number; [key: string]: any }[], onBarClick?: (product: any) => void }) {
+export function BarChart({ data, onBarClick }: { data?: ChartDataItem[], onBarClick?: (product: ChartDataItem) => void }) {
   const chartData = data || barData
   return (
     <ResponsiveContainer width="100%" height={300}>
