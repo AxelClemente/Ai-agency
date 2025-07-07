@@ -173,7 +173,7 @@ Use the reference menu above to match the names and prices of products.
 If the call contains both a reservation and a food order, return both objects in an array like: [ {}, {} ].
 `
 
-export async function analyzePizzeriaTranscript(transcript: string, conversationDate?: string): Promise<any> {
+export async function analyzePizzeriaTranscript(transcript: string, conversationDate?: string): Promise<unknown> {
   // Extraer fecha de la conversación del primer mensaje si no se proporciona
   let dateToUse = conversationDate;
   if (!dateToUse) {
@@ -204,16 +204,18 @@ export async function analyzePizzeriaTranscript(transcript: string, conversation
   try {
     const parsed = JSON.parse(response)
     // Validación extra: filtrar productos que no estén en el menú
-    if (parsed && parsed.items && Array.isArray(parsed.items)) {
-      parsed.items = parsed.items.filter((item: any) =>
+    if (parsed && typeof parsed === 'object' && 'items' in parsed && Array.isArray(parsed.items)) {
+      parsed.items = parsed.items.filter((item: unknown) =>
+        typeof item === 'object' && item !== null && 'product' in item && 
         typeof item.product === 'string' && PIZZERIA_MENU.includes(item.product)
       )
     }
     // Si es array (caso reserva+pedido)
     if (Array.isArray(parsed)) {
       parsed.forEach(obj => {
-        if (obj.items && Array.isArray(obj.items)) {
-          obj.items = obj.items.filter((item: any) =>
+        if (obj && typeof obj === 'object' && 'items' in obj && Array.isArray(obj.items)) {
+          obj.items = obj.items.filter((item: unknown) =>
+            typeof item === 'object' && item !== null && 'product' in item && 
             typeof item.product === 'string' && PIZZERIA_MENU.includes(item.product)
           )
         }

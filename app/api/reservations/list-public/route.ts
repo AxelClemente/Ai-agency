@@ -14,7 +14,12 @@ export async function GET(req: NextRequest) {
     console.log('📥 [RESERVATION LIST PUBLIC] Query parameters:', { dateFilter, limit, offset });
 
     // Construir filtros - para endpoints públicos, mostramos todas las reservas
-    const where: any = {};
+    const where: {
+      date?: {
+        gte: Date;
+        lte: Date;
+      };
+    } = {};
 
     // Filtrar por fecha si se proporciona
     if (dateFilter) {
@@ -34,7 +39,7 @@ export async function GET(req: NextRequest) {
           
           console.log('📅 [RESERVATION LIST PUBLIC] Filtering by date:', dateFilter);
         }
-      } catch (error) {
+      } catch {
         console.log('❌ [RESERVATION LIST PUBLIC] Invalid date filter:', dateFilter);
         return NextResponse.json({ 
           error: 'Invalid date format. Use YYYY-MM-DD' 

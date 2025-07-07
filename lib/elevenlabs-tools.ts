@@ -41,6 +41,7 @@ export interface ReservationListResponse {
     offset: number;
     hasMore: boolean;
   };
+  error?: string;
 }
 
 // Herramienta para crear reservaciones
@@ -180,7 +181,7 @@ export const ELEVENLABS_TOOLS = [
 ];
 
 // Mapeo de nombres de herramientas a funciones
-export const TOOL_FUNCTIONS: Record<string, Function> = {
+export const TOOL_FUNCTIONS: Record<string, unknown> = {
   create_reservation: createReservation,
   get_reservations: getReservations
 }; 

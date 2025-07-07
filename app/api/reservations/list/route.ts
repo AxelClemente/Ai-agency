@@ -23,7 +23,13 @@ export async function GET(req: NextRequest) {
     console.log('📥 [RESERVATION LIST] Query parameters:', { dateFilter, limit, offset });
 
     // Construir filtros
-    const where: any = {
+    const where: {
+      userId: string;
+      date?: {
+        gte: Date;
+        lte: Date;
+      };
+    } = {
       userId: session.user.id
     };
 
@@ -45,7 +51,7 @@ export async function GET(req: NextRequest) {
           
           console.log('📅 [RESERVATION LIST] Filtering by date:', dateFilter);
         }
-      } catch (error) {
+      } catch {
         console.log('❌ [RESERVATION LIST] Invalid date filter:', dateFilter);
         return NextResponse.json({ 
           error: 'Invalid date format. Use YYYY-MM-DD' 

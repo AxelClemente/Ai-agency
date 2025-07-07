@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     console.log('🔧 [ELEVENLABS PROXY] Executing tool:', tool_name, 'with args:', args);
 
     // Ejecutar la herramienta
-    const toolFunction = TOOL_FUNCTIONS[tool_name];
+    const toolFunction = TOOL_FUNCTIONS[tool_name] as (...args: unknown[]) => Promise<unknown>;
     let result;
 
     try {
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
 
     console.log('✅ [ELEVENLABS PROXY] Tool execution successful:', {
       tool: tool_name,
-      success: result.success
+      success: (result as { success?: boolean })?.success
     });
 
     return NextResponse.json({
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
 }
 
 // Endpoint para obtener la lista de herramientas disponibles
-export async function GET(req: NextRequest) {
+export async function GET() {
   console.log('📋 [ELEVENLABS PROXY] Tools list requested...');
   
   try {
