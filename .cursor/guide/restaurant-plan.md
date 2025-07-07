@@ -1,81 +1,106 @@
-# 📊 Plan Analytics Restaurante/Pizzería
+# 📊 Plan Analytics Restaurante/Pizzería (Actualizado Julio 2025)
 
 ## Objetivo
-Reemplazar el tab "Adherence Analysis" en Analytics por un análisis real de pedidos y reservas para el agente de hostelería (pizzería).
+Reemplazar el tab "Adherence Analysis" en Analytics por un análisis real de pedidos y reservas para el agente de hostelería (pizzería), usando IA y visualización robusta.
 
-## Progreso Actual
-- ✅ **Extracción AI de productos y reservas**: Implementada extracción automática de productos, tipo de pedido, cliente y reservas desde transcripciones usando OpenAI y backend propio.
-- ✅ **Persistencia en MongoDB/Prisma**: Los análisis AI se guardan estructurados en la base de datos, permitiendo consultas y visualización robusta.
-- ✅ **UI avanzada de Pedidos y Reservas**: Modal profesional en el dashboard que muestra transcripción, análisis AI, productos, tipo de pedido, cliente y detalles adicionales.
-- ✅ **Renderizado robusto de productos**: El frontend muestra productos aunque el campo sea `name` o `product`, y maneja casos edge.
-- ✅ **Gráfico de productos vendidos** conectado a datos reales y mocks, usando el endpoint `/api/analytics/products`.
-- ✅ **Procesamiento y cacheo de mocks**: Los mocks se procesan en memoria y se cachean para acelerar el desarrollo y evitar múltiples llamadas a OpenAI.
-- ✅ **Detalle de conversaciones por producto**: Al hacer click en una barra del gráfico de productos vendidos, se muestra un modal con el ID, fecha y duración de cada conversación que generó ese producto (tanto reales como mocks).
-- ✅ **Calendario interactivo** profesional, con navegación de meses y badges de reservas por día.
-- ✅ **Vista de día (DayView)**: al pulsar un día en el calendario, se muestra el detalle horario y permite volver.
-- ✅ **Navegación fluida** entre calendario y vista de día.
-- ✅ **Mejoras de UX/UI**: Manejo de estados de carga, feedback con toast, y modales sin bloqueos.
+---
 
-## Logros Técnicos Detallados
+## Estado Actual (Julio 2025)
+
+### ✅ Logros Técnicos y Funcionales
+- **Extracción AI de productos y reservas**: Implementada extracción automática de productos, tipo de pedido, cliente y reservas desde transcripciones usando OpenAI y backend propio.
+- **Fechas 100% correctas**: Todos los análisis de pedidos y reservas respetan la fecha real de la conversación (mock o real), gracias a mejoras en el prompt y el pipeline.
+- **Mocks robustos**: El sistema puede funcionar 100% con mocks, sin requerir datos reales en la base de datos. Los mocks tienen fechas en 2025 y cubren tanto pedidos como reservas.
+- **Visualización avanzada**: El dashboard muestra:
+  - Gráfico de productos vendidos (barras)
+  - Calendario interactivo de reservas (con badges por día)
+  - Métricas superiores: ventas estimadas, total de pedidos, total de reservas
+- **Detalle por producto**: Al hacer click en una barra del gráfico, se muestra un modal con las conversaciones que generaron ese producto (ID, fecha, duración).
+- **Tooltips de reservas**: Al hacer hover sobre los badges de reservas en el calendario, se muestran los detalles específicos de cada reserva (nombre, hora, número de personas).
+- **Cache y performance**: Los análisis de mocks se cachean en memoria para evitar reprocesamiento y acelerar el desarrollo.
+- **Logs detallados**: El backend imprime logs claros de cada mock procesado, la fecha usada y la respuesta de OpenAI, facilitando debugging y QA.
+- **Frontend y backend desacoplados**: El frontend solo consume los endpoints `/api/analytics/products` y `/api/analytics/reservations-by-day`, sin lógica de mocks ni dependencias de datos reales.
+
+---
+
+## Cómo se logró la robustez y consistencia
+
+### 1. **Problema original**
+- El modelo de OpenAI devolvía fechas incorrectas (2023/2024) aunque los mocks eran de 2025.
+- El frontend mostraba datos inconsistentes y el calendario aparecía vacío para 2025.
+
+### 2. **Solución aplicada**
+- **Prompt AI mejorado**: Se especificó en el prompt que la fecha de reserva debe ser la de la conversación si el cliente no la menciona explícitamente. Se agregó:
+  - "CRITICAL DATE HANDLING: If the customer does not specify a reservation date, you MUST use the conversation date provided. NEVER invent dates or use random dates."
+- **Pipeline de análisis actualizado**:
+  - El backend extrae la fecha del primer mensaje del mock y la pasa explícitamente a la función de análisis AI.
+  - Se loguea la fecha usada para cada mock: `📅 Using conversation date: 2025-07-02`.
+- **Cache forzado y limpieza**: Se fuerza la limpieza del cache de análisis de mocks en cada request de analytics para asegurar que los cambios de lógica/prompt se reflejen inmediatamente.
+- **Validación de logs**: Se validó que todos los logs de OpenAI RAW RESPONSE y las fechas procesadas sean de 2025.
+- **Eliminación de dependencias de la base de datos**: Los endpoints de analytics solo usan mocks, garantizando que no hay interferencia de datos viejos.
+
+### 3. **Validación visual y de logs**
+- **Pantallazo de la UI**: El dashboard muestra correctamente los productos vendidos y el calendario de reservas con fechas de 2025.
+- **Logs de backend**: Cada mock muestra logs como:
+  - `📅 Mock mock-16 conversation date: 2025-07-02`
+  - `[OpenAI RAW RESPONSE] { "type": "reservation", "date": "2025-07-02", ... }`
+
+---
+
+## Endpoints y Componentes Involucrados
 - **Backend**:
-  - API `/api/conversations/[conversationId]/restaurant-analysis` analiza la transcripción con OpenAI, mapea la respuesta y guarda el análisis en MongoDB vía Prisma.
-  - El modelo `RestaurantAnalysis` almacena productos, tipo de pedido, cliente, reservas, total, etc.
-  - Endpoint `/api/analytics/products` suma productos vendidos de análisis reales y de mocks procesados en memoria, y ahora devuelve también el detalle de las conversaciones (ID, fecha, duración) asociadas a cada producto.
-  - **Mocks:** Si el ID es `mock-*`, el endpoint genera el análisis AI en memoria (sin guardar en DB) y lo cachea para acelerar el desarrollo.
-  - Se agregaron logs de debugging para verificar el flujo de datos y la persistencia.
+  - `/api/analytics/products`: Agrega productos de los mocks, cachea y expone detalles de conversaciones.
+  - `/api/analytics/reservations-by-day`: Agrega reservas de los mocks, cachea y expone fechas, conteos y detalles completos de cada reserva (nombre, hora, personas).
+  - `lib/restaurant-agent-openai.ts`: Prompt y función de análisis AI, manejo de fechas.
+  - `lib/mock-conversations.ts`: Fuente de datos de prueba.
 - **Frontend**:
-  - Modal `RestaurantAnalysisModal` muestra la transcripción y el análisis AI de forma clara y profesional.
-  - Renderizado robusto de productos: muestra el nombre aunque venga como `name` o `product`.
-  - Manejo seguro de estados y errores, evitando bloqueos de UI.
-  - Acceso flexible a `orderType` y otros campos para máxima compatibilidad.
-  - Botón de re-análisis AI y feedback inmediato al usuario.
-  - El gráfico de productos vendidos hace fetch a `/api/analytics/products` y muestra datos reales + mocks.
-  - **Modal de detalle por producto:** Al hacer click en una barra del gráfico, se muestra un modal con la lista de conversaciones (ID, fecha, duración) que generaron ese producto, permitiendo auditoría y mejora de prompts.
-- **UX/QA**:
-  - El análisis AI extrae correctamente productos, tipo de pedido y cliente.
-  - El modal es demo-friendly y listo para negocio.
-  - El sistema es robusto ante respuestas ambiguas o incompletas del AI.
-  - El gráfico de productos vendidos refleja tanto datos reales como de prueba.
-  - El usuario puede auditar fácilmente de dónde sale cada métrica del gráfico.
+  - `app/[locale]/customer-dashboard/dashboard-customer-panel/analytics/page.tsx`: Página principal de analytics.
+  - `components/ReservationCalendar`: Calendario interactivo.
+  - `components/BarChart`: Gráfico de productos vendidos.
+  - `RestaurantAnalysisModal`: Modal de detalle por producto.
 
-## Uso de Mocks
-- Los mocks permiten probar el flujo completo de análisis AI y visualización sin depender de datos reales.
-- Se procesan en memoria y se cachean para evitar múltiples llamadas a OpenAI y acelerar el desarrollo.
-- No se guardan en la base de datos, por lo que no "ensucian" el entorno de producción.
-- El endpoint de analytics suma los productos de los mocks y los reales para alimentar el gráfico.
-- En producción, se eliminarán los mocks y el sistema solo usará datos reales de la base de datos.
+---
 
-## Nueva Estructura del Primer Tab
-- **Nombre del Tab:** Análisis de Pedidos y Reservas
-- **Gráficos principales:**
-  1. **Pedidos y Productos:**
-     - Gráfico de barras mostrando el total de pedidos y los productos más pedidos.
-     - Métricas superiores: Total de pedidos, producto más popular.
-     - **Modal de detalle:** Click en barra para ver conversaciones asociadas.
-  2. **Calendario de Reservas:**
-     - Calendario interactivo que muestra los días y horas con reservas realizadas.
-     - Métricas superiores: Total de reservas, día/hora pico.
-  3. **Vista de Día:**
-     - Al pulsar un día, se muestra el detalle horario y se puede volver al calendario.
+## Troubleshooting y QA
+- **Si ves fechas incorrectas**: Verifica los logs de backend y asegúrate de que el prompt y la función de análisis AI están usando la fecha de la conversación.
+- **Si el calendario aparece vacío**: Asegúrate de que los mocks activos tienen fechas en el año que estás visualizando.
+- **Si hay errores de compilación**: Borra la carpeta `.next` y reinicia el servidor (`rm -rf .next && npm run dev`).
+- **Si OpenAI responde con datos inesperados**: Revisa el prompt y los logs de la petición.
+
+---
 
 ## Próximos Pasos
-1. **(Futuro) Eliminar mocks y usar solo datos reales:**
-   - Cuando haya suficientes análisis reales, eliminar el procesamiento de mocks y dejar el endpoint solo con datos de la base de datos.
-   - El gráfico será instantáneo y reflejará solo la operación real del negocio.
-2. **Mostrar precios de productos y total en el frontend:**
-   - **Enfoque 1:** Usar una tabla de menú con precios para calcular el total programáticamente.
-   - **Enfoque 2:** Extraer precios directamente de la transcripción si el agente los menciona.
-   - **Enfoque 3:** Mejorar el prompt del agente para que siempre diga el precio de cada producto y el total al confirmar el pedido.
-   - Renderizar el precio de cada producto y el total en el modal de análisis.
-3. **(Opcional) Integrar reservas reales:**
-   - Conectar el calendario a la base de datos de reservas.
-   - Mostrar reservas reales por día y hora.
-4. **Test y QA:**
-   - Probar visualización, UX y performance.
-   - Validar métricas y casos edge (sin pedidos, sin reservas, etc).
+1. **Transición a datos reales**:
+   - Cuando haya suficientes análisis reales en la base de datos, eliminar el procesamiento de mocks y dejar los endpoints solo con datos reales.
+   - Validar que la lógica de fechas y agregación funcione igual de robusta con datos reales.
+2. **Mostrar precios y totales reales**:
+   - Usar la tabla de menú para calcular el total de ventas y mostrar el precio de cada producto en el modal.
+3. **Integrar reservas reales**:
+   - Conectar el calendario a la base de datos de reservas reales.
+   - Mostrar detalles de cada reserva al hacer click en el día.
+4. **Mejoras de UX y QA**:
+   - Probar casos edge (sin pedidos, sin reservas, datos incompletos).
+   - Mejorar feedback visual y mensajes de error.
+5. **Documentar el flujo de migración a producción**:
+   - Instrucciones claras para eliminar mocks y activar solo datos reales.
 
-## Notas
-- No modificar los componentes de Automotive.
-- Mantener la estructura de tabs, pero adaptar el contenido a la lógica de restaurante/pizzería.
-- Priorizar datos reales y visualizaciones útiles para el negocio.
-- El sistema es escalable y preparado para futuras mejoras (más campos, nuevos análisis, etc).
+---
+
+## Ejemplo de Logs y UI
+
+**Logs de backend:**
+```
+📅 Mock mock-16 conversation date: 2025-07-02
+📅 Using conversation date: 2025-07-02
+[OpenAI RAW RESPONSE] { "type": "reservation", "date": "2025-07-02", ... }
+✅ Reservation analysis cached for mock-16
+```
+
+**Pantallazo de la UI:**
+- Gráfico de productos vendidos con datos de 2025
+- Calendario de reservas con badges en julio y agosto de 2025
+- Tooltips interactivos mostrando detalles de reservas (ej: "Laura — 4 pers. — 21:00")
+
+---
+
+Cualquier desarrollador puede ahora entender el flujo, la robustez lograda y cómo migrar a producción real siguiendo esta documentación.

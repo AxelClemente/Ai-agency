@@ -21,7 +21,17 @@ export async function GET(req: NextRequest) {
     clearMockCache();
     
     // Procesar los mocks de reserva en memoria con cache
-    const mockReservas: Array<{ date: string; count: number }> = [];
+    const mockReservas: Array<{ 
+      date: string; 
+      count: number; 
+      reservas: Array<{
+        name?: string;
+        time?: string;
+        people?: number;
+        contact?: string;
+        notes?: string;
+      }>;
+    }> = [];
     
     for (const mock of mockConversations) {
       if (mock.type !== 'reserva') continue;
@@ -53,22 +63,37 @@ export async function GET(req: NextRequest) {
         dateStr = format(new Date(mock.messages[0]?.timestamp), 'yyyy-MM-dd');
       }
       
-      mockReservas.push({ date: dateStr, count: 1 });
+      // Extraer detalles de la reserva
+      const reservationDetails = {
+        name: reservation?.name || 'Sin nombre',
+        time: reservation?.time || 'Sin hora',
+        people: reservation?.people || 0,
+        contact: reservation?.contact || 'Sin contacto',
+        notes: reservation?.notes || 'Sin notas'
+      };
+      
+      mockReservas.push({ 
+        date: dateStr, 
+        count: 1,
+        reservas: [reservationDetails]
+      });
     }
 
     // Agrupar reservas por fecha
-    const counts: Record<string, number> = {};
+    const groupedReservations: Record<string, { count: number; reservas: any[] }> = {};
     
     for (const reserva of mockReservas) {
-      if (!counts[reserva.date]) {
-        counts[reserva.date] = 0;
+      if (!groupedReservations[reserva.date]) {
+        groupedReservations[reserva.date] = { count: 0, reservas: [] };
       }
-      counts[reserva.date] += reserva.count;
+      groupedReservations[reserva.date].count += reserva.count;
+      groupedReservations[reserva.date].reservas.push(...reserva.reservas);
     }
 
-    const result = Object.entries(counts).map(([date, count]) => ({
+    const result = Object.entries(groupedReservations).map(([date, data]) => ({
       date,
-      count
+      count: data.count,
+      reservas: data.reservas
     }));
 
     console.log(`📅 Calendar result: ${result.length} dates with ${mockReservas.length} total reservations`);
