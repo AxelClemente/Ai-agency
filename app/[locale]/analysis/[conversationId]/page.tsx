@@ -84,12 +84,16 @@ export default function ConversationAnalysisPage({
       
       if (foundConversation) {
         // Use diverse conversation data
+        const transcript = foundConversation.messages.map(m => `${m.role === 'agente' ? 'Agente' : 'Cliente'}: ${m.message}`).join('\n')
+        const duration = foundConversation.messages.length * 10 // Estimate duration based on message count
+        const timestamp = foundConversation.messages[0]?.timestamp || new Date().toISOString()
+        
         mockData = {
           id: foundConversation.id,
-          phoneNumber: foundConversation.phoneNumber,
-          duration: foundConversation.duration,
-          timestamp: foundConversation.timestamp,
-          transcript: foundConversation.transcript,
+          phoneNumber: '+34 600 000 000', // Default phone number for mock conversations
+          duration: duration,
+          timestamp: timestamp,
+          transcript: transcript,
           status: 'completed',
           twilioCallSid: `CA${foundConversation.id.slice(-10)}`
         }
