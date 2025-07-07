@@ -34,6 +34,9 @@ Please read the entire transcript thoroughly and return a structured analysis ba
 - Do not invent details or complete information that is not in the transcript.
 - Do not include the field "customizations".
 - If the conversation is ambiguous, indicate "not determined" in the relevant fields.
+- CRITICAL DATE HANDLING: If the customer does not specify a reservation date, you MUST use the conversation date provided. NEVER invent dates or use random dates. The conversation date is the authoritative source for the reservation date when the customer doesn't specify one.
+- If the conversation date is provided (e.g., "Conversation date: 2025-07-02"), use that exact date for reservations when the customer doesn't specify a date.
+- Never return "not determined" or "not provided" for reservation dates; always use the conversation date as fallback.
 
 ### Good Example (Correct Analysis)
 Transcript:
@@ -170,12 +173,26 @@ Use the reference menu above to match the names and prices of products.
 If the call contains both a reservation and a food order, return both objects in an array like: [ {}, {} ].
 `
 
-export async function analyzePizzeriaTranscript(transcript: string): Promise<any> {
+export async function analyzePizzeriaTranscript(transcript: string, conversationDate?: string): Promise<any> {
+  // Extraer fecha de la conversación del primer mensaje si no se proporciona
+  let dateToUse = conversationDate;
+  if (!dateToUse) {
+    // Buscar timestamp en el primer mensaje del transcript
+    const firstLine = transcript.split('\n')[0];
+    const timestampMatch = firstLine.match(/(\d{4}-\d{2}-\d{2})/);
+    if (timestampMatch) {
+      dateToUse = timestampMatch[1];
+    }
+  }
+  
+  const dateLine = dateToUse ? `Conversation date: ${dateToUse}\n` : '';
+  console.log(`📅 Using conversation date: ${dateToUse || 'not provided'}`);
+  
   const completion = await openai.chat.completions.create({
     model: "gpt-4o",
     messages: [
       { role: "system", content: PIZZERIA_ANALYSIS_PROMPT },
-      { role: "user", content: `TRANSCRIPT:\n${transcript}\n\nPlease analyze as instructed above and return only the JSON.` }
+      { role: "user", content: `${dateLine}TRANSCRIPT:\n${transcript}\n\nPlease analyze as instructed above and return only the JSON.` }
     ],
     temperature: 0.2,
     max_tokens: 1200,

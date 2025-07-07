@@ -10,6 +10,7 @@ Reemplazar el tab "Adherence Analysis" en Analytics por un análisis real de ped
 - ✅ **Renderizado robusto de productos**: El frontend muestra productos aunque el campo sea `name` o `product`, y maneja casos edge.
 - ✅ **Gráfico de productos vendidos** conectado a datos reales y mocks, usando el endpoint `/api/analytics/products`.
 - ✅ **Procesamiento y cacheo de mocks**: Los mocks se procesan en memoria y se cachean para acelerar el desarrollo y evitar múltiples llamadas a OpenAI.
+- ✅ **Detalle de conversaciones por producto**: Al hacer click en una barra del gráfico de productos vendidos, se muestra un modal con el ID, fecha y duración de cada conversación que generó ese producto (tanto reales como mocks).
 - ✅ **Calendario interactivo** profesional, con navegación de meses y badges de reservas por día.
 - ✅ **Vista de día (DayView)**: al pulsar un día en el calendario, se muestra el detalle horario y permite volver.
 - ✅ **Navegación fluida** entre calendario y vista de día.
@@ -19,7 +20,7 @@ Reemplazar el tab "Adherence Analysis" en Analytics por un análisis real de ped
 - **Backend**:
   - API `/api/conversations/[conversationId]/restaurant-analysis` analiza la transcripción con OpenAI, mapea la respuesta y guarda el análisis en MongoDB vía Prisma.
   - El modelo `RestaurantAnalysis` almacena productos, tipo de pedido, cliente, reservas, total, etc.
-  - Endpoint `/api/analytics/products` suma productos vendidos de análisis reales y de mocks procesados en memoria.
+  - Endpoint `/api/analytics/products` suma productos vendidos de análisis reales y de mocks procesados en memoria, y ahora devuelve también el detalle de las conversaciones (ID, fecha, duración) asociadas a cada producto.
   - **Mocks:** Si el ID es `mock-*`, el endpoint genera el análisis AI en memoria (sin guardar en DB) y lo cachea para acelerar el desarrollo.
   - Se agregaron logs de debugging para verificar el flujo de datos y la persistencia.
 - **Frontend**:
@@ -29,11 +30,13 @@ Reemplazar el tab "Adherence Analysis" en Analytics por un análisis real de ped
   - Acceso flexible a `orderType` y otros campos para máxima compatibilidad.
   - Botón de re-análisis AI y feedback inmediato al usuario.
   - El gráfico de productos vendidos hace fetch a `/api/analytics/products` y muestra datos reales + mocks.
+  - **Modal de detalle por producto:** Al hacer click en una barra del gráfico, se muestra un modal con la lista de conversaciones (ID, fecha, duración) que generaron ese producto, permitiendo auditoría y mejora de prompts.
 - **UX/QA**:
   - El análisis AI extrae correctamente productos, tipo de pedido y cliente.
   - El modal es demo-friendly y listo para negocio.
   - El sistema es robusto ante respuestas ambiguas o incompletas del AI.
   - El gráfico de productos vendidos refleja tanto datos reales como de prueba.
+  - El usuario puede auditar fácilmente de dónde sale cada métrica del gráfico.
 
 ## Uso de Mocks
 - Los mocks permiten probar el flujo completo de análisis AI y visualización sin depender de datos reales.
@@ -48,6 +51,7 @@ Reemplazar el tab "Adherence Analysis" en Analytics por un análisis real de ped
   1. **Pedidos y Productos:**
      - Gráfico de barras mostrando el total de pedidos y los productos más pedidos.
      - Métricas superiores: Total de pedidos, producto más popular.
+     - **Modal de detalle:** Click en barra para ver conversaciones asociadas.
   2. **Calendario de Reservas:**
      - Calendario interactivo que muestra los días y horas con reservas realizadas.
      - Métricas superiores: Total de reservas, día/hora pico.

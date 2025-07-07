@@ -41,6 +41,9 @@ interface RestaurantAnalysis {
     time: string;
     people: number;
     tableType?: string;
+    name?: string;
+    contact?: string;
+    notes?: string;
   };
   customerName?: string;
   customerPhone?: string;
@@ -476,8 +479,41 @@ export function RestaurantAnalysisModal({ isOpen, onClose, conversation }: Resta
                             {formatDate(analysis.createdAt)}
                           </div>
                         )}
+                        {/* Mostrar detalles de la reserva si existen */}
+                        {analysis.reservation && (
+                          <div className="space-y-1">
+                            <div>
+                              <span className="font-semibold">Reserva para:</span>{' '}
+                              {analysis.reservation.people} personas
+                            </div>
+                            <div>
+                              <span className="font-semibold">Fecha:</span>{' '}
+                              {analysis.reservation.date}
+                            </div>
+                            <div>
+                              <span className="font-semibold">Hora:</span>{' '}
+                              {analysis.reservation.time}
+                            </div>
+                            <div>
+                              <span className="font-semibold">Nombre reserva:</span>{' '}
+                              {analysis.reservation.name}
+                            </div>
+                            {analysis.reservation.contact && analysis.reservation.contact !== 'not provided' && (
+                              <div>
+                                <span className="font-semibold">Contacto:</span>{' '}
+                                {analysis.reservation.contact}
+                              </div>
+                            )}
+                            {analysis.reservation.notes && analysis.reservation.notes !== 'not provided' && (
+                              <div>
+                                <span className="font-semibold">Notas:</span>{' '}
+                                {analysis.reservation.notes}
+                              </div>
+                            )}
+                          </div>
+                        )}
                         {/* Si no hay datos útiles */}
-                        {(!orderType && !analysis.customerName && !analysis.createdAt) && (
+                        {(!orderType && !analysis.customerName && !analysis.createdAt && !analysis.reservation) && (
                           <div className="text-muted-foreground">No hay detalles adicionales disponibles.</div>
                         )}
                       </div>

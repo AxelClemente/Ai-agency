@@ -128,8 +128,8 @@ export default function RecordingsPage() {
 
   const handleViewTranscription = (conversation: Conversation) => {
     setTimeout(() => {
-      setSelectedConversation(conversation);
-      setIsTranscriptionModalOpen(true);
+    setSelectedConversation(conversation);
+    setIsTranscriptionModalOpen(true);
     }, 100);
   };
 
@@ -335,16 +335,16 @@ export default function RecordingsPage() {
                             <DropdownMenuItem>Download Recording</DropdownMenuItem>
                             <DropdownMenuItem>Share</DropdownMenuItem>
                             {!conversation.isMock && <>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem 
-                                className="text-destructive"
-                                onSelect={() => {
-                                  console.log('🖱️ Delete button clicked for conversation:', conversation.id);
-                                  handleDeleteConversation(conversation.id);
-                                }}
-                              >
-                                Delete
-                              </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem 
+                              className="text-destructive"
+                              onSelect={() => {
+                                console.log('🖱️ Delete button clicked for conversation:', conversation.id);
+                                handleDeleteConversation(conversation.id);
+                              }}
+                            >
+                              Delete
+                            </DropdownMenuItem>
                             </>}
                           </DropdownMenuContent>
                         </DropdownMenu>

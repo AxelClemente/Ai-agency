@@ -19,17 +19,34 @@ const PRODUCTOS = [
 // Mock de datos de ventas por producto (luego se conecta a datos reales)
 const ventasProductos = PRODUCTOS.map((nombre, i) => ({ name: nombre, value: Math.floor(Math.random() * 20) + 1 }))
 
-// Mock de reservas por día (luego se conecta a datos reales)
-const reservasPorDia = [
-  { date: "2024-07-01", count: 2 },
-  { date: "2024-07-03", count: 5 },
-  { date: "2024-07-07", count: 3 },
-  { date: "2024-07-12", count: 7 },
-  { date: "2024-07-15", count: 1 },
-  { date: "2024-07-21", count: 4 },
-]
-
 export default function AnalyticsPage() {
+  // Estado para reservas por día
+  const [reservasPorDia, setReservasPorDia] = useState<{ date: string; count: number }[]>([]);
+  const [loadingReservas, setLoadingReservas] = useState(true);
+  const [errorReservas, setErrorReservas] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchReservas() {
+      setLoadingReservas(true);
+      setErrorReservas(null);
+      try {
+        const res = await fetch('/api/analytics/reservations-by-day');
+        const data = await res.json();
+        if (data.reservations) {
+          setReservasPorDia(data.reservations);
+        } else {
+          setReservasPorDia([]);
+        }
+      } catch (e) {
+        setErrorReservas('Error al cargar reservas');
+        setReservasPorDia([]);
+      } finally {
+        setLoadingReservas(false);
+      }
+    }
+    fetchReservas();
+  }, []);
+
   // Estado para productos vendidos (ahora con conversations)
   const [ventasProductos, setVentasProductos] = useState<any[]>([]);
   const [loadingProductos, setLoadingProductos] = useState(true);
@@ -70,6 +87,8 @@ export default function AnalyticsPage() {
   // Generar fechas de reservas para el mes actual (mock)
   const reservasFechas = reservasPorDia.map(r => new Date(r.date))
   const reservasMap = Object.fromEntries(reservasPorDia.map(r => [r.date, r.count]))
+
+  console.log('RESERVAS PARA EL CALENDARIO:', reservasPorDia);
 
   return (
     <div className="flex flex-col">
@@ -166,7 +185,13 @@ export default function AnalyticsPage() {
                   <CardDescription>Días y horas con reservas realizadas</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <ReservationCalendar reservas={reservasPorDia} month={new Date(2024, 6, 1)} />
+                  {loadingReservas ? (
+                    <div className="text-center text-muted-foreground">Cargando reservas...</div>
+                  ) : errorReservas ? (
+                    <div className="text-center text-destructive">{errorReservas}</div>
+                  ) : (
+                    <ReservationCalendar reservas={reservasPorDia} month={new Date()} />
+                  )}
                 </CardContent>
               </Card>
             </div>

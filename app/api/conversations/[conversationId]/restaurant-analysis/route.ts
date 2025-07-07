@@ -29,7 +29,8 @@ export async function POST(
 
       // Generar transcript para el análisis
       const transcript = mock.messages.map(m => `${m.role === 'agente' ? 'Agente' : 'Cliente'}: ${m.message}`).join('\n');
-      const analysisResult = await analyzePizzeriaTranscript(transcript);
+      const conversationDate = mock.messages[0]?.timestamp ? new Date(mock.messages[0].timestamp).toISOString().slice(0,10) : undefined;
+      const analysisResult = await analyzePizzeriaTranscript(transcript, conversationDate);
 
       // Mapear productos
       const products =
@@ -39,6 +40,11 @@ export async function POST(
               ? analysisResult.items
               : []);
 
+      // Fallback para reservation.date
+      let reservation = analysisResult.reservation;
+      if (reservation && (reservation.date === 'not determined' || reservation.date === 'not provided')) {
+        reservation = { ...reservation, date: conversationDate };
+      }
       // Simular objeto de análisis (no guardar en DB)
       const restaurantAnalysis = {
         id: 'mock-analysis-' + mock.id,
@@ -50,7 +56,7 @@ export async function POST(
         products,
         orderType: analysisResult.orderType || analysisResult.order_type,
         totalAmount: analysisResult.totalAmount,
-        reservation: analysisResult.reservation,
+        reservation,
         customerName: analysisResult.customerName || analysisResult.customer_name,
         customerPhone: analysisResult.customerPhone || analysisResult.contact,
         customerAddress: analysisResult.customerAddress,
@@ -99,7 +105,8 @@ export async function POST(
     }
 
     // Analizar la transcripción usando OpenAI
-    const analysisResult = await analyzePizzeriaTranscript(conversation.transcript);
+    const conversationDate = conversation.startedAt ? new Date(conversation.startedAt).toISOString().slice(0,10) : undefined;
+    const analysisResult = await analyzePizzeriaTranscript(conversation.transcript, conversationDate);
     console.log('[DEBUG] analysisResult:', analysisResult);
 
     // Mapear items a products para guardar correctamente
@@ -110,6 +117,11 @@ export async function POST(
             ? analysisResult.items
             : []);
 
+    // Fallback para reservation.date
+    let reservation = analysisResult.reservation;
+    if (reservation && (reservation.date === 'not determined' || reservation.date === 'not provided')) {
+      reservation = { ...reservation, date: conversationDate };
+    }
     // Crear el análisis en la base de datos
     const restaurantAnalysis = await prisma.restaurantAnalysis.create({
       data: {
@@ -121,7 +133,7 @@ export async function POST(
         products,
         orderType: analysisResult.orderType || analysisResult.order_type,
         totalAmount: analysisResult.totalAmount,
-        reservation: analysisResult.reservation,
+        reservation,
         customerName: analysisResult.customerName || analysisResult.customer_name,
         customerPhone: analysisResult.customerPhone || analysisResult.contact,
         customerAddress: analysisResult.customerAddress,
@@ -173,7 +185,8 @@ export async function GET(
 
       // Generar transcript para el análisis
       const transcript = mock.messages.map(m => `${m.role === 'agente' ? 'Agente' : 'Cliente'}: ${m.message}`).join('\n');
-      const analysisResult = await analyzePizzeriaTranscript(transcript);
+      const conversationDate = mock.messages[0]?.timestamp ? new Date(mock.messages[0].timestamp).toISOString().slice(0,10) : undefined;
+      const analysisResult = await analyzePizzeriaTranscript(transcript, conversationDate);
 
       // Mapear productos
       const products =
@@ -183,6 +196,11 @@ export async function GET(
               ? analysisResult.items
               : []);
 
+      // Fallback para reservation.date
+      let reservation = analysisResult.reservation;
+      if (reservation && (reservation.date === 'not determined' || reservation.date === 'not provided')) {
+        reservation = { ...reservation, date: conversationDate };
+      }
       // Simular objeto de análisis (no guardar en DB)
       const restaurantAnalysis = {
         id: 'mock-analysis-' + mock.id,
@@ -194,7 +212,7 @@ export async function GET(
         products,
         orderType: analysisResult.orderType || analysisResult.order_type,
         totalAmount: analysisResult.totalAmount,
-        reservation: analysisResult.reservation,
+        reservation,
         customerName: analysisResult.customerName || analysisResult.customer_name,
         customerPhone: analysisResult.customerPhone || analysisResult.contact,
         customerAddress: analysisResult.customerAddress,

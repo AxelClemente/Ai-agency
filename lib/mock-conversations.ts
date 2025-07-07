@@ -88,6 +88,7 @@ export const mockConversations: MockConversation[] = [
       { role: 'agente', message: 'Perfecto, en 20 minutos estará listo.', timestamp: '2025-07-01T16:01:00' },
     ],
   },
+  /*
   // Pedido 6
   {
     id: 'mock-6',
@@ -212,7 +213,7 @@ export const mockConversations: MockConversation[] = [
     messages: [
       { role: 'agente', message: '¡Hola! ¿Qué te gustaría pedir hoy?', timestamp: '2025-07-02T13:00:00' },
       { role: 'cliente', message: 'Una pizza Capuleto y un tiramisú.', timestamp: '2025-07-02T13:00:10' },
-      { role: 'agente', message: 'Capuleto y tiramisú. Total: 29 euros. ¿Para recoger?', timestamp: '2025-07-02T13:00:20' },
+      { role: 'agente', message: 'Capuleto y tiramisú. Total: 29 euros. ¿Para recoger?', timestamp: '2025-07-02T12:00:20' },
       { role: 'cliente', message: 'Sí, gracias.', timestamp: '2025-07-02T13:00:30' },
       { role: 'agente', message: 'En 20 minutos estará listo.', timestamp: '2025-07-02T13:00:40' },
     ],
@@ -232,6 +233,7 @@ export const mockConversations: MockConversation[] = [
       { role: 'agente', message: 'En 20 minutos estará listo.', timestamp: '2025-07-02T14:01:00' },
     ],
   },
+  */
   // Reserva 1
   {
     id: 'mock-16',
@@ -295,6 +297,67 @@ export const mockConversations: MockConversation[] = [
       { role: 'agente', message: 'Reserva para 2 a las 22:30 el viernes. ¿Nombre?', timestamp: '2025-07-02T19:00:20' },
       { role: 'cliente', message: 'Miguel.', timestamp: '2025-07-02T19:00:30' },
       { role: 'agente', message: 'Reserva confirmada, Miguel. ¡Te esperamos!', timestamp: '2025-07-02T19:00:40' },
+    ],
+  },
+  // Reservas adicionales para pruebas de calendario y análisis
+  {
+    id: 'mock-21',
+    isMock: true,
+    type: 'reserva',
+    messages: [
+      { role: 'agente', message: '¡Hola! ¿Deseas reservar mesa o pedir para llevar?', timestamp: '2025-07-23T13:00:00' },
+      { role: 'cliente', message: 'Reservar para 2 personas el 23 de julio a las 20:00.', timestamp: '2025-07-23T13:00:10' },
+      { role: 'agente', message: 'Reserva para 2 a las 20:00 el 23 de julio. ¿Nombre?', timestamp: '2025-07-23T13:00:20' },
+      { role: 'cliente', message: 'Valeria.', timestamp: '2025-07-25T13:00:30' },
+      { role: 'agente', message: 'Reserva confirmada, Valeria. ¡Te esperamos!', timestamp: '2025-07-23T13:00:40' },
+    ],
+  },
+  {
+    id: 'mock-22',
+    isMock: true,
+    type: 'reserva',
+    messages: [
+      { role: 'agente', message: 'Pizza Posta, ¿en qué puedo ayudarte?', timestamp: '2025-07-26T18:00:00' },
+      { role: 'cliente', message: 'Quiero reservar para 4 personas el 26 de julio a las 21:30.', timestamp: '2025-07-26T18:00:10' },
+      { role: 'agente', message: 'Reserva para 4 a las 21:30 el 26 de julio. ¿Nombre?', timestamp: '2025-07-26T18:00:20' },
+      { role: 'cliente', message: 'Andrés.', timestamp: '2025-07-26T18:00:30' },
+      { role: 'agente', message: 'Reserva confirmada, Andrés. ¡Hasta pronto!', timestamp: '2025-07-26T18:00:40' },
+    ],
+  },
+  {
+    id: 'mock-23',
+    isMock: true,
+    type: 'reserva',
+    messages: [
+      { role: 'agente', message: '¡Buenas tardes! ¿Reserva o pedido?', timestamp: '2025-07-29T19:00:00' },
+      { role: 'cliente', message: 'Reservar para 3 personas el 29 de julio a las 22:00.', timestamp: '2025-07-29T19:00:10' },
+      { role: 'agente', message: 'Reserva para 3 a las 22:00 el 29 de julio. ¿Nombre?', timestamp: '2025-07-29T19:00:20' },
+      { role: 'cliente', message: 'Lucía.', timestamp: '2025-07-29T19:00:30' },
+      { role: 'agente', message: 'Reserva hecha, Lucía. ¡Gracias!', timestamp: '2025-07-29T19:00:40' },
+    ],
+  },
+  {
+    id: 'mock-24',
+    isMock: true,
+    type: 'reserva',
+    messages: [
+      { role: 'agente', message: 'Pizza Posta, ¿quieres reservar o pedir?', timestamp: '2025-08-05T20:00:00' },
+      { role: 'cliente', message: 'Reservar para 5 personas el 5 de agosto a las 20:30.', timestamp: '2025-08-05T20:00:10' },
+      { role: 'agente', message: 'Reserva para 5 a las 20:30 el 5 de agosto. ¿Nombre?', timestamp: '2025-08-05T20:00:20' },
+      { role: 'cliente', message: 'Javier.', timestamp: '2025-08-05T20:00:30' },
+      { role: 'agente', message: 'Reserva confirmada, Javier. ¡Te esperamos!', timestamp: '2025-08-05T20:00:40' },
+    ],
+  },
+  {
+    id: 'mock-25',
+    isMock: true,
+    type: 'reserva',
+    messages: [
+      { role: 'agente', message: '¡Hola! ¿Deseas reservar mesa o pedir para llevar?', timestamp: '2025-08-15T21:00:00' },
+      { role: 'cliente', message: 'Reservar para 2 personas el 15 de agosto a las 21:00.', timestamp: '2025-08-15T21:00:10' },
+      { role: 'agente', message: 'Reserva para 2 a las 21:00 el 15 de agosto. ¿Nombre?', timestamp: '2025-08-15T21:00:20' },
+      { role: 'cliente', message: 'Elena.', timestamp: '2025-08-15T21:00:30' },
+      { role: 'agente', message: 'Reserva confirmada, Elena. ¡Hasta pronto!', timestamp: '2025-08-15T21:00:40' },
     ],
   },
 ];
