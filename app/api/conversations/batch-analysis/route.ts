@@ -32,7 +32,7 @@ export async function POST() {
       await prisma.conversationAnalysis.create({
         data: {
           conversationId: conv.id,
-          programmaticData: analysis as AIAnalysis,
+          programmaticData: JSON.parse(JSON.stringify(analysis)),
         }
       })
       processed++
