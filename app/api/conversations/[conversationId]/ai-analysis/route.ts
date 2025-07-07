@@ -5,6 +5,34 @@ import { analyzePizzeriaTranscript } from '@/lib/restaurant-agent-openai'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/auth.config'
 
+// Interfaz para el resultado del análisis
+interface PizzeriaAnalysisResult {
+  type: 'order' | 'reservation' | 'information';
+  items?: Array<{ product: string; quantity: number }>;
+  order_type?: string;
+  name?: string;
+  date?: string;
+  time?: string;
+  people?: number;
+  contact?: string;
+  notes?: string;
+  customer_name?: string;
+}
+
+// Normalizador de reservas para limpiar valores 'not provided' o vacíos
+function normalizeReservation(reservation: any) {
+  if (!reservation) return undefined;
+  return {
+    date: reservation.date && reservation.date !== 'not provided' ? reservation.date : undefined,
+    time: reservation.time && reservation.time !== 'not provided' ? reservation.time : undefined,
+    people: reservation.people && reservation.people !== 'not provided' ? reservation.people : undefined,
+    name: reservation.name && reservation.name !== 'not provided' ? reservation.name : undefined,
+    contact: reservation.contact && reservation.contact !== 'not provided' ? reservation.contact : undefined,
+    notes: reservation.notes && reservation.notes !== 'not provided' ? reservation.notes : undefined,
+    tableType: reservation.tableType && reservation.tableType !== 'not provided' ? reservation.tableType : undefined,
+  };
+}
+
 // Real AI analysis using OpenAI GPT-4o
 export async function POST(
   request: NextRequest,
@@ -38,7 +66,7 @@ export async function POST(
 
     // Analizar la transcripción con OpenAI
     console.log(`🧠 Analyzing conversation ${conversationId}...`)
-    const analysisResult = await analyzePizzeriaTranscript(transcript, conversationDate)
+    const analysisResult = await analyzePizzeriaTranscript(transcript, conversationDate) as PizzeriaAnalysisResult
     console.log(`✅ Analysis completed for ${conversationId}:`, analysisResult)
 
     // Extraer datos del análisis
@@ -46,20 +74,13 @@ export async function POST(
     const isReservation = analysisResult.type === 'reservation'
 
     // Preparar datos para la base de datos
-    const products = isOrder && analysisResult.items ? analysisResult.items.map((item: any) => ({
-      name: item.product || item.name,
+    const products = isOrder && analysisResult.items ? analysisResult.items.map((item) => ({
+      name: item.product,
       quantity: item.quantity || 1,
       price: null // Se calculará después con la tabla de precios
     })) : []
 
-    const reservation = isReservation ? {
-      date: analysisResult.date,
-      time: analysisResult.time,
-      people: analysisResult.people,
-      name: analysisResult.name,
-      contact: analysisResult.contact,
-      notes: analysisResult.notes
-    } : null
+    const reservation = isReservation ? normalizeReservation(analysisResult) : null
 
     // Calcular total aproximado (usando precios del menú)
     const MENU_PRICES: Record<string, number> = {
@@ -76,7 +97,7 @@ export async function POST(
       "Tiramisú": 7.00
     }
 
-    const totalAmount = products.reduce((sum: number, product: any) => {
+    const totalAmount = products.reduce((sum: number, product) => {
       const price = MENU_PRICES[product.name] || 0
       return sum + (price * product.quantity)
     }, 0)

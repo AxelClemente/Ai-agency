@@ -16,8 +16,18 @@ const PRODUCTOS = [
   "Cerveza", "Refrescos", "Agua"
 ]
 
-// Mock de datos de ventas por producto (luego se conecta a datos reales)
-const ventasProductos = PRODUCTOS.map((nombre, i) => ({ name: nombre, value: Math.floor(Math.random() * 20) + 1 }))
+// Tipado local para las conversaciones asociadas a productos
+interface ConversationSummary {
+  id: string;
+  date?: string;
+  duration?: number;
+}
+
+interface ProductSummary {
+  name: string;
+  value: number;
+  conversations: ConversationSummary[];
+}
 
 export default function AnalyticsPage() {
   // Estado para reservas por día
@@ -30,14 +40,20 @@ export default function AnalyticsPage() {
       setLoadingReservas(true);
       setErrorReservas(null);
       try {
+        console.log('🔄 [FRONTEND] Fetching reservations...');
         const res = await fetch('/api/analytics/reservations-by-day');
+        console.log('📥 [FRONTEND] Reservations response status:', res.status);
         const data = await res.json();
+        console.log('📥 [FRONTEND] Reservations data:', data);
         if (data.reservations) {
+          console.log('✅ [FRONTEND] Setting reservations:', data.reservations);
           setReservasPorDia(data.reservations);
         } else {
+          console.log('⚠️ [FRONTEND] No reservations in response');
           setReservasPorDia([]);
         }
-      } catch (e) {
+      } catch (error) {
+        console.error('❌ [FRONTEND] Error fetching reservations:', error);
         setErrorReservas('Error al cargar reservas');
         setReservasPorDia([]);
       } finally {
@@ -48,29 +64,34 @@ export default function AnalyticsPage() {
   }, []);
 
   // Estado para productos vendidos (ahora con conversations)
-  const [ventasProductos, setVentasProductos] = useState<any[]>([]);
+  const [ventasProductos, setVentasProductos] = useState<ProductSummary[]>([]);
   const [loadingProductos, setLoadingProductos] = useState(true);
-  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<ProductSummary | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchProductos() {
       setLoadingProductos(true);
       try {
+        console.log('🔄 [FRONTEND] Fetching products...');
         const res = await fetch('/api/analytics/products');
+        console.log('📥 [FRONTEND] Products response status:', res.status);
         const data = await res.json();
+        console.log('📥 [FRONTEND] Products data:', data);
         if (data.products) {
-          setVentasProductos(
-            data.products.map((p: any) => ({
-              name: p.name,
-              value: p.quantity,
-              conversations: p.conversations
-            }))
-          );
+          const mappedProducts = data.products.map((p: any) => ({
+            name: p.name,
+            value: p.quantity,
+            conversations: p.conversations as ConversationSummary[]
+          }));
+          console.log('✅ [FRONTEND] Setting products:', mappedProducts);
+          setVentasProductos(mappedProducts);
         } else {
+          console.log('⚠️ [FRONTEND] No products in response');
           setVentasProductos([]);
         }
-      } catch (e) {
+      } catch (error) {
+        console.error('❌ [FRONTEND] Error fetching products:', error);
         setVentasProductos([]);
       } finally {
         setLoadingProductos(false);
@@ -84,11 +105,13 @@ export default function AnalyticsPage() {
   const orders = ventasProductos.reduce((acc, p) => acc + p.value, 0)
   const reservations = reservasPorDia.reduce((acc, r) => acc + r.count, 0)
 
-  // Generar fechas de reservas para el mes actual (mock)
-  const reservasFechas = reservasPorDia.map(r => new Date(r.date))
-  const reservasMap = Object.fromEntries(reservasPorDia.map(r => [r.date, r.count]))
-
-  console.log('RESERVAS PARA EL CALENDARIO:', reservasPorDia);
+  // Logs de debug para ver el estado final
+  console.log('📊 [FRONTEND] Final state:');
+  console.log('- ventasProductos:', ventasProductos);
+  console.log('- reservasPorDia:', reservasPorDia);
+  console.log('- estimateSells:', estimateSells);
+  console.log('- orders:', orders);
+  console.log('- reservations:', reservations);
 
   return (
     <div className="flex flex-col">
@@ -148,7 +171,7 @@ export default function AnalyticsPage() {
                   ) : (
                     <BarChart
                       data={ventasProductos}
-                      onBarClick={(product: any) => {
+                      onBarClick={(product: ProductSummary) => {
                         setSelectedProduct(product);
                         setModalOpen(true);
                       }}
@@ -158,11 +181,11 @@ export default function AnalyticsPage() {
                   <Dialog open={modalOpen} onOpenChange={setModalOpen}>
                     <DialogContent className="max-w-lg">
                       <DialogHeader>
-                        <DialogTitle>Conversaciones para "{selectedProduct?.name}"</DialogTitle>
+                        <DialogTitle>Conversaciones para &quot;{selectedProduct?.name}&quot;</DialogTitle>
                       </DialogHeader>
                       <div className="space-y-2">
-                        {selectedProduct?.conversations?.length > 0 ? (
-                          selectedProduct.conversations.map((conv: any, idx: number) => (
+                        {selectedProduct && Array.isArray(selectedProduct.conversations) && selectedProduct.conversations.length > 0 ? (
+                          selectedProduct.conversations.map((conv: ConversationSummary) => (
                             <div key={conv.id} className="flex justify-between items-center border-b pb-1 last:border-b-0 last:pb-0">
                               <div>
                                 <span className="font-mono text-xs">ID: {conv.id}</span><br />
