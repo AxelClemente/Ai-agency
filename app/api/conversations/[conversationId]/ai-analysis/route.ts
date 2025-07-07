@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { analyzeConversationWithAI, validateAnalysisResponse } from '@/lib/openai'
+
 import { prisma } from '@/lib/prisma'
 import { analyzePizzeriaTranscript } from '@/lib/restaurant-agent-openai'
 import { getServerSession } from 'next-auth'

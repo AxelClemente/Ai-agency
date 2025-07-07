@@ -1,16 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { analyzeConversationWithAI } from '@/lib/openai'
 import type { AIAnalysis } from '../../../../types/conversation'
 
-interface BatchAnalysisResult {
-  conversationId: string
-  success: boolean
-  analysis?: AIAnalysis
-  error?: string
-  cost?: number
-  processingTime?: number
-}
+
 
 // Solo permitir POST para batch analysis
 export async function POST() {

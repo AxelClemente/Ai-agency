@@ -168,8 +168,8 @@ export default function AnalyticsPage() {
                     <div className="text-muted-foreground">No hay datos de productos vendidos.</div>
                   ) : (
                     <BarChart
-                      data={ventasProductos as any}
-                      onBarClick={(product: any) => {
+                      data={ventasProductos}
+                      onBarClick={(product) => {
                         setSelectedProduct(product as ProductSummary);
                         setModalOpen(true);
                       }}

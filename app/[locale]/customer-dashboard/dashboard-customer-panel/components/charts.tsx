@@ -48,7 +48,16 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"]
 interface ChartDataItem {
   name: string;
   value: number;
-  [key: string]: string | number;
+  conversations?: Array<{
+    id: string;
+    date?: string;
+    duration?: number;
+  }>;
+  [key: string]: string | number | Array<{
+    id: string;
+    date?: string;
+    duration?: number;
+  }> | undefined;
 }
 
 export function LineChart() {
