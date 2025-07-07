@@ -1,27 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { mockConversations } from '@/lib/mock-conversations';
-import { analyzePizzeriaTranscript } from '@/lib/restaurant-agent-openai';
+import { prisma } from '@/lib/prisma';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/auth.config';
 import { isValid, parseISO, format } from 'date-fns';
-
-// Cache en memoria para análisis de mocks
-let mockAnalysisCache: Record<string, any> = {};
-
-// Función para limpiar el cache
-function clearMockCache() {
-  mockAnalysisCache = {};
-  console.log('🧹 Mock analysis cache cleared');
-}
 
 export async function GET(req: NextRequest) {
   try {
-    // SOLO usar mocks - no datos reales de la base de datos
-    console.log('🔄 Processing ONLY mock reservations for calendar...');
+    // Verificar autenticación
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    console.log('🔄 Processing REAL database analytics for reservations...');
     
-    // Limpiar cache para forzar reprocesamiento con nuevas instrucciones
-    clearMockCache();
-    
-    // Procesar los mocks de reserva en memoria con cache
-    const mockReservas: Array<{ 
+    // Obtener reservaciones reales de la base de datos
+    const realReservations = await prisma.reservation.findMany({
+      where: {
+        userId: session.user.id
+      },
+      orderBy: {
+        date: 'asc'
+      }
+    });
+
+    console.log(`📊 Found ${realReservations.length} real reservations in database`);
+
+    // Obtener análisis de restaurante de la base de datos (solo reservas de AI)
+    const restaurantAnalyses = await prisma.restaurantAnalysis.findMany({
+      where: {
+        userId: session.user.id,
+        customerIntent: 'reservation' // Solo reservas, no pedidos
+      },
+      include: {
+        conversation: {
+          select: {
+            id: true,
+            startedAt: true,
+            duration: true
+          }
+        }
+      },
+      orderBy: {
+        timestamp: 'desc'
+      }
+    });
+
+    console.log(`📊 Found ${restaurantAnalyses.length} AI reservation analyses in database`);
+
+    // Procesar reservas reales
+    const realReservas: Array<{ 
       date: string; 
       count: number; 
       reservas: Array<{
@@ -30,49 +58,59 @@ export async function GET(req: NextRequest) {
         people?: number;
         contact?: string;
         notes?: string;
+        source?: string;
       }>;
     }> = [];
     
-    for (const mock of mockConversations) {
-      if (mock.type !== 'reserva') continue;
+    // Agregar reservaciones reales
+    for (const reservation of realReservations) {
+      const dateStr = format(reservation.date, 'yyyy-MM-dd');
+      const timeStr = format(reservation.date, 'HH:mm');
       
-      let analysisResult;
-      if (mockAnalysisCache[mock.id]) {
-        analysisResult = mockAnalysisCache[mock.id];
-        console.log(`📋 Using cached analysis for reservation ${mock.id}`);
-      } else {
-        console.log(`🧠 Analyzing mock reservation ${mock.id}...`);
-        const transcript = mock.messages.map(m => `${m.role === 'agente' ? 'Agente' : 'Cliente'}: ${m.message}`).join('\n');
-        const conversationDate = mock.messages[0]?.timestamp ? new Date(mock.messages[0].timestamp).toISOString().slice(0,10) : undefined;
-        console.log(`📅 Mock ${mock.id} conversation date: ${conversationDate}`);
-        analysisResult = await analyzePizzeriaTranscript(transcript, conversationDate);
-        mockAnalysisCache[mock.id] = analysisResult;
-        console.log(`✅ Reservation analysis cached for ${mock.id}`);
-      }
+      const reservationDetails = {
+        name: reservation.name,
+        time: timeStr,
+        people: reservation.people,
+        contact: reservation.phone,
+        notes: reservation.notes || 'Sin notas',
+        source: 'Real'
+      };
       
-      const reservation = analysisResult.reservation || analysisResult;
+      realReservas.push({ 
+        date: dateStr, 
+        count: 1,
+        reservas: [reservationDetails]
+      });
+    }
+
+    // Procesar reservas de análisis de AI
+    for (const analysis of restaurantAnalyses) {
+      const reservation = analysis.reservation;
+      if (!reservation || typeof reservation !== 'object') continue;
+      
       let dateStr = null;
       
-      if (reservation && reservation.date && reservation.date !== 'not provided') {
+      if (reservation.date && reservation.date !== 'not provided') {
         const parsed = isValid(new Date(reservation.date)) ? new Date(reservation.date) : parseISO(reservation.date);
         if (isValid(parsed)) dateStr = format(parsed, 'yyyy-MM-dd');
       }
       
       if (!dateStr) {
         // Fallback: usar timestamp de la conversación
-        dateStr = format(new Date(mock.messages[0]?.timestamp), 'yyyy-MM-dd');
+        dateStr = format(analysis.timestamp, 'yyyy-MM-dd');
       }
       
       // Extraer detalles de la reserva
       const reservationDetails = {
-        name: reservation?.name || 'Sin nombre',
-        time: reservation?.time || 'Sin hora',
-        people: reservation?.people || 0,
-        contact: reservation?.contact || 'Sin contacto',
-        notes: reservation?.notes || 'Sin notas'
+        name: String(reservation.name || 'Sin nombre'),
+        time: String(reservation.time || 'Sin hora'),
+        people: Number(reservation.people || 0),
+        contact: String(reservation.contact || 'Sin contacto'),
+        notes: String(reservation.notes || 'Sin notas'),
+        source: 'AI Analysis'
       };
       
-      mockReservas.push({ 
+      realReservas.push({ 
         date: dateStr, 
         count: 1,
         reservas: [reservationDetails]
@@ -82,7 +120,7 @@ export async function GET(req: NextRequest) {
     // Agrupar reservas por fecha
     const groupedReservations: Record<string, { count: number; reservas: any[] }> = {};
     
-    for (const reserva of mockReservas) {
+    for (const reserva of realReservas) {
       if (!groupedReservations[reserva.date]) {
         groupedReservations[reserva.date] = { count: 0, reservas: [] };
       }
@@ -96,7 +134,7 @@ export async function GET(req: NextRequest) {
       reservas: data.reservas
     }));
 
-    console.log(`📅 Calendar result: ${result.length} dates with ${mockReservas.length} total reservations`);
+    console.log(`📅 Calendar result: ${result.length} dates with ${realReservas.length} total reservations (Real: ${realReservations.length}, AI: ${restaurantAnalyses.length})`);
     
     return NextResponse.json({ reservations: result });
   } catch (error) {

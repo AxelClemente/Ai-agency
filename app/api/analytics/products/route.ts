@@ -1,74 +1,75 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { mockConversations } from '@/lib/mock-conversations';
-import { analyzePizzeriaTranscript } from '@/lib/restaurant-agent-openai';
-
-// Cache en memoria para análisis de mocks
-let mockAnalysisCache: Record<string, any> = {};
-
-// Función para limpiar el cache
-function clearMockCache() {
-  mockAnalysisCache = {};
-  console.log('🧹 Mock analysis cache cleared');
-}
+import { prisma } from '@/lib/prisma';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/auth.config';
 
 export async function GET(request: NextRequest) {
   try {
-    // SOLO usar mocks - no datos reales de la base de datos
-    console.log('🔄 Processing ONLY mock conversations for analytics...');
+    // Verificar autenticación
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    console.log('🔄 Processing REAL database analytics for products...');
     
-    // Limpiar cache para forzar reprocesamiento con nuevas instrucciones
-    clearMockCache();
-    
-    // Procesar los mocks en memoria con cache
-    const mockProductsWithMeta: Array<{ name: string; quantity: number; conversationId: string; date: string; duration: number }> = [];
-    
-    for (const mock of mockConversations) {
-      // Solo procesar mocks de pedidos (no reservas)
-      if (mock.type !== 'pedido') continue;
-      
-      let analysisResult;
-      if (mockAnalysisCache[mock.id]) {
-        analysisResult = mockAnalysisCache[mock.id];
-        console.log(`📋 Using cached analysis for ${mock.id}`);
-      } else {
-        console.log(`🧠 Analyzing mock conversation ${mock.id}...`);
-        const transcript = mock.messages.map(m => `${m.role === 'agente' ? 'Agente' : 'Cliente'}: ${m.message}`).join('\n');
-        const conversationDate = mock.messages[0]?.timestamp ? new Date(mock.messages[0].timestamp).toISOString().slice(0,10) : undefined;
-        console.log(`📅 Mock ${mock.id} conversation date: ${conversationDate}`);
-        analysisResult = await analyzePizzeriaTranscript(transcript, conversationDate);
-        mockAnalysisCache[mock.id] = analysisResult;
-        console.log(`✅ Analysis cached for ${mock.id}`);
+    // Obtener análisis de restaurante de la base de datos
+    const restaurantAnalyses = await prisma.restaurantAnalysis.findMany({
+      where: {
+        userId: session.user.id,
+        customerIntent: 'order' // Solo pedidos, no reservas
+      },
+      include: {
+        conversation: {
+          select: {
+            id: true,
+            startedAt: true,
+            duration: true
+          }
+        }
+      },
+      orderBy: {
+        timestamp: 'desc'
       }
+    });
+
+    console.log(`📊 Found ${restaurantAnalyses.length} order analyses in database`);
+
+    // Procesar productos de análisis reales
+    const productsWithMeta: Array<{ name: string; quantity: number; conversationId: string; date: string; duration: number }> = [];
+    
+    for (const analysis of restaurantAnalyses) {
+      const products = Array.isArray(analysis.products) ? analysis.products : [];
+      const conversationDate = analysis.timestamp.toISOString().slice(0, 10);
       
-      const products =
-        analysisResult.products && Array.isArray(analysisResult.products) && analysisResult.products.length > 0
-          ? analysisResult.products
-          : (analysisResult.items && Array.isArray(analysisResult.items) && analysisResult.items.length > 0
-              ? analysisResult.items
-              : []);
-              
-      for (const p of products) {
-        mockProductsWithMeta.push({
-          name: (p.name || p.product || '').trim(),
-          quantity: p.quantity || 1,
-          conversationId: mock.id,
-          date: mock.messages[0]?.timestamp || '',
-          duration: mock.messages.length * 10
-        });
+      for (const product of products) {
+        if (product && typeof product === 'object' && 'name' in product) {
+          productsWithMeta.push({
+            name: String(product.name || ''),
+            quantity: Number(product.quantity || 1),
+            conversationId: analysis.conversationId,
+            date: conversationDate,
+            duration: analysis.duration
+          });
+        }
       }
     }
 
     // Agrupar productos con meta
     const productMap: Record<string, { quantity: number; conversations: Array<{ id: string; date: string; duration: number }> }> = {};
     
-    for (const p of mockProductsWithMeta) {
+    for (const p of productsWithMeta) {
       const name = (p.name || '').trim().toLowerCase();
       if (!name) continue;
       if (!productMap[name]) {
         productMap[name] = { quantity: 0, conversations: [] };
       }
       productMap[name].quantity += p.quantity;
-      productMap[name].conversations.push({ id: p.conversationId, date: p.date, duration: p.duration });
+      productMap[name].conversations.push({ 
+        id: p.conversationId, 
+        date: p.date, 
+        duration: p.duration 
+      });
     }
     
     const result = Object.entries(productMap).map(([name, data]) => ({ 
@@ -77,7 +78,7 @@ export async function GET(request: NextRequest) {
       conversations: data.conversations 
     }));
     
-    console.log(`📊 Analytics result: ${result.length} products from ${mockProductsWithMeta.length} mock orders`);
+    console.log(`📊 Analytics result: ${result.length} products from ${productsWithMeta.length} real orders`);
     
     return NextResponse.json({ products: result });
   } catch (error) {

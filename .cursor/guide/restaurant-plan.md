@@ -10,6 +10,7 @@ Reemplazar el tab "Adherence Analysis" en Analytics por un análisis real de ped
 ### ✅ Logros Técnicos y Funcionales
 - **Extracción AI de productos y reservas**: Implementada extracción automática de productos, tipo de pedido, cliente y reservas desde transcripciones usando OpenAI y backend propio.
 - **Fechas 100% correctas**: Todos los análisis de pedidos y reservas respetan la fecha real de la conversación (mock o real), gracias a mejoras en el prompt y el pipeline.
+- **Flujo completo de producción**: Sistema implementado para procesar transcripciones reales, analizarlas con AI, guardar en base de datos y alimentar analytics en tiempo real.
 - **Mocks robustos**: El sistema puede funcionar 100% con mocks, sin requerir datos reales en la base de datos. Los mocks tienen fechas en 2025 y cubren tanto pedidos como reservas.
 - **Visualización avanzada**: El dashboard muestra:
   - Gráfico de productos vendidos (barras)
@@ -49,10 +50,11 @@ Reemplazar el tab "Adherence Analysis" en Analytics por un análisis real de ped
 
 ## Endpoints y Componentes Involucrados
 - **Backend**:
-  - `/api/analytics/products`: Agrega productos de los mocks, cachea y expone detalles de conversaciones.
-  - `/api/analytics/reservations-by-day`: Agrega reservas de los mocks, cachea y expone fechas, conteos y detalles completos de cada reserva (nombre, hora, personas).
+  - `/api/conversations/[conversationId]/ai-analysis`: Analiza transcripciones con OpenAI y guarda resultados en base de datos.
+  - `/api/analytics/products`: Agrega productos de la base de datos real, expone detalles de conversaciones.
+  - `/api/analytics/reservations-by-day`: Agrega reservas de la base de datos real, expone fechas, conteos y detalles completos de cada reserva (nombre, hora, personas).
   - `lib/restaurant-agent-openai.ts`: Prompt y función de análisis AI, manejo de fechas.
-  - `lib/mock-conversations.ts`: Fuente de datos de prueba.
+  - `lib/mock-conversations.ts`: Fuente de datos de prueba (para desarrollo).
 - **Frontend**:
   - `app/[locale]/customer-dashboard/dashboard-customer-panel/analytics/page.tsx`: Página principal de analytics.
   - `components/ReservationCalendar`: Calendario interactivo.
@@ -69,20 +71,47 @@ Reemplazar el tab "Adherence Analysis" en Analytics por un análisis real de ped
 
 ---
 
+## Flujo de Producción Implementado
+
+### **Flujo Completo:**
+1. **Transcripción → AI Analysis → Base de Datos → Analytics**
+   - Transcripción de conversación se envía a `/api/conversations/[conversationId]/ai-analysis`
+   - OpenAI analiza y extrae productos/reservas
+   - Resultado se guarda en tabla `RestaurantAnalysis`
+   - Endpoints de analytics consultan base de datos real
+
+### **Endpoints Clave:**
+- **POST** `/api/conversations/[conversationId]/ai-analysis`: Analiza transcripción y guarda en DB
+- **GET** `/api/analytics/products`: Obtiene productos vendidos desde DB
+- **GET** `/api/analytics/reservations-by-day`: Obtiene reservas desde DB
+
+### **Modelo de Datos:**
+```typescript
+RestaurantAnalysis {
+  conversationId: string
+  userId: string
+  products: Json[] // [{ name: "Pizza", quantity: 2, price: 18.50 }]
+  reservation: Json? // { date: "2025-07-02", time: "20:00", people: 4 }
+  customerIntent: "order" | "reservation"
+  totalAmount: number
+  // ... otros campos
+}
+```
+
 ## Próximos Pasos
-1. **Transición a datos reales**:
-   - Cuando haya suficientes análisis reales en la base de datos, eliminar el procesamiento de mocks y dejar los endpoints solo con datos reales.
-   - Validar que la lógica de fechas y agregación funcione igual de robusta con datos reales.
-2. **Mostrar precios y totales reales**:
-   - Usar la tabla de menú para calcular el total de ventas y mostrar el precio de cada producto en el modal.
-3. **Integrar reservas reales**:
-   - Conectar el calendario a la base de datos de reservas reales.
-   - Mostrar detalles de cada reserva al hacer click en el día.
-4. **Mejoras de UX y QA**:
+1. **Integración con conversaciones reales**:
+   - Conectar el endpoint de análisis con el flujo de grabación de conversaciones.
+   - Automatizar el análisis cuando se complete una conversación.
+2. **Mejoras de UX y QA**:
    - Probar casos edge (sin pedidos, sin reservas, datos incompletos).
    - Mejorar feedback visual y mensajes de error.
-5. **Documentar el flujo de migración a producción**:
-   - Instrucciones claras para eliminar mocks y activar solo datos reales.
+3. **Optimizaciones de performance**:
+   - Implementar cache para analytics frecuentes.
+   - Paginación para grandes volúmenes de datos.
+4. **Funcionalidades avanzadas**:
+   - Análisis de sentimiento del cliente.
+   - Predicciones de demanda basadas en patrones.
+   - Integración con sistemas de inventario.
 
 ---
 
