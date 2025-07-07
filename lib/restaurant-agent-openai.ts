@@ -1,4 +1,5 @@
 import OpenAI from 'openai'
+import type { AnalysisResult } from '@/app/api/conversations/[conversationId]/restaurant-analysis/route';
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error('OPENAI_API_KEY is not set in environment variables')
@@ -173,7 +174,7 @@ Use the reference menu above to match the names and prices of products.
 If the call contains both a reservation and a food order, return both objects in an array like: [ {}, {} ].
 `
 
-export async function analyzePizzeriaTranscript(transcript: string, conversationDate?: string): Promise<unknown> {
+export async function analyzePizzeriaTranscript(transcript: string, conversationDate?: string): Promise<AnalysisResult> {
   // Extraer fecha de la conversación del primer mensaje si no se proporciona
   let dateToUse = conversationDate;
   if (!dateToUse) {

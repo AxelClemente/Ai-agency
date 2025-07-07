@@ -5,6 +5,33 @@ import { prisma } from '@/lib/prisma';
 import { analyzePizzeriaTranscript } from '@/lib/restaurant-agent-openai';
 import { mockConversations } from '@/lib/mock-conversations';
 
+export interface AnalysisResult {
+  products?: Array<{ name: string; quantity: number; price?: number }>;
+  items?: Array<{ product: string; quantity: number; price?: number }>;
+  orderType?: string;
+  order_type?: string;
+  totalAmount?: number;
+  reservation?: {
+    date?: string;
+    time?: string;
+    people?: number;
+    name?: string;
+    contact?: string;
+    notes?: string;
+  };
+  customerName?: string;
+  customer_name?: string;
+  customerPhone?: string;
+  contact?: string;
+  customerAddress?: string;
+  customerIntent?: string;
+  outcome?: string;
+  sentiment?: string;
+  specialRequests?: string[];
+  paymentMethod?: string;
+  estimatedTime?: string;
+}
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ conversationId: string }> }
@@ -30,7 +57,7 @@ export async function POST(
       // Generar transcript para el análisis
       const transcript = mock.messages.map(m => `${m.role === 'agente' ? 'Agente' : 'Cliente'}: ${m.message}`).join('\n');
       const conversationDate = mock.messages[0]?.timestamp ? new Date(mock.messages[0].timestamp).toISOString().slice(0,10) : undefined;
-      const analysisResult = await analyzePizzeriaTranscript(transcript, conversationDate);
+      const analysisResult = await analyzePizzeriaTranscript(transcript, conversationDate) as AnalysisResult;
 
       // Mapear productos
       const products =
@@ -186,7 +213,7 @@ export async function GET(
       // Generar transcript para el análisis
       const transcript = mock.messages.map(m => `${m.role === 'agente' ? 'Agente' : 'Cliente'}: ${m.message}`).join('\n');
       const conversationDate = mock.messages[0]?.timestamp ? new Date(mock.messages[0].timestamp).toISOString().slice(0,10) : undefined;
-      const analysisResult = await analyzePizzeriaTranscript(transcript, conversationDate);
+      const analysisResult = await analyzePizzeriaTranscript(transcript, conversationDate) as AnalysisResult;
 
       // Mapear productos
       const products =
