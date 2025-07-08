@@ -38,10 +38,10 @@ export default function HeroSection() {
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
+      <div className="relative z-10 w-full px-0">
         <div className="flex items-center min-h-[60vh] py-12" style={{maxHeight: 500}}>
           {/* Left Content - Takes up to 50% of the width */}
-          <div className="w-full lg:w-1/2 space-y-8 pr-8">
+          <div className="w-full lg:w-1/2 space-y-8 pl-32">
             <div className="space-y-6">
               <h1 className="text-[58px] leading-[58px] font-normal text-white">
                 Automatiza procesos
