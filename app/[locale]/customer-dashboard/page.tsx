@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export default function CustomerDashboardPage() {
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null)
@@ -60,6 +61,14 @@ export default function CustomerDashboardPage() {
       document.body.style.background = "";
     };
   }, []);
+
+  const handleStartConversation = () => {
+    if (!selectedAgent) {
+      toast("Por favor, selecciona un agente antes de iniciar una conversación.")
+      return
+    }
+    router.push(`/customer-dashboard/conversation?agentId=${selectedAgent}`)
+  }
 
   return (
     <section className="relative pt-8 pb-12 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-20 bg-black min-h-screen">
@@ -116,15 +125,12 @@ export default function CustomerDashboardPage() {
                 ))}
               </div>
 
-              <Link href={selectedAgent ? `/customer-dashboard/conversation?agentId=${selectedAgent}` : '#'}>
-                <Button 
-                  className={`bg-transparent border border-gray-600 text-white hover:bg-gray-800 px-6 py-2 rounded-full
-                    ${!selectedAgent ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  disabled={!selectedAgent}
-                >
-                  Iniciar nueva conversación
-                </Button>
-              </Link>
+              <Button
+                className={`bg-transparent border border-gray-600 text-white hover:bg-gray-800 px-6 py-2 rounded-full`}
+                onClick={handleStartConversation}
+              >
+                Iniciar nueva conversación
+              </Button>
             </div>
 
             {/* Metrics */}
@@ -180,7 +186,10 @@ export default function CustomerDashboardPage() {
                 ))}
               </div>
 
-              <Button className="bg-transparent border border-gray-600 text-white hover:bg-gray-800 px-6 py-2 rounded-full">
+              <Button
+                className="bg-transparent border border-gray-600 text-white hover:bg-gray-800 px-6 py-2 rounded-full"
+                onClick={() => toast("Próximamente")}
+              >
                 Probar demo
               </Button>
             </div>
