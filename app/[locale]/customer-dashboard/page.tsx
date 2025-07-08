@@ -77,10 +77,10 @@ export default function CustomerDashboardPage() {
         {/* Header */}
         <div className="text-center mb-16">
           <div className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-4">
-            Agentes de voz
+          Reduce un 60% tus costes
           </div>
           <h2 className="text-[40px] font-normal text-white">
-            ¿Preparado para el futuro?
+          Llamadas telefónicas con IA  
           </h2>
         </div>
 
@@ -101,7 +101,7 @@ export default function CustomerDashboardPage() {
                 </div>
               </div>
 
-              <h3 className="text-2xl font-bold text-white mb-4">Atención al cliente</h3>
+              <h3 className="text-2xl font-bold text-white mb-4">Agentes de voz</h3>
               <p className="text-gray-400 mb-6">
                 Asistencia avanzada de IA adaptada a tus necesidades y preferencias.
               </p>
