@@ -87,8 +87,8 @@ export default function Header() {
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-16 left-0 right-0 bg-black border-t border-gray-800">
-          <div className="px-4 py-6 space-y-4">
+        <div className="md:hidden fixed inset-0 z-50 bg-black border-t border-gray-800 flex flex-col pt-16 overflow-y-auto">
+          <div className="px-4 py-6 space-y-4 flex-1">
             <div className="flex items-center space-x-1 text-white">
               <span>Product</span>
               <ChevronDown className="h-4 w-4" />
