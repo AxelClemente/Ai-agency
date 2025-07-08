@@ -9,6 +9,7 @@ import TestimonialsSection from "@/app/[locale]/components/new-lading-page/testi
 //import PlatformSection from "@/app/[locale]/components/new-lading-page/platform-section"
 //import TechnologySection from "@/app/[locale]/components/new-lading-page/technology-section"
 import EmpowermentSection from "@/app/[locale]/components/new-lading-page/empowerment-section"
+import Footer from "@/app/[locale]/components/new-lading-page/footer"
 
 export default async function Page({
   params
@@ -38,6 +39,7 @@ export default async function Page({
         {/* <PlatformSection />  */}
         {/* <TechnologySection /> */}
       </main>
+      <Footer />
     </div>
   )
 }

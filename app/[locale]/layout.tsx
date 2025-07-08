@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   title: appMetadata.landing.title ?? "Writer - Dream big. Build fast.",
   description: appMetadata.landing.description ?? "The only end-to-end agent builder platform that unites IT & business",
   icons: {
-    icon: '/ai-favicon.png',
+    icon: '/images/ai-favicon.png',
   }
 };
 
