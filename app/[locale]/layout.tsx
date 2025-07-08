@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 import { metadata as appMetadata } from '@/app/metadata-config';
 import { Toaster } from "sonner"
 import { WebSocketProvider } from '@/components/websocket-provider'
+import { ScrollToTopButton } from "@/components/ui/ScrollToTopButton"
 
 const inter = Inter({
   subsets: ['latin'],
@@ -50,6 +51,7 @@ export default async function LocaleLayout({
               <div className="flex flex-col min-h-screen">
                 <Toaster position="bottom-right" richColors closeButton />
                 {children}
+                <ScrollToTopButton />
               </div>
             </AuthProvider>
           </WebSocketProvider>
