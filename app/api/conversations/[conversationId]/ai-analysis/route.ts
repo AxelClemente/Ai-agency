@@ -153,11 +153,11 @@ export async function POST(
 
   } catch (error) {
     console.error('Error in AI analysis:', error)
-    return NextResponse.json(
+        return NextResponse.json(
       { error: 'Failed to analyze conversation' },
-      { status: 500 }
-    )
-  }
+          { status: 500 }
+        )
+      }
 }
 
 export async function GET(
@@ -169,7 +169,7 @@ export async function GET(
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+      }
 
     const { conversationId } = await params
 
@@ -183,7 +183,7 @@ export async function GET(
 
     if (!analysis) {
       return NextResponse.json({ error: 'Analysis not found' }, { status: 404 })
-    }
+      }
 
     return NextResponse.json({ analysis })
 

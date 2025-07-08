@@ -13,7 +13,7 @@ export async function POST() {
   const agentId = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID_SUPPORT
   if (!agentId) {
     return NextResponse.json({ error: 'AgentId not configured' }, { status: 500 })
-    }
+  }
 
   const conversations = await prisma.conversation.findMany({
     where: {
