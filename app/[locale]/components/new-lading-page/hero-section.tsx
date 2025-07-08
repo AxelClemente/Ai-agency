@@ -1,14 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Play, ArrowRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { useLocale } from "next-intl"
 
 export default function HeroSection() {
-  const [isPlaying, setIsPlaying] = useState(false)
   const locale = useLocale()
 
   return (
