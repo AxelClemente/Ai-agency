@@ -11,34 +11,10 @@ export default function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-black min-h-[60vh] flex items-center" style={{maxHeight: 500}}>
       {/* Video Background - Right Half, only inside hero section */}
-      <div className="absolute top-0 right-0 w-1/2 h-full z-0 max-h-[500px]">
-        <video
-          src="/videos/video-landing.mp4"
-          className="object-cover w-full h-full max-h-[500px]"
-          autoPlay
-          loop
-          muted
-          playsInline
-          controls={false}
-        />
-        {/* Settings Icon */}
-        <div className="absolute bottom-6 right-6">
-          <Button size="icon" className="bg-black/70 hover:bg-black/80 text-white rounded-full backdrop-blur-sm">
-            <div className="w-5 h-5 grid grid-cols-2 gap-0.5">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-            </div>
-          </Button>
-        </div>
-      </div>
-
-      {/* Content Container */}
       <div className="relative z-10 w-full px-0">
-        <div className="flex items-center min-h-[60vh] py-12" style={{maxHeight: 500}}>
+        <div className="flex flex-col lg:flex-row items-center min-h-[60vh] py-12" style={{maxHeight: 500}}>
           {/* Left Content - Takes up to 50% of the width */}
-          <div className="w-full lg:w-1/2 space-y-8 pl-32">
+          <div className="w-full lg:w-1/2 space-y-8 pl-4 lg:pl-32">
             <div className="space-y-6">
               <h1 className="text-[58px] leading-[58px] font-normal text-white">
                 Automatiza procesos
@@ -92,9 +68,41 @@ export default function HeroSection() {
               </Link>
             </div>
           </div>
-
-          {/* Right side is now just empty space for the video background */}
-          <div className="hidden lg:block w-1/2"></div>
+        </div>
+        {/* Video mobile: debajo del texto, ocupa 100% ancho */}
+        <div className="block lg:hidden w-full h-56 mt-6">
+          <video
+            src="/videos/video-landing.mp4"
+            className="object-cover w-full h-full rounded-none"
+            autoPlay
+            loop
+            muted
+            playsInline
+            controls={false}
+          />
+        </div>
+        {/* Video desktop: absolute, mitad derecha */}
+        <div className="hidden lg:block absolute top-0 right-0 w-1/2 h-full z-0 max-h-[500px]">
+          <video
+            src="/videos/video-landing.mp4"
+            className="object-cover w-full h-full max-h-[500px] rounded-none"
+            autoPlay
+            loop
+            muted
+            playsInline
+            controls={false}
+          />
+          {/* Settings Icon solo en desktop */}
+          <div className="absolute bottom-6 right-6">
+            <Button size="icon" className="bg-black/70 hover:bg-black/80 text-white rounded-full backdrop-blur-sm">
+              <div className="w-5 h-5 grid grid-cols-2 gap-0.5">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+            </Button>
+          </div>
         </div>
       </div>
     </section>
