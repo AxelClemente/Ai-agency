@@ -19,7 +19,7 @@ export default function Header() {
   }
 
   return (
-    <header className="relative z-50 w-full bg-black">
+    <header className="relative z-50 w-full bg-black mb-8">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}

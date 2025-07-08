@@ -12,16 +12,41 @@ export default function HeroSection() {
   const locale = useLocale()
 
   return (
-    <section className="relative overflow-hidden bg-black">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[80vh] py-12">
-          {/* Left Content */}
-          <div className="space-y-8">
+    <section className="relative overflow-hidden bg-black min-h-[60vh] flex items-center" style={{maxHeight: 500}}>
+      {/* Video Background - Right Half, only inside hero section */}
+      <div className="absolute top-0 right-0 w-1/2 h-full z-0 max-h-[500px]">
+        <video
+          src="/videos/video-landing.mp4"
+          className="object-cover w-full h-full max-h-[500px]"
+          autoPlay
+          loop
+          muted
+          playsInline
+          controls={false}
+        />
+        {/* Settings Icon */}
+        <div className="absolute bottom-6 right-6">
+          <Button size="icon" className="bg-black/70 hover:bg-black/80 text-white rounded-full backdrop-blur-sm">
+            <div className="w-5 h-5 grid grid-cols-2 gap-0.5">
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+            </div>
+          </Button>
+        </div>
+      </div>
+
+      {/* Content Container */}
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
+        <div className="flex items-center min-h-[60vh] py-12" style={{maxHeight: 500}}>
+          {/* Left Content - Takes up to 50% of the width */}
+          <div className="w-full lg:w-1/2 space-y-8 pr-8">
             <div className="space-y-6">
               <h1 className="text-[58px] leading-[58px] font-normal text-white">
-                Piensa, Automatiza
+                Automatiza procesos
                 <br />
-                Escala
+                Con AI
               </h1>
               <p className="text-xl lg:text-2xl text-gray-300 leading-relaxed">
                 La agencia de AI que transforma procesos en resultados medibles.
@@ -55,7 +80,7 @@ export default function HeroSection() {
               <Link href={`/${locale}/customer-dashboard`}>
                 <Button
                   size="lg"
-                  className="bg-white text-black hover:bg-gray-100 px-8 py-3 rounded-full font-semibold text-[13px] leading-[24px] font-poppins w-full sm:w-auto"
+                  className="bg-white text-black hover:bg-gray-100 px-8 rounded-full font-semibold text-[13px] leading-[24px] font-poppins w-full sm:w-auto h-[45px]"
                 >
                   Solicita una demo
                 </Button>
@@ -63,7 +88,7 @@ export default function HeroSection() {
               <Link href={`/${locale}/customer-dashboard`}>
                 <Button
                   size="lg"
-                  className="bg-black text-white border border-white hover:bg-white hover:text-black px-8 py-3 rounded-full font-semibold text-[13px] leading-[24px] font-poppins w-full sm:w-auto"
+                  className="bg-black text-white border border-white hover:bg-white hover:text-black px-8 rounded-full font-semibold text-[13px] leading-[24px] font-poppins w-full sm:w-auto h-[45px]"
                 >
                   Pruebalo gratis
                 </Button>
@@ -71,41 +96,8 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Right Content - Hero Image */}
-          <div className="relative">
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
-              <Image
-                src="/hero-image.png"
-                alt="Modern skyscrapers from low angle perspective"
-                fill
-                className="object-cover"
-                priority
-              />
-
-              {/* Play Button Overlay */}
-              <div className="absolute top-6 left-6">
-                <Button
-                  onClick={() => setIsPlaying(!isPlaying)}
-                  className="bg-black/70 hover:bg-black/80 text-white px-4 py-2 rounded-full flex items-center space-x-2 backdrop-blur-sm"
-                >
-                  <Play className="h-4 w-4 fill-white" />
-                  <span className="text-sm">Play with sound</span>
-                </Button>
-              </div>
-
-              {/* Settings Icon */}
-              <div className="absolute bottom-6 right-6">
-                <Button size="icon" className="bg-black/70 hover:bg-black/80 text-white rounded-full backdrop-blur-sm">
-                  <div className="w-5 h-5 grid grid-cols-2 gap-0.5">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                  </div>
-                </Button>
-              </div>
-            </div>
-          </div>
+          {/* Right side is now just empty space for the video background */}
+          <div className="hidden lg:block w-1/2"></div>
         </div>
       </div>
     </section>
