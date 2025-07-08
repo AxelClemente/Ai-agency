@@ -9,10 +9,10 @@ export default function HeroSection() {
   const locale = useLocale()
 
   return (
-    <section className="relative overflow-hidden bg-black min-h-[60vh] flex items-center" style={{maxHeight: 500}}>
+    <section className="relative overflow-hidden bg-black flex items-center min-h-0 lg:min-h-[60vh] lg:max-h-[500px]">
       {/* Video Background - Right Half, only inside hero section */}
       <div className="relative z-10 w-full px-0">
-        <div className="flex flex-col lg:flex-row items-center min-h-[60vh] py-12" style={{maxHeight: 500}}>
+        <div className="flex flex-col lg:flex-row items-center py-12 min-h-0 lg:min-h-[60vh] lg:max-h-[500px]">
           {/* Left Content - Takes up to 50% of the width */}
           <div className="w-full lg:w-1/2 space-y-8 pl-4 lg:pl-32">
             <div className="space-y-6">
