@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { ArrowRight, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
