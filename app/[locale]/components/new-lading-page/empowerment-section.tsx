@@ -49,7 +49,7 @@ export default function EmpowermentSection() {
             {/* CTA Link */}
             <div>
               <Link
-                href="/talk-to-expert"
+                href="http://localhost:3000/customer-dashboard"
                 className="inline-flex items-center space-x-2 text-purple-600 hover:text-purple-700 font-medium"
               >
                 <span>Solicita una demo</span>

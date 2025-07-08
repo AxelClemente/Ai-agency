@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import Image from "next/image"
 
 export default function TestimonialsSection() {
@@ -42,7 +43,7 @@ export default function TestimonialsSection() {
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold mb-4">
             Reduce costes operativos hasta en un<br />
-            <span className="text-indigo-600">un 60%</span>
+            <span className="text-indigo-600 text-8xl">60%</span>
           </h2>
         </div>
 
@@ -82,9 +83,11 @@ export default function TestimonialsSection() {
 
         {/* CTA Button */}
         <div className="text-center">
-          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full font-medium text-lg">
-            Request a demo
-          </Button>
+          <Link href="http://localhost:3000/customer-dashboard">
+            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-8 rounded-full font-medium text-lg">
+              Probar Agente de voz
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
