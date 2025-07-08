@@ -19,7 +19,16 @@ export async function GET() {
 
     // --- 1. Obtener reservas reales de la base de datos ---
     const dbReservations = await prisma.reservation.findMany({ orderBy: { date: 'asc' } });
-    const dbByDate: Record<string, any[]> = {};
+    // Definir tipo para los detalles de reserva
+    interface ReservationDetails {
+      name: string;
+      time: string;
+      people: number;
+      contact: string;
+      notes: string | null;
+      source: string;
+    }
+    const dbByDate: Record<string, ReservationDetails[]> = {};
     dbReservations.forEach(res => {
       const dateStr = format(res.date, 'yyyy-MM-dd');
       if (!dbByDate[dateStr]) dbByDate[dateStr] = [];
@@ -38,7 +47,7 @@ export async function GET() {
     const mockReservationIds = mockConversations
       .filter(conv => conv.id.startsWith('mock-') && conv.type === 'reserva')
       .map(conv => conv.id);
-    const mockByDate: Record<string, any[]> = {};
+    const mockByDate: Record<string, ReservationDetails[]> = {};
     for (const mockId of mockReservationIds) {
       const mock = mockConversations.find(conv => conv.id === mockId);
       if (!mock || !mock.messages || mock.messages.length === 0) continue;
@@ -57,7 +66,7 @@ export async function GET() {
               const parsed = isValid(new Date(typedResult.date)) ? new Date(typedResult.date) : parseISO(typedResult.date);
               if (isValid(parsed)) reservationDate = format(parsed, 'yyyy-MM-dd');
             }
-            const reservationDetails = {
+            const reservationDetails: ReservationDetails = {
               name: String(typedResult.name || 'Sin nombre'),
               time: String(typedResult.time || 'Sin hora'),
               people: Number(typedResult.people || 0),
@@ -70,7 +79,7 @@ export async function GET() {
           }
         }
         mockReservationCache.set(mockId, analysisResult);
-      } catch (error) {
+      } catch {
         // Silenciar errores de mocks
       }
     }
@@ -93,7 +102,7 @@ export async function GET() {
     combined.sort((a, b) => a.date.localeCompare(b.date));
 
     return NextResponse.json({ reservations: combined });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ Error in analytics/reservations-by-day:', error);
     return NextResponse.json({ error: 'Failed to get reservations analytics' }, { status: 500 });
   }
