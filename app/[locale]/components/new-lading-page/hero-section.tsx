@@ -49,11 +49,11 @@ export default function HeroSection() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-row gap-4 justify-start">
               <Link href={`/${locale}/customer-dashboard`}>
                 <Button
                   size="lg"
-                  className="bg-white text-black hover:bg-gray-100 px-8 rounded-full font-semibold text-[13px] leading-[24px] font-poppins w-full sm:w-auto h-[45px]"
+                  className="bg-white text-black hover:bg-gray-100 px-8 rounded-full font-semibold text-[13px] leading-[24px] font-poppins w-auto h-[45px]"
                 >
                   Solicita una demo
                 </Button>
@@ -61,7 +61,7 @@ export default function HeroSection() {
               <Link href={`/${locale}/customer-dashboard`}>
                 <Button
                   size="lg"
-                  className="bg-black text-white border border-white hover:bg-white hover:text-black px-8 rounded-full font-semibold text-[13px] leading-[24px] font-poppins w-full sm:w-auto h-[45px]"
+                  className="bg-black text-white border border-white hover:bg-white hover:text-black px-8 rounded-full font-semibold text-[13px] leading-[24px] font-poppins w-auto h-[45px]"
                 >
                   Pruebalo gratis
                 </Button>
