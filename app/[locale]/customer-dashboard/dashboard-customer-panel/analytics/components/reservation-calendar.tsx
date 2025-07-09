@@ -88,7 +88,10 @@ export default function ReservationCalendar({ reservas, month }: ReservationCale
   const handleBack = () => setSelectedDay(null)
 
   if (selectedDay) {
-    return <DayView date={selectedDay} onBack={handleBack} />
+    // Obtener reservas del día seleccionado
+    const dateStr = `${selectedDay.getFullYear()}-${(selectedDay.getMonth() + 1).toString().padStart(2, '0')}-${selectedDay.getDate().toString().padStart(2, '0')}`;
+    const reservaInfo = reservasMap[dateStr] || { reservas: [] };
+    return <DayView date={selectedDay} reservas={reservaInfo.reservas || []} onBack={handleBack} />;
   }
 
   return (
